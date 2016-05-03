@@ -41,4 +41,8 @@
     <exclude-pattern>tests/Doctrine/Tests/Annotations/PhpParserTest.php</exclude-pattern>
     <exclude-pattern>tests/Doctrine/Tests/Annotations/TopLevelAnnotation.php</exclude-pattern>
     <exclude-pattern>tests/Doctrine/Tests/Annotations/ReservedKeywordsClasses.php</exclude-pattern>
+
+    <rule ref="Squiz.Arrays.ArrayDeclaration.SpaceBeforeComma">
+        <exclude-pattern>tests/Doctrine/Tests/Annotations/Parser/GrammarTest.php</exclude-pattern>
+    </rule>
 </ruleset>
