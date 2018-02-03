@@ -56,3 +56,7 @@ jobs:
     - stage: Lint
       install: travis_retry composer require --dev --prefer-dist phpstan/phpstan:^0.7
       script: vendor/bin/phpstan analyse -l 3 -c phpstan.neon lib tests
+
+    - stage: Coding standard
+      script:
+        - ./vendor/bin/phpcs
