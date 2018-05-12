@@ -45,10 +45,10 @@
     annotation()+
 
 #annotation:
-    ::at:: identifier() ( parameters() | comments() )?
+    ::at:: <identifier> ( parameters() | comments() )?
 
 #comments:
-    text()+
+    <text>+
 
 #values:
     value() ( ::comma:: value() )* ::comma::?
@@ -63,25 +63,13 @@
     pair() ( ::comma:: pair() )*
 
 #pair:
-    (identifier() | string() | number() | constant()) ( ::equals:: | ::colon:: ) value()
+    (<identifier> | <string> | <number>| constant()) ( ::equals:: | ::colon:: ) value()
 
 #value:
-    <boolean> | <null> | string() | map() | list() | number() | pair() | annotation() | constant()
+    <null> | <boolean> | <string> | <number> | pair() | map() | list() | annotation() | constant()
 
 parameters:
-    ( ::parenthesis_:: ( values() )? ::_parenthesis:: ) | string()?
-
-identifier:
-    <identifier>
+    ( ::parenthesis_:: ( values() )? ::_parenthesis:: ) | <string>?
 
 #constant:
     <identifier> (<colon> <colon> <identifier>)?
-
-string:
-    <string>
-
-text:
-    <text>
-
-number:
-    <number>
