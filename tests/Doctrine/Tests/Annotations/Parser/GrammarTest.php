@@ -314,5 +314,23 @@ DOCBLOCK
 
 TRACE
         ];
+
+        yield 'spaces after @' => [
+<<<'DOCBLOCK'
+/**
+ * @
+ * @ Hello world
+ */
+DOCBLOCK
+            ,
+<<<'TRACE'
+>  #dockblock
+>  >  #comments
+>  >  >  token(text, @)
+>  >  #comments
+>  >  >  token(text, @ Hello world)
+
+TRACE
+        ];
     }
 }
