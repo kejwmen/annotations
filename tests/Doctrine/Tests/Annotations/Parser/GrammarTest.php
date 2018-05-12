@@ -30,6 +30,23 @@ final class GrammarTest extends TestCase
      */
     public function docBlocksProvider() : iterable
     {
+        yield 'simple with no parenthesis' => [
+            <<<'DOCBLOCK'
+/**
+* @Annotation
+*/
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #dockblock
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:identifier, Annotation)
+
+TRACE
+            ,
+        ];
+
         yield 'simple with empty parenthesis' => [
             <<<'DOCBLOCK'
 /**
@@ -42,6 +59,54 @@ DOCBLOCK
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:identifier, Annotation)
+
+TRACE
+            ,
+        ];
+
+        yield 'multiple without parameters' => [
+            <<<'DOCBLOCK'
+/** @Annotation1 @Annotation2 @Annotation3 */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #dockblock
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:identifier, Annotation1)
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:identifier, Annotation2)
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:identifier, Annotation3)
+
+TRACE
+            ,
+        ];
+
+        yield 'multiple with comments' => [
+            <<<'DOCBLOCK'
+/**
+ * Hello world
+ * @Annotation1
+ * Hola mundo
+ * @Annotation2
+ */
+DOCBLOCK
+            , // TODO second comment should leave values namespace
+            <<<'TRACE'
+>  #dockblock
+>  >  #comments
+>  >  >  token(text, Hello world)
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:identifier, Annotation1)
+>  >  #comments
+>  >  >  token(values:text, Hola mundo)
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:identifier, Annotation2)
 
 TRACE
             ,
@@ -211,6 +276,36 @@ DOCBLOCK
 >  >  >  >  >  >  >  >  >  >  >  >  >  #values
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 3)
+
+TRACE
+            ,
+        ];
+
+        yield 'ORM Id example' => [
+            <<<'DOCBLOCK'
+/**
+ * @ORM\Id @ORM\Column(type="integer")
+ * @ORM\GeneratedValue
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #dockblock
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:identifier, ORM\Id)
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:identifier, ORM\Column)
+>  >  >  >  #values
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, type)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:string, "integer")
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:identifier, ORM\GeneratedValue)
 
 TRACE
             ,
