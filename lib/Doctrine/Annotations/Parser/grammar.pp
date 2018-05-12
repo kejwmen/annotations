@@ -1,3 +1,5 @@
+%pragma lexer.unicode 1
+
 %skip   space               [\x20\x09\x0a\x0d]+
 %skip   doc_                [/**]
 %skip   _doc                [*/]
@@ -6,7 +8,7 @@
 %token  at                  @                             -> annot
 %token  text                [^@].*
 
-%token  annot:identifier    [\\]?[a-zA-Z_][\\a-zA-Z0-9_]* -> values
+%token  annot:identifier    [\\]?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)* -> values
 
 %skip   values:star         [*]
 %skip   values:_doc         [*/]
@@ -26,7 +28,7 @@
 %token  value:at            @                           -> annot
 %token  value:null          null
 %token  value:boolean       false|true
-%token  value:identifier    [\\a-zA-Z_][\\a-zA-Z0-9_]*
+%token  value:identifier    [\\]?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*
 %token  value:brace_        {
 %token  value:_brace        }
 %token  value:colon         :
