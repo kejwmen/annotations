@@ -310,5 +310,22 @@ DOCBLOCK
 TRACE
             ,
         ];
+
+        yield 'unicode' => [
+            <<<'DOCBLOCK'
+/**
+ * @Fancy😊Annotation
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #dockblock
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:identifier, Fancy😊Annotation)
+
+TRACE
+            ,
+        ];
     }
 }
