@@ -465,5 +465,141 @@ DOCBLOCK
 TRACE
             ,
         ];
+
+        yield 'Symfony route' => [
+            <<<'DOCBLOCK'
+/**
+ * @Route("/argument_with_route_param_and_default/{value}", defaults={"value": "value"}, name="argument_with_route_param_and_default")
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #dockblock
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:valued_identifier, Route)
+>  >  >  >  #values
+>  >  >  >  >  #value
+>  >  >  >  >  >  token(value:string, "/argument_with_route_param_and_default/{value}")
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, defaults)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  #map
+>  >  >  >  >  >  >  >  >  #pairs
+>  >  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  >  token(value:string, "value")
+>  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  token(value:string, "value")
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, name)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:string, "argument_with_route_param_and_default")
+
+TRACE
+            ,
+        ];
+
+        yield 'SymfonyFrameworkExtraBundle annotations' => [
+            <<<'DOCBLOCK'
+/**
+ * @Route("/is_granted/resolved/conflict")
+ * @IsGranted("ISGRANTED_VOTER", subject="request")
+ * @Security("is_granted('ISGRANTED_VOTER', request)")
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #dockblock
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:valued_identifier, Route)
+>  >  >  >  #values
+>  >  >  >  >  #value
+>  >  >  >  >  >  token(value:string, "/is_granted/resolved/conflict")
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:valued_identifier, IsGranted)
+>  >  >  >  #values
+>  >  >  >  >  #value
+>  >  >  >  >  >  token(value:string, "ISGRANTED_VOTER")
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, subject)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:string, "request")
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:valued_identifier, Security)
+>  >  >  >  #values
+>  >  >  >  >  #value
+>  >  >  >  >  >  token(value:string, "is_granted('ISGRANTED_VOTER', request)")
+
+TRACE
+            ,
+        ];
+
+        yield 'JMS Serializer field' => [
+            <<<'DOCBLOCK'
+/**
+ * @Type("array<string,string>")
+ * @SerializedName("addresses")
+ * @XmlElement(namespace="http://example.com/namespace2")
+ * @XmlMap(inline = false, entry = "address", keyAttribute = "id", namespace="http://example.com/namespace2")
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #dockblock
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:valued_identifier, Type)
+>  >  >  >  #values
+>  >  >  >  >  #value
+>  >  >  >  >  >  token(value:string, "array<string,string>")
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:valued_identifier, SerializedName)
+>  >  >  >  #values
+>  >  >  >  >  #value
+>  >  >  >  >  >  token(value:string, "addresses")
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:valued_identifier, XmlElement)
+>  >  >  >  #values
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, namespace)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:string, "http://example.com/namespace2")
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:valued_identifier, XmlMap)
+>  >  >  >  #values
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, inline)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:boolean, false)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, entry)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:string, "address")
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, keyAttribute)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:string, "id")
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, namespace)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:string, "http://example.com/namespace2")
+
+TRACE
+            ,
+        ];
     }
 }
