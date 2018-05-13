@@ -8,35 +8,26 @@
 %token  at                  @(?!\s)                     -> annot
 %token  text                .*
 
-%token  annot:identifier    [\\]?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)* -> values
+%token  annot:valued_identifier [\\]?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*(?=\()
+%token  annot:simple_identifier [\\]?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)* -> __shift__
+%token  annot:parenthesis_  \(                          -> value
 
-%skip   values:star         [*]
-%skip   values:_doc         [*/]
-%skip   values:space        [\x20\x09\x0a\x0d]+
-%token  values:comma        ,                           -> value
-%token  values:at           @                           -> annot
-%token  values:brace_       {                           -> value
-%token  values:_brace       }                           -> value
-%token  values:parenthesis_ \(                          -> value
-%token  values:_parenthesis \)                          -> default
-%token  values:text         [^@].*                      -> default
-
-%skip   value:star          [*]
-%skip   value:_doc          [*/]
-%skip   value:space         [\x20\x09\x0a\x0d]+
-%token  value:_parenthesis  \)                          -> values
-%token  value:at            @                           -> annot
-%token  value:null          null
-%token  value:boolean       false|true
-%token  value:identifier    [\\]?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*
-%token  value:brace_        {
-%token  value:_brace        }
-%token  value:colon         :
-%token  value:comma         ,
-%token  value:equals        =
-%token  value:number        \-?(0|[1-9]\d*)(\.\d+)?([eE][\+\-]?\d+)?
-
-%token  value:string        "(.*?)(?<!\\)"
+%skip   value:star         [*]
+%skip   value:_doc         [*/]
+%skip   value:space        [\x20\x09\x0a\x0d]+
+%token  value:_parenthesis \)                          -> __shift__ * 2
+%token  value:at           @(?!\s)                     -> annot
+%token  value:comma        ,
+%token  value:brace_       {
+%token  value:_brace       }
+%token  value:colon        :
+%token  value:equals       =
+%token  value:null         null
+%token  value:boolean      true|false
+%token  value:number       \-?(0|[1-9]\d*)(\.\d+)?([eE][\+\-]?\d+)?
+%token  value:identifier   [\\]?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*
+%token  value:string       "(.*?)(?<!\\)"
+%token  value:text         .*
 
 #dockblock:
     (comments() | annotations())*
@@ -45,7 +36,11 @@
     annotation()+
 
 #annotation:
-    ::at:: <identifier> ( parameters() | comments() )?
+    ::at::
+    (
+        <simple_identifier>
+        | ( <valued_identifier> ::parenthesis_:: ( parameters() | comments() )? ::_parenthesis:: )
+    )
 
 #comments:
     <text>+
@@ -63,13 +58,13 @@
     pair() ( ::comma:: pair() )*
 
 #pair:
-    (<identifier> | <string> | <number>| constant()) ( ::equals:: | ::colon:: ) value()
+    (<identifier> | <string> | <number> | constant()) ( ::equals:: | ::colon:: ) value()
 
 #value:
     <null> | <boolean> | <string> | <number> | pair() | map() | list() | annotation() | constant()
 
 parameters:
-    ( ::parenthesis_:: ( values() )? ::_parenthesis:: ) | <string>?
+    values() | <string>
 
 #constant:
     <identifier> (<colon> <colon> <identifier>)?

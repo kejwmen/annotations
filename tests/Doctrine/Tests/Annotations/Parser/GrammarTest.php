@@ -41,7 +41,7 @@ DOCBLOCK
 >  #dockblock
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, Annotation)
+>  >  >  >  token(annot:simple_identifier, Annotation)
 
 TRACE
             ,
@@ -58,7 +58,7 @@ DOCBLOCK
 >  #dockblock
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, Annotation)
+>  >  >  >  token(annot:valued_identifier, Annotation)
 
 TRACE
             ,
@@ -73,13 +73,13 @@ DOCBLOCK
 >  #dockblock
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, Annotation1)
+>  >  >  >  token(annot:simple_identifier, Annotation1)
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, Annotation2)
+>  >  >  >  token(annot:simple_identifier, Annotation2)
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, Annotation3)
+>  >  >  >  token(annot:simple_identifier, Annotation3)
 
 TRACE
             ,
@@ -94,19 +94,19 @@ TRACE
  * @Annotation2
  */
 DOCBLOCK
-            , // TODO second comment should leave values namespace
+            ,
             <<<'TRACE'
 >  #dockblock
 >  >  #comments
 >  >  >  token(text, Hello world)
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, Annotation1)
+>  >  >  >  token(annot:simple_identifier, Annotation1)
 >  >  #comments
->  >  >  token(values:text, Hola mundo)
+>  >  >  token(text, Hola mundo)
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, Annotation2)
+>  >  >  >  token(annot:simple_identifier, Annotation2)
 
 TRACE
             ,
@@ -123,7 +123,7 @@ DOCBLOCK
 >  #dockblock
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, \Ns\Annotation)
+>  >  >  >  token(annot:valued_identifier, \Ns\Annotation)
 >  >  >  >  #values
 >  >  >  >  >  #value
 >  >  >  >  >  >  token(value:string, "value")
@@ -143,9 +143,9 @@ DOCBLOCK
 >  #dockblock
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, return)
+>  >  >  >  token(annot:simple_identifier, return)
 >  >  #comments
->  >  >  token(values:text, array<string>)
+>  >  >  token(text, array<string>)
 
 TRACE
             ,
@@ -162,7 +162,7 @@ DOCBLOCK
 >  #dockblock
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, \Ns\Name)
+>  >  >  >  token(annot:valued_identifier, \Ns\Name)
 >  >  >  >  #values
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
@@ -174,7 +174,7 @@ DOCBLOCK
 >  >  >  >  >  >  >  token(value:identifier, annot)
 >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  token(annot:identifier, Annot)
+>  >  >  >  >  >  >  >  >  token(annot:simple_identifier, Annot)
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, float)
@@ -201,7 +201,7 @@ DOCBLOCK
 >  #dockblock
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, Annot)
+>  >  >  >  token(annot:valued_identifier, Annot)
 >  >  >  >  #values
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
@@ -221,13 +221,13 @@ DOCBLOCK
 >  >  >  >  >  >  >  >  #list
 >  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  token(annot:identifier, one)
+>  >  >  >  >  >  >  >  >  >  >  token(annot:simple_identifier, one)
 >  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  token(annot:identifier, two)
+>  >  >  >  >  >  >  >  >  >  >  token(annot:simple_identifier, two)
 >  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  token(annot:identifier, three)
+>  >  >  >  >  >  >  >  >  >  >  token(annot:simple_identifier, three)
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, v3)
@@ -256,7 +256,7 @@ DOCBLOCK
 >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, one)
 >  >  >  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  >  >  token(annot:identifier, one)
+>  >  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, one)
 >  >  >  >  >  >  >  >  >  >  >  >  >  #values
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 1)
@@ -264,7 +264,7 @@ DOCBLOCK
 >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, two)
 >  >  >  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  >  >  token(annot:identifier, two)
+>  >  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, two)
 >  >  >  >  >  >  >  >  >  >  >  >  >  #values
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 2)
@@ -272,7 +272,7 @@ DOCBLOCK
 >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, three)
 >  >  >  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  >  >  token(annot:identifier, three)
+>  >  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, three)
 >  >  >  >  >  >  >  >  >  >  >  >  >  #values
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 3)
@@ -293,10 +293,10 @@ DOCBLOCK
 >  #dockblock
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, ORM\Id)
+>  >  >  >  token(annot:simple_identifier, ORM\Id)
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, ORM\Column)
+>  >  >  >  token(annot:valued_identifier, ORM\Column)
 >  >  >  >  #values
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
@@ -305,7 +305,7 @@ DOCBLOCK
 >  >  >  >  >  >  >  >  token(value:string, "integer")
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, ORM\GeneratedValue)
+>  >  >  >  token(annot:simple_identifier, ORM\GeneratedValue)
 
 TRACE
             ,
@@ -322,7 +322,7 @@ DOCBLOCK
 >  #dockblock
 >  >  #annotations
 >  >  >  #annotation
->  >  >  >  token(annot:identifier, Fancy😊Annotation)
+>  >  >  >  token(annot:simple_identifier, Fancy😊Annotation)
 
 TRACE
             ,
