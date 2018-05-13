@@ -377,5 +377,95 @@ DOCBLOCK
 TRACE
             ,
         ];
+
+        yield 'complex ORM M:N' => [
+            <<<'DOCBLOCK'
+/**
+ * @ORM\ManyToMany(targetEntity=CmsGroup::class, inversedBy="users", cascade={"persist"})
+ * @ORM\JoinTable(name="cms_users_groups",
+ *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+ *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
+ * )
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #dockblock
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:valued_identifier, ORM\ManyToMany)
+>  >  >  >  #values
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, targetEntity)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  #constant
+>  >  >  >  >  >  >  >  >  token(value:identifier, CmsGroup)
+>  >  >  >  >  >  >  >  >  token(value:colon, :)
+>  >  >  >  >  >  >  >  >  token(value:colon, :)
+>  >  >  >  >  >  >  >  >  token(value:identifier, class)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, inversedBy)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:string, "users")
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, cascade)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  #list
+>  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  token(value:string, "persist")
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:valued_identifier, ORM\JoinTable)
+>  >  >  >  #values
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, name)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:string, "cms_users_groups")
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, joinColumns)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  #list
+>  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, ORM\JoinColumn)
+>  >  >  >  >  >  >  >  >  >  >  #values
+>  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, name)
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:string, "user_id")
+>  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, referencedColumnName)
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:string, "id")
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, inverseJoinColumns)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  #list
+>  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, ORM\JoinColumn)
+>  >  >  >  >  >  >  >  >  >  >  #values
+>  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, name)
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:string, "group_id")
+>  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, referencedColumnName)
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:string, "id")
+
+TRACE
+            ,
+        ];
     }
 }
