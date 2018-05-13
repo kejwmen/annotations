@@ -346,5 +346,36 @@ DOCBLOCK
 TRACE
             ,
         ];
+
+        yield 'ORM Column example' => [
+            <<<'DOCBLOCK'
+/** @ORM\Column(type="string", length=50, nullable=true) */
+DOCBLOCK
+                ,
+            <<<'TRACE'
+>  #dockblock
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:valued_identifier, ORM\Column)
+>  >  >  >  #values
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, type)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:string, "string")
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, length)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:number, 50)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  token(value:identifier, nullable)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:boolean, true)
+
+TRACE
+            ,
+        ];
     }
 }
