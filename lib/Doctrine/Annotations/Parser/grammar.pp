@@ -20,6 +20,7 @@
 %token  value:comma        ,
 %token  value:brace_       {
 %token  value:_brace       }
+%token  value:double_colon ::
 %token  value:colon        :
 %token  value:equals       =
 %token  value:null         \bnull\b
@@ -67,4 +68,4 @@ parameters:
     values() | <string>
 
 #constant:
-    <identifier> (<colon> <colon> <identifier>)?
+    <identifier> (::double_colon:: <identifier>)?
