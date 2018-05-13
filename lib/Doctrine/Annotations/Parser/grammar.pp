@@ -30,7 +30,7 @@
 %token  value:string       "(.*?)(?<!\\)"
 %token  value:text         .*
 
-#dockblock:
+#docblock:
     (comments() | annotations())*
 
 #annotations:

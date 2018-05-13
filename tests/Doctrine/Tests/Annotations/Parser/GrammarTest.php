@@ -35,7 +35,7 @@ final class GrammarTest extends TestCase
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:simple_identifier, Annotation)
@@ -51,7 +51,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, Annotation)
@@ -65,7 +65,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:simple_identifier, Annotation1)
@@ -90,7 +90,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #comments
 >  >  >  token(text, Hello world)
 >  >  #annotations
@@ -113,7 +113,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, \Ns\Annotation)
@@ -132,7 +132,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:simple_identifier, return)
@@ -150,7 +150,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, \Ns\Name)
@@ -188,7 +188,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, Annot)
@@ -279,7 +279,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:simple_identifier, ORM\Id)
@@ -307,7 +307,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:simple_identifier, Fancy😊Annotation)
@@ -324,7 +324,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #comments
 >  >  >  token(text, @)
 >  >  #comments
@@ -339,7 +339,7 @@ TRACE
 DOCBLOCK
                 ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, ORM\Column)
@@ -375,7 +375,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, ORM\ManyToMany)
@@ -458,7 +458,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, Route)
@@ -494,7 +494,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, Route)
@@ -533,7 +533,7 @@ TRACE
 DOCBLOCK
             ,
 <<<'TRACE'
->  #dockblock
+>  #docblock
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, Type)
