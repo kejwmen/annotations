@@ -386,8 +386,6 @@ DOCBLOCK
 >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  #constant
 >  >  >  >  >  >  >  >  >  token(value:identifier, CmsGroup)
->  >  >  >  >  >  >  >  >  token(value:colon, :)
->  >  >  >  >  >  >  >  >  token(value:colon, :)
 >  >  >  >  >  >  >  >  >  token(value:identifier, class)
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
