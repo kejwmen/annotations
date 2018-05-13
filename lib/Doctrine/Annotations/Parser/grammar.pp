@@ -22,8 +22,8 @@
 %token  value:_brace       }
 %token  value:colon        :
 %token  value:equals       =
-%token  value:null         null
-%token  value:boolean      true|false
+%token  value:null         \bnull\b
+%token  value:boolean      \b(?:true|false)\b
 %token  value:number       \-?(0|[1-9]\d*)(\.\d+)?([eE][\+\-]?\d+)?
 %token  value:identifier   [\\]?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*
 %token  value:string       "(.*?)(?<!\\)"
