@@ -119,7 +119,8 @@ DOCBLOCK
 >  >  >  >  token(annot:valued_identifier, \Ns\Annotation)
 >  >  >  >  #values
 >  >  >  >  >  #value
->  >  >  >  >  >  token(value:string, "value")
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, value)
 
 TRACE
         ];
@@ -291,7 +292,8 @@ DOCBLOCK
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, type)
 >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:string, "integer")
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, integer)
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:simple_identifier, ORM\GeneratedValue)
@@ -348,7 +350,8 @@ DOCBLOCK
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, type)
 >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:string, "string")
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, string)
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, length)
@@ -391,14 +394,16 @@ DOCBLOCK
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, inversedBy)
 >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:string, "users")
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, users)
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, cascade)
 >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  #list
 >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  token(value:string, "persist")
+>  >  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  >  token(string:string, persist)
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, ORM\JoinTable)
@@ -407,7 +412,8 @@ DOCBLOCK
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, name)
 >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:string, "cms_users_groups")
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, cms_users_groups)
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, joinColumns)
@@ -421,12 +427,14 @@ DOCBLOCK
 >  >  >  >  >  >  >  >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, name)
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:string, "user_id")
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, user_id)
 >  >  >  >  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, referencedColumnName)
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:string, "id")
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, id)
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, inverseJoinColumns)
@@ -440,12 +448,14 @@ DOCBLOCK
 >  >  >  >  >  >  >  >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, name)
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:string, "group_id")
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, group_id)
 >  >  >  >  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, referencedColumnName)
 >  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:string, "id")
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, id)
 
 TRACE
         ];
@@ -464,7 +474,8 @@ DOCBLOCK
 >  >  >  >  token(annot:valued_identifier, Route)
 >  >  >  >  #values
 >  >  >  >  >  #value
->  >  >  >  >  >  token(value:string, "/argument_with_route_param_and_default/{value}")
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, /argument_with_route_param_and_default/{value})
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, defaults)
@@ -472,14 +483,17 @@ DOCBLOCK
 >  >  >  >  >  >  >  >  #map
 >  >  >  >  >  >  >  >  >  #pairs
 >  >  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  >  token(value:string, "value")
+>  >  >  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  >  >  token(string:string, value)
 >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  token(value:string, "value")
+>  >  >  >  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, value)
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, name)
 >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:string, "argument_with_route_param_and_default")
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, argument_with_route_param_and_default)
 
 TRACE
         ];
@@ -500,24 +514,28 @@ DOCBLOCK
 >  >  >  >  token(annot:valued_identifier, Route)
 >  >  >  >  #values
 >  >  >  >  >  #value
->  >  >  >  >  >  token(value:string, "/is_granted/resolved/conflict")
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, /is_granted/resolved/conflict)
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, IsGranted)
 >  >  >  >  #values
 >  >  >  >  >  #value
->  >  >  >  >  >  token(value:string, "ISGRANTED_VOTER")
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, ISGRANTED_VOTER)
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, subject)
 >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:string, "request")
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, request)
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, Security)
 >  >  >  >  #values
 >  >  >  >  >  #value
->  >  >  >  >  >  token(value:string, "is_granted('ISGRANTED_VOTER', request)")
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, is_granted('ISGRANTED_VOTER', request))
 
 TRACE
         ];
@@ -539,13 +557,15 @@ DOCBLOCK
 >  >  >  >  token(annot:valued_identifier, Type)
 >  >  >  >  #values
 >  >  >  >  >  #value
->  >  >  >  >  >  token(value:string, "array<string,string>")
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, array<string,string>)
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, SerializedName)
 >  >  >  >  #values
 >  >  >  >  >  #value
->  >  >  >  >  >  token(value:string, "addresses")
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, addresses)
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, XmlElement)
@@ -554,7 +574,8 @@ DOCBLOCK
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, namespace)
 >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:string, "http://example.com/namespace2")
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, http://example.com/namespace2)
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:valued_identifier, XmlMap)
@@ -568,17 +589,54 @@ DOCBLOCK
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, entry)
 >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:string, "address")
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, address)
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, keyAttribute)
 >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:string, "id")
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, id)
 >  >  >  >  >  #value
 >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  token(value:identifier, namespace)
 >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:string, "http://example.com/namespace2")
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, http://example.com/namespace2)
+
+TRACE
+        ];
+
+        yield 'string escaping' => [
+<<<'DOCBLOCK'
+/**
+ * @Annotation("", "foo", "b\"a\"r", "ba\\z", "bla\h", "\\\\hello\\\\")
+ */
+DOCBLOCK
+            ,
+<<<'TRACE'
+>  #docblock
+>  >  #annotations
+>  >  >  #annotation
+>  >  >  >  token(annot:valued_identifier, Annotation)
+>  >  >  >  #values
+>  >  >  >  >  #value
+>  >  >  >  >  >  #string
+>  >  >  >  >  #value
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, foo)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, b\"a\"r)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, ba\\z)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, bla\h)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, \\\\hello\\\\)
 
 TRACE
         ];
