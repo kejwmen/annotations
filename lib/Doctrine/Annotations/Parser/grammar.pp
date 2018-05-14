@@ -23,12 +23,15 @@
 %token  value:double_colon ::
 %token  value:colon        :
 %token  value:equals       =
+%token  value:quote_       "                           -> string
 %token  value:null         \bnull\b
 %token  value:boolean      \b(?:true|false)\b
 %token  value:number       \-?(0|[1-9]\d*)(\.\d+)?([eE][\+\-]?\d+)?
 %token  value:identifier   [a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*
-%token  value:string       "(.*?)(?<!\\)"
 %token  value:text         .*
+
+%token  string:string      (?:[^"\\]+|(\\\\)*\\"|(\\\\)+|\\?[^"\\]+)+
+%token  string:_quote      "                           -> __shift__
 
 #docblock:
     (comments() | annotations())*
@@ -59,13 +62,16 @@
     pair() ( ::comma:: pair() )*
 
 #pair:
-    (<identifier> | <string> | <number> | constant()) ( ::equals:: | ::colon:: ) value()
+    (<identifier> | string() | <number> | constant()) ( ::equals:: | ::colon:: ) value()
 
 #value:
-    <null> | <boolean> | <string> | <number> | pair() | map() | list() | annotation() | constant()
+    <null> | <boolean> | string() | <number> | pair() | map() | list() | annotation() | constant()
 
 parameters:
-    values() | <string>
+    values() | string()
 
 #constant:
     <identifier> (::double_colon:: <identifier>)?
+
+#string:
+    ::quote_:: <string>? ::_quote::
