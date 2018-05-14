@@ -6,7 +6,7 @@
 %skip   star                [*]
 
 %token  at                  @(?!\s)                     -> annot
-%token  text                .*
+%token  text                .+
 
 %token  annot:valued_identifier [\\]?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*(?=\()
 %token  annot:simple_identifier [\\]?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)* -> __shift__
