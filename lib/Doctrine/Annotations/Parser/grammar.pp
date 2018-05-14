@@ -28,7 +28,6 @@
 %token  value:boolean      \b(?:true|false)\b
 %token  value:number       \-?(0|[1-9]\d*)(\.\d+)?([eE][\+\-]?\d+)?
 %token  value:identifier   [a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*
-%token  value:text         .*
 
 %token  string:string      (?:[^"\\]+|(\\\\)*\\"|(\\\\)+|\\?[^"\\]+)+
 %token  string:_quote      "                           -> __shift__
