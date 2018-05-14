@@ -1,12 +1,13 @@
 %pragma lexer.unicode 1
 
-%skip   space               [\x20\x09\x0a\x0d]+
-%skip   doc_                [/**]
-%skip   _doc                [*/]
-%skip   star                [*]
+%skip   space              [\x20\x09\x0a\x0d]+
+%token  doc_               /\*\*                      -> docblock
 
-%token  at                  @(?!\s)                     -> annot
-%token  text                .+
+%skip   docblock:space     [\x20\x09\x0a\x0d]+
+%skip   docblock:star      \*(?!/)
+%token  docblock:_doc      \*/                         -> default
+%token  docblock:at        @(?!\s)                     -> annot
+%token  docblock:text      .+
 
 %token  annot:valued_identifier [\\]?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*(?=\()
 %token  annot:simple_identifier [\\]?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)* -> __shift__
@@ -33,7 +34,9 @@
 %token  string:_quote      "                           -> __shift__
 
 #docblock:
+    ::doc_::
     (comments() | annotations())*
+    ::_doc::
 
 #annotations:
     annotation()+
