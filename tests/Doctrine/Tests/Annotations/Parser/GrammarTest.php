@@ -97,13 +97,9 @@ DOCBLOCK
             ,
             <<<'TRACE'
 >  #docblock
->  >  #comments
->  >  >  token(docblock:text, Hello world)
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:simple_identifier, Annotation1)
->  >  #comments
->  >  >  token(docblock:text, Hola mundo)
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:simple_identifier, Annotation2)
@@ -145,8 +141,6 @@ DOCBLOCK
 >  >  #annotations
 >  >  >  #annotation
 >  >  >  >  token(annot:simple_identifier, return)
->  >  #comments
->  >  >  token(docblock:text, array<string>)
 
 TRACE
             ,
@@ -340,10 +334,6 @@ DOCBLOCK
             ,
             <<<'TRACE'
 >  #docblock
->  >  #comments
->  >  >  token(docblock:text, @)
->  >  #comments
->  >  >  token(docblock:text, @ Hello world)
 
 TRACE
             ,
