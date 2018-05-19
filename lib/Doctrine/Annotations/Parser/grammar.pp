@@ -35,7 +35,7 @@
 
 #docblock:
     ::doc_::
-    (comments() | annotations())*
+    (::text:: | annotations())*
     ::_doc::
 
 #annotations:
@@ -47,9 +47,6 @@
         <simple_identifier>
         | ( <valued_identifier> ::parenthesis_:: ( parameters() )? ::_parenthesis:: )
     )
-
-#comments:
-    <text>+
 
 #values:
     value() ( ::comma:: value() )* ::comma::?
