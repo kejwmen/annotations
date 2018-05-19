@@ -45,7 +45,7 @@
     ::at::
     (
         <simple_identifier>
-        | ( <valued_identifier> ::parenthesis_:: ( parameters() | comments() )? ::_parenthesis:: )
+        | ( <valued_identifier> ::parenthesis_:: ( parameters() )? ::_parenthesis:: )
     )
 
 #comments:
