@@ -35,11 +35,8 @@
 
 #docblock:
     ::doc_::
-    (::text:: | annotations())*
+    (::text:: | annotation())*
     ::_doc::
-
-#annotations:
-    annotation()+
 
 #annotation:
     ::at::
