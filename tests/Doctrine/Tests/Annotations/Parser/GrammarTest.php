@@ -217,49 +217,47 @@ DOCBLOCK
 >  >  >  >  >  >  token(value:identifier, v3)
 >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  #map
->  >  >  >  >  >  >  >  #pairs
->  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  token(value:identifier, one)
->  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  token(value:integer, 1)
->  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  token(value:identifier, two)
->  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  token(value:integer, 2)
->  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  token(value:identifier, three)
->  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  token(value:integer, 3)
+>  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  token(value:identifier, one)
+>  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  token(value:integer, 1)
+>  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  token(value:identifier, two)
+>  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  token(value:integer, 2)
+>  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  token(value:identifier, three)
+>  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  token(value:integer, 3)
 >  >  >  >  #value
 >  >  >  >  >  #pair
 >  >  >  >  >  >  token(value:identifier, v4)
 >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  #map
->  >  >  >  >  >  >  >  #pairs
->  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  token(value:identifier, one)
->  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, one)
->  >  >  >  >  >  >  >  >  >  >  >  #values
->  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:integer, 1)
->  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  token(value:identifier, two)
->  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, two)
->  >  >  >  >  >  >  >  >  >  >  >  #values
->  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:integer, 2)
->  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  token(value:identifier, three)
->  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, three)
->  >  >  >  >  >  >  >  >  >  >  >  #values
->  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:integer, 3)
+>  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  token(value:identifier, one)
+>  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, one)
+>  >  >  >  >  >  >  >  >  >  >  #values
+>  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  token(value:integer, 1)
+>  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  token(value:identifier, two)
+>  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, two)
+>  >  >  >  >  >  >  >  >  >  >  #values
+>  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  token(value:integer, 2)
+>  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  token(value:identifier, three)
+>  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, three)
+>  >  >  >  >  >  >  >  >  >  >  #values
+>  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  token(value:integer, 3)
 
 TRACE
             ,
@@ -357,7 +355,8 @@ DOCBLOCK
 >  >  >  >  #value
 >  >  >  >  >  token(value:float, -123.456E-789)
 
-TRACE,
+TRACE
+            ,
         ];
 
         yield 'ORM Column example' => [
@@ -504,13 +503,12 @@ DOCBLOCK
 >  >  >  >  >  >  token(value:identifier, defaults)
 >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  #map
->  >  >  >  >  >  >  >  #pairs
->  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  token(string:string, value)
+>  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  #string
 >  >  >  >  >  >  >  >  >  >  >  token(string:string, value)
->  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  >  >  >  token(string:string, value)
 >  >  >  >  #value
 >  >  >  >  >  #pair
 >  >  >  >  >  >  token(value:identifier, name)
