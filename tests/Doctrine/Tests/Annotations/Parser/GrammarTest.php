@@ -36,9 +36,8 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:simple_identifier, Annotation)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, Annotation)
 
 TRACE
         ];
@@ -52,9 +51,8 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, Annotation)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Annotation)
 
 TRACE
         ];
@@ -66,15 +64,12 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:simple_identifier, Annotation1)
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:simple_identifier, Annotation2)
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:simple_identifier, Annotation3)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, Annotation1)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, Annotation2)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, Annotation3)
 
 TRACE
         ];
@@ -91,12 +86,10 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:simple_identifier, Annotation1)
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:simple_identifier, Annotation2)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, Annotation1)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, Annotation2)
 
 TRACE
         ];
@@ -110,13 +103,12 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, \Ns\Annotation)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #string
->  >  >  >  >  >  >  token(string:string, value)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, \Ns\Annotation)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #string
+>  >  >  >  >  >  token(string:string, value)
 
 TRACE
         ];
@@ -130,9 +122,8 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:simple_identifier, return)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, return)
 
 TRACE
         ];
@@ -146,26 +137,25 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, \Ns\Name)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, int)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:number, 1)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, annot)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  token(annot:simple_identifier, Annot)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, float)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:number, 1.2)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, \Ns\Name)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, int)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  token(value:number, 1)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, annot)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  token(annot:simple_identifier, Annot)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, float)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  token(value:number, 1.2)
 
 TRACE
         ];
@@ -184,83 +174,82 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, Annot)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, v1)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #list
->  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  token(value:number, 1)
->  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  token(value:number, 2)
->  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  token(value:number, 3)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, v2)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #list
->  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  token(annot:simple_identifier, one)
->  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  token(annot:simple_identifier, two)
->  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  token(annot:simple_identifier, three)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, v3)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #map
->  >  >  >  >  >  >  >  >  #pairs
->  >  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  >  token(value:identifier, one)
->  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 1)
->  >  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  >  token(value:identifier, two)
->  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 2)
->  >  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  >  token(value:identifier, three)
->  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 3)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, v4)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #map
->  >  >  >  >  >  >  >  >  #pairs
->  >  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  >  token(value:identifier, one)
->  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, one)
->  >  >  >  >  >  >  >  >  >  >  >  >  #values
->  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 1)
->  >  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  >  token(value:identifier, two)
->  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, two)
->  >  >  >  >  >  >  >  >  >  >  >  >  #values
->  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 2)
->  >  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  >  token(value:identifier, three)
->  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, three)
->  >  >  >  >  >  >  >  >  >  >  >  >  #values
->  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 3)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Annot)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, v1)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #list
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  token(value:number, 1)
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  token(value:number, 2)
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  token(value:number, 3)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, v2)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #list
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  token(annot:simple_identifier, one)
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  token(annot:simple_identifier, two)
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  token(annot:simple_identifier, three)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, v3)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #map
+>  >  >  >  >  >  >  >  #pairs
+>  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  token(value:identifier, one)
+>  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  token(value:number, 1)
+>  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  token(value:identifier, two)
+>  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  token(value:number, 2)
+>  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  token(value:identifier, three)
+>  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  token(value:number, 3)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, v4)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #map
+>  >  >  >  >  >  >  >  #pairs
+>  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  token(value:identifier, one)
+>  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, one)
+>  >  >  >  >  >  >  >  >  >  >  >  #values
+>  >  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 1)
+>  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  token(value:identifier, two)
+>  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, two)
+>  >  >  >  >  >  >  >  >  >  >  >  #values
+>  >  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 2)
+>  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  token(value:identifier, three)
+>  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, three)
+>  >  >  >  >  >  >  >  >  >  >  >  #values
+>  >  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 3)
 
 TRACE
         ];
@@ -275,22 +264,19 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:simple_identifier, ORM\Id)
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, ORM\Column)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, type)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  token(string:string, integer)
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:simple_identifier, ORM\GeneratedValue)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, ORM\Id)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, ORM\Column)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, type)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  token(string:string, integer)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, ORM\GeneratedValue)
 
 TRACE
         ];
@@ -304,9 +290,8 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:simple_identifier, Fancy😊Annotation)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, Fancy😊Annotation)
 
 TRACE
         ];
@@ -332,26 +317,25 @@ DOCBLOCK
                 ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, ORM\Column)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, type)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  token(string:string, string)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, length)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:number, 50)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, nullable)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:boolean, true)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, ORM\Column)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, type)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  token(string:string, string)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, length)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  token(value:number, 50)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, nullable)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  token(value:boolean, true)
 
 TRACE
         ];
@@ -369,83 +353,81 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, ORM\ManyToMany)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, targetEntity)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #constant
->  >  >  >  >  >  >  >  >  token(value:identifier, CmsGroup)
->  >  >  >  >  >  >  >  >  token(value:identifier, class)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, inversedBy)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  token(string:string, users)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, cascade)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #list
->  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  >  >  token(string:string, persist)
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, ORM\JoinTable)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, name)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  token(string:string, cms_users_groups)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, joinColumns)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #list
->  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, ORM\JoinColumn)
->  >  >  >  >  >  >  >  >  >  >  #values
->  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, name)
->  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, user_id)
->  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, referencedColumnName)
->  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, id)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, inverseJoinColumns)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #list
->  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  #annotation
->  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, ORM\JoinColumn)
->  >  >  >  >  >  >  >  >  >  >  #values
->  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, name)
->  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, group_id)
->  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  #pair
->  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, referencedColumnName)
->  >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, id)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, ORM\ManyToMany)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, targetEntity)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #constant
+>  >  >  >  >  >  >  >  token(value:identifier, CmsGroup)
+>  >  >  >  >  >  >  >  token(value:identifier, class)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, inversedBy)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  token(string:string, users)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, cascade)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #list
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  token(string:string, persist)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, ORM\JoinTable)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, name)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  token(string:string, cms_users_groups)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, joinColumns)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #list
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, ORM\JoinColumn)
+>  >  >  >  >  >  >  >  >  >  #values
+>  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, name)
+>  >  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, user_id)
+>  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, referencedColumnName)
+>  >  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, id)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, inverseJoinColumns)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #list
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, ORM\JoinColumn)
+>  >  >  >  >  >  >  >  >  >  #values
+>  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, name)
+>  >  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, group_id)
+>  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  >  >  >  token(value:identifier, referencedColumnName)
+>  >  >  >  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, id)
 
 TRACE
         ];
@@ -459,31 +441,30 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, Route)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #string
->  >  >  >  >  >  >  token(string:string, /argument_with_route_param_and_default/{value})
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, defaults)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #map
->  >  >  >  >  >  >  >  >  #pairs
->  >  >  >  >  >  >  >  >  >  #pair
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Route)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #string
+>  >  >  >  >  >  token(string:string, /argument_with_route_param_and_default/{value})
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, defaults)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #map
+>  >  >  >  >  >  >  >  #pairs
+>  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  >  token(string:string, value)
+>  >  >  >  >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  >  >  >  >  #string
 >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, value)
->  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  >  >  >  >  token(string:string, value)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, name)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  token(string:string, argument_with_route_param_and_default)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, name)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  token(string:string, argument_with_route_param_and_default)
 
 TRACE
         ];
@@ -499,33 +480,30 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, Route)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #string
->  >  >  >  >  >  >  token(string:string, /is_granted/resolved/conflict)
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, IsGranted)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #string
->  >  >  >  >  >  >  token(string:string, ISGRANTED_VOTER)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, subject)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  token(string:string, request)
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, Security)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #string
->  >  >  >  >  >  >  token(string:string, is_granted('ISGRANTED_VOTER', request))
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Route)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #string
+>  >  >  >  >  >  token(string:string, /is_granted/resolved/conflict)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, IsGranted)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #string
+>  >  >  >  >  >  token(string:string, ISGRANTED_VOTER)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, subject)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  token(string:string, request)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Security)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #string
+>  >  >  >  >  >  token(string:string, is_granted('ISGRANTED_VOTER', request))
 
 TRACE
         ];
@@ -542,57 +520,53 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, Type)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #string
->  >  >  >  >  >  >  token(string:string, array<string,string>)
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, SerializedName)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #string
->  >  >  >  >  >  >  token(string:string, addresses)
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, XmlElement)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, namespace)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  token(string:string, http://example.com/namespace2)
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, XmlMap)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, inline)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  token(value:boolean, false)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, entry)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  token(string:string, address)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, keyAttribute)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  token(string:string, id)
->  >  >  >  >  #value
->  >  >  >  >  >  #pair
->  >  >  >  >  >  >  token(value:identifier, namespace)
->  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  #string
->  >  >  >  >  >  >  >  >  token(string:string, http://example.com/namespace2)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Type)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #string
+>  >  >  >  >  >  token(string:string, array<string,string>)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, SerializedName)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #string
+>  >  >  >  >  >  token(string:string, addresses)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, XmlElement)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, namespace)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  token(string:string, http://example.com/namespace2)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, XmlMap)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, inline)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  token(value:boolean, false)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, entry)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  token(string:string, address)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, keyAttribute)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  token(string:string, id)
+>  >  >  >  #value
+>  >  >  >  >  #pair
+>  >  >  >  >  >  token(value:identifier, namespace)
+>  >  >  >  >  >  #value
+>  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  token(string:string, http://example.com/namespace2)
 
 TRACE
         ];
@@ -606,27 +580,26 @@ DOCBLOCK
             ,
 <<<'TRACE'
 >  #docblock
->  >  #annotations
->  >  >  #annotation
->  >  >  >  token(annot:valued_identifier, Annotation)
->  >  >  >  #values
->  >  >  >  >  #value
->  >  >  >  >  >  #string
->  >  >  >  >  #value
->  >  >  >  >  >  #string
->  >  >  >  >  >  >  token(string:string, foo)
->  >  >  >  >  #value
->  >  >  >  >  >  #string
->  >  >  >  >  >  >  token(string:string, b\"a\"r)
->  >  >  >  >  #value
->  >  >  >  >  >  #string
->  >  >  >  >  >  >  token(string:string, ba\\z)
->  >  >  >  >  #value
->  >  >  >  >  >  #string
->  >  >  >  >  >  >  token(string:string, bla\h)
->  >  >  >  >  #value
->  >  >  >  >  >  #string
->  >  >  >  >  >  >  token(string:string, \\\\hello\\\\)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Annotation)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  #string
+>  >  >  >  #value
+>  >  >  >  >  #string
+>  >  >  >  >  >  token(string:string, foo)
+>  >  >  >  #value
+>  >  >  >  >  #string
+>  >  >  >  >  >  token(string:string, b\"a\"r)
+>  >  >  >  #value
+>  >  >  >  >  #string
+>  >  >  >  >  >  token(string:string, ba\\z)
+>  >  >  >  #value
+>  >  >  >  >  #string
+>  >  >  >  >  >  token(string:string, bla\h)
+>  >  >  >  #value
+>  >  >  >  >  #string
+>  >  >  >  >  >  token(string:string, \\\\hello\\\\)
 
 TRACE
         ];
