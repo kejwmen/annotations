@@ -27,7 +27,8 @@
 %token  value:quote_       "                           -> string
 %token  value:null         \bnull\b
 %token  value:boolean      \b(?:true|false)\b
-%token  value:number       \-?(0|[1-9]\d*)(\.\d+)?([eE][\+\-]?\d+)?
+%token  value:float        -?(0|[1-9]\d*)(?=[eE\.])(\.\d+)?([eE][+-]?\d+)?
+%token  value:integer      -?(0|[1-9]\d*)
 %token  value:identifier   [a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*
 
 %token  string:string      (?:[^"\\]+|(\\\\)*\\"|(\\\\)+|\\?[^"\\]+)+
@@ -58,10 +59,10 @@
     pair() ( ::comma:: pair() )*
 
 #pair:
-    (<identifier> | string() | <number> | constant()) ( ::equals:: | ::colon:: ) value()
+    (<identifier> | string() | <integer> | <float> | constant()) ( ::equals:: | ::colon:: ) value()
 
 #value:
-    <null> | <boolean> | string() | <number> | pair() | map() | list() | annotation() | constant()
+    <null> | <boolean> | string() | <integer> | <float> | pair() | map() | list() | annotation() | constant()
 
 parameters:
     values() | string()
