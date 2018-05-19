@@ -153,7 +153,7 @@ DOCBLOCK
 >  >  >  >  >  #pair
 >  >  >  >  >  >  token(value:identifier, int)
 >  >  >  >  >  >  #value
->  >  >  >  >  >  >  token(value:number, 1)
+>  >  >  >  >  >  >  token(value:integer, 1)
 >  >  >  >  #value
 >  >  >  >  >  #pair
 >  >  >  >  >  >  token(value:identifier, annot)
@@ -164,7 +164,7 @@ DOCBLOCK
 >  >  >  >  >  #pair
 >  >  >  >  >  >  token(value:identifier, float)
 >  >  >  >  >  >  #value
->  >  >  >  >  >  >  token(value:number, 1.2)
+>  >  >  >  >  >  >  token(value:float, 1.2)
 
 TRACE
             ,
@@ -193,11 +193,11 @@ DOCBLOCK
 >  >  >  >  >  >  #value
 >  >  >  >  >  >  >  #list
 >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  token(value:number, 1)
+>  >  >  >  >  >  >  >  >  token(value:integer, 1)
 >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  token(value:number, 2)
+>  >  >  >  >  >  >  >  >  token(value:integer, 2)
 >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  token(value:number, 3)
+>  >  >  >  >  >  >  >  >  token(value:integer, 3)
 >  >  >  >  #value
 >  >  >  >  >  #pair
 >  >  >  >  >  >  token(value:identifier, v2)
@@ -221,15 +221,15 @@ DOCBLOCK
 >  >  >  >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  >  >  >  token(value:identifier, one)
 >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  token(value:number, 1)
+>  >  >  >  >  >  >  >  >  >  >  token(value:integer, 1)
 >  >  >  >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  >  >  >  token(value:identifier, two)
 >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  token(value:number, 2)
+>  >  >  >  >  >  >  >  >  >  >  token(value:integer, 2)
 >  >  >  >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  >  >  >  token(value:identifier, three)
 >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  token(value:number, 3)
+>  >  >  >  >  >  >  >  >  >  >  token(value:integer, 3)
 >  >  >  >  #value
 >  >  >  >  >  #pair
 >  >  >  >  >  >  token(value:identifier, v4)
@@ -243,7 +243,7 @@ DOCBLOCK
 >  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, one)
 >  >  >  >  >  >  >  >  >  >  >  >  #values
 >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 1)
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:integer, 1)
 >  >  >  >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  >  >  >  token(value:identifier, two)
 >  >  >  >  >  >  >  >  >  >  #value
@@ -251,7 +251,7 @@ DOCBLOCK
 >  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, two)
 >  >  >  >  >  >  >  >  >  >  >  >  #values
 >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 2)
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:integer, 2)
 >  >  >  >  >  >  >  >  >  #pair
 >  >  >  >  >  >  >  >  >  >  token(value:identifier, three)
 >  >  >  >  >  >  >  >  >  >  #value
@@ -259,7 +259,7 @@ DOCBLOCK
 >  >  >  >  >  >  >  >  >  >  >  >  token(annot:valued_identifier, three)
 >  >  >  >  >  >  >  >  >  >  >  >  #values
 >  >  >  >  >  >  >  >  >  >  >  >  >  #value
->  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:number, 3)
+>  >  >  >  >  >  >  >  >  >  >  >  >  >  token(value:integer, 3)
 
 TRACE
             ,
@@ -324,6 +324,42 @@ TRACE
             ,
         ];
 
+        yield 'numbers' => [
+            <<<'DOCBLOCK'
+/**
+ * @Annotation(1, 123, -123, 1.2, 123.456, -123.456, 1e2, 123e456, 1.2e-3, -123.456E-789)
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #docblock
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Annotation)
+>  >  >  #values
+>  >  >  >  #value
+>  >  >  >  >  token(value:integer, 1)
+>  >  >  >  #value
+>  >  >  >  >  token(value:integer, 123)
+>  >  >  >  #value
+>  >  >  >  >  token(value:integer, -123)
+>  >  >  >  #value
+>  >  >  >  >  token(value:float, 1.2)
+>  >  >  >  #value
+>  >  >  >  >  token(value:float, 123.456)
+>  >  >  >  #value
+>  >  >  >  >  token(value:float, -123.456)
+>  >  >  >  #value
+>  >  >  >  >  token(value:float, 1e2)
+>  >  >  >  #value
+>  >  >  >  >  token(value:float, 123e456)
+>  >  >  >  #value
+>  >  >  >  >  token(value:float, 1.2e-3)
+>  >  >  >  #value
+>  >  >  >  >  token(value:float, -123.456E-789)
+
+TRACE,
+        ];
+
         yield 'ORM Column example' => [
             <<<'DOCBLOCK'
 /** @ORM\Column(type="string", length=50, nullable=true) */
@@ -344,7 +380,7 @@ DOCBLOCK
 >  >  >  >  >  #pair
 >  >  >  >  >  >  token(value:identifier, length)
 >  >  >  >  >  >  #value
->  >  >  >  >  >  >  token(value:number, 50)
+>  >  >  >  >  >  >  token(value:integer, 50)
 >  >  >  >  #value
 >  >  >  >  >  #pair
 >  >  >  >  >  >  token(value:identifier, nullable)
