@@ -55,7 +55,7 @@
 #map:
     ::brace_:: pairs() ::comma::? ::_brace::
 
-#pairs:
+pairs:
     pair() ( ::comma:: pair() )*
 
 #pair:
