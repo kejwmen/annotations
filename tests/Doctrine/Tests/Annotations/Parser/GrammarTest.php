@@ -397,7 +397,8 @@ DOCBLOCK
 >  >  >  >  >  token(value:identifier, targetEntity)
 >  >  >  >  >  #value
 >  >  >  >  >  >  #constant
->  >  >  >  >  >  >  token(value:identifier, CmsGroup)
+>  >  >  >  >  >  >  #reference
+>  >  >  >  >  >  >  >  token(value:identifier, CmsGroup)
 >  >  >  >  >  >  >  token(value:identifier, class)
 >  >  >  >  #named_parameter
 >  >  >  >  >  token(value:identifier, inversedBy)
@@ -630,6 +631,34 @@ DOCBLOCK
 >  >  >  >  >  #value
 >  >  >  >  >  >  #string
 >  >  >  >  >  >  >  token(string:string, \\\\hello\\\\)
+
+TRACE
+        ];
+
+        yield 'constants' => [
+<<<'DOCBLOCK'
+/**
+ * @Annotation(Foo\Bar::BAZ, \Foo\Bar\Baz::BLAH)
+ */
+DOCBLOCK
+            ,
+<<<'TRACE'
+>  #docblock
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Annotation)
+>  >  >  #parameters
+>  >  >  >  #unnamed_parameter
+>  >  >  >  >  #value
+>  >  >  >  >  >  #constant
+>  >  >  >  >  >  >  #reference
+>  >  >  >  >  >  >  >  token(value:identifier_ns, Foo\Bar)
+>  >  >  >  >  >  >  token(value:identifier, BAZ)
+>  >  >  >  #unnamed_parameter
+>  >  >  >  >  #value
+>  >  >  >  >  >  #constant
+>  >  >  >  >  >  >  #reference
+>  >  >  >  >  >  >  >  token(value:identifier_ns, \Foo\Bar\Baz)
+>  >  >  >  >  >  >  token(value:identifier, BLAH)
 
 TRACE
         ];
