@@ -63,7 +63,7 @@ pairs:
     <null> | <boolean> | string() | <integer> | <float> | map() | list() | annotation() | constant()
 
 #parameters:
-    ( parameter() ( ::comma:: parameter())* )?
+    ( parameter() ( ::comma:: parameter())* ::comma::? )?
 
 parameter:
     named_parameter() | unnamed_parameter()
