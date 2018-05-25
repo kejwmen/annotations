@@ -662,5 +662,46 @@ DOCBLOCK
 
 TRACE
         ];
+
+        yield [
+<<<'DOCBLOCK'
+/**
+ * @TrailingComma(
+ *     123,
+ *     @Foo(1, 2, 3,),
+ *     @Bar,
+ * )
+ */
+DOCBLOCK
+            ,
+<<<'TRACE'
+>  #docblock
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, TrailingComma)
+>  >  >  #parameters
+>  >  >  >  #unnamed_parameter
+>  >  >  >  >  #value
+>  >  >  >  >  >  token(value:integer, 123)
+>  >  >  >  #unnamed_parameter
+>  >  >  >  >  #value
+>  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  token(annot:valued_identifier, Foo)
+>  >  >  >  >  >  >  #parameters
+>  >  >  >  >  >  >  >  #unnamed_parameter
+>  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  token(value:integer, 1)
+>  >  >  >  >  >  >  >  #unnamed_parameter
+>  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  token(value:integer, 2)
+>  >  >  >  >  >  >  >  #unnamed_parameter
+>  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  token(value:integer, 3)
+>  >  >  >  #unnamed_parameter
+>  >  >  >  >  #value
+>  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  token(annot:simple_identifier, Bar)
+
+TRACE
+        ];
     }
 }
