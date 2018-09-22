@@ -116,8 +116,10 @@ final class AstBuilder implements Visit
     {
         $identifier = $node->getChild(0)->getValueValue();
 
+        $trimmed = ltrim($identifier, '\\');
+
         return new Annotation(
-            new Reference(ltrim($identifier, '\\'), $identifier === '\\'),
+            new Reference($trimmed, $identifier !== $trimmed),
             $node->childExists(1) ? $node->getChild(1)->accept($this, $handle, $eldnah) : new Parameters()
         );
     }
@@ -203,6 +205,6 @@ final class AstBuilder implements Visit
 
     private function visitString(TreeNode $node) : StringScalar
     {
-        return new StringScalar(str_replace('\\\\', '\\', $node->getChild(0)->getValueValue()));
+        return new StringScalar(str_replace('\\\\', '\\', $node->getChild(0) ? $node->getChild(0)->getValueValue() : ''));
     }
 }
