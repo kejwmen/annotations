@@ -203,6 +203,6 @@ final class AstBuilder implements Visit
 
     private function visitString(TreeNode $node) : StringScalar
     {
-        return new StringScalar(str_replace('\\\\', '\\', $node->getChild(0)->getValueValue()));
+        return new StringScalar(str_replace('\\\\', '\\', $node->getChild(0) ? $node->getChild(0)->getValueValue() : ''));
     }
 }
