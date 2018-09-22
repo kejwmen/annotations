@@ -28,6 +28,6 @@ final class ListCollection implements Collection
 
     public function dispatch(Visitor $visitor) : void
     {
-        $visitor->visitListColleciton($this);
+        $visitor->visitListCollection($this);
     }
 }

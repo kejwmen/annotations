@@ -45,5 +45,6 @@
     <rule ref="Squiz.Arrays.ArrayDeclaration.SpaceBeforeComma">
         <exclude-pattern>tests/Doctrine/Tests/Annotations/Parser/CompilerTest.php</exclude-pattern>
         <exclude-pattern>tests/Doctrine/Tests/Annotations/Parser/GrammarTest.php</exclude-pattern>
+        <exclude-pattern>tests/Doctrine/Tests/Annotations/Parser/Visitor/MetadataBuilderTest.php</exclude-pattern>
     </rule>
 </ruleset>

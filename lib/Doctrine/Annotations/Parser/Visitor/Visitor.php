@@ -38,7 +38,7 @@ interface Visitor
 
     public function visitUnnamedParameter(UnnamedParameter $parameter) : void;
 
-    public function visitListColleciton(ListCollection $listCollection) : void;
+    public function visitListCollection(ListCollection $listCollection) : void;
 
     public function visitMapCollection(MapCollection $mapCollection) : void;
 

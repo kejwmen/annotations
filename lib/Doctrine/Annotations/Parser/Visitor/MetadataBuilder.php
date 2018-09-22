@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Parser\Visitor;
 
+use Doctrine\Annotations\Metadata\AnnotationMetadata;
+use Doctrine\Annotations\Metadata\Parameter\NamedAnnotationParameter;
+use Doctrine\Annotations\Metadata\Parameter\UnnamedAnnotationParameter;
+use Doctrine\Annotations\Metadata\ReflectionMetadataAssembler;
 use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
 use Doctrine\Annotations\Parser\Ast\Collection\ListCollection;
@@ -21,169 +25,159 @@ use Doctrine\Annotations\Parser\Ast\Scalar\Identifier;
 use Doctrine\Annotations\Parser\Ast\Scalar\IntegerScalar;
 use Doctrine\Annotations\Parser\Ast\Scalar\NullScalar;
 use Doctrine\Annotations\Parser\Ast\Scalar\StringScalar;
-use const JSON_PRESERVE_ZERO_FRACTION;
-use const JSON_UNESCAPED_UNICODE;
-use function count;
-use function json_encode;
-use function str_repeat;
-use function strlen;
-use function substr;
+use SplStack;
 
-final class Dumper implements Visitor
+final class MetadataBuilder implements Visitor
 {
-    private const INDENT = '>  ';
+    /** @var AnnotationMetadata[] */
+    private $result = [];
 
-    /** @var int */
-    private $depth = 0;
+    /** @var SplStack */
+    private $stack;
+
+    /** @var ReflectionMetadataAssembler */
+    private $metadataAssembler;
+
+    public function __construct(ReflectionMetadataAssembler $metadataAssembler)
+    {
+        $this->metadataAssembler = $metadataAssembler;
+        $this->stack             = new SplStack();
+    }
+
+    /**
+     * @return AnnotationMetadata[]
+     */
+    public function result() : array
+    {
+        return $this->result;
+    }
 
     public function visit(Node $node) : void
     {
+        $this->result = [];
+
         $node->dispatch($this);
     }
 
     public function visitAnnotations(Annotations $annotations) : void
     {
-        $this->print(Annotations::class);
-
-        $this->depth++;
         foreach ($annotations as $annotation) {
             $annotation->dispatch($this);
+            $this->result[] = $this->stack->pop();
         }
-        $this->depth--;
     }
 
     public function visitAnnotation(Annotation $annotation) : void
     {
-        $this->print(Annotation::class);
-
-        $this->depth++;
-        $annotation->getName()->dispatch($this);
         $annotation->getParameters()->dispatch($this);
-        $this->depth--;
+        $annotation->getName()->dispatch($this);
+
+        $this->stack->push($this->metadataAssembler->get(
+            $this->stack->pop(),
+            $this->stack->pop()
+        ));
     }
 
     public function visitReference(Reference $reference) : void
     {
-        $this->print(
-            Reference::class,
-            ['identifier' => $reference->getIdentifier(), 'fully_qualified' => $reference->isFullyQualified()]
-        );
+        $this->stack->push($reference);
     }
 
     public function visitParameters(Parameters $parameters) : void
     {
-        $this->print(Parameters::class);
+        $currentParameter = [];
 
-        $this->depth++;
         foreach ($parameters as $parameter) {
             $parameter->dispatch($this);
+
+            $currentParameter[] = $this->stack->pop();
         }
-        $this->depth--;
+
+        $this->stack->push($currentParameter);
     }
 
     public function visitNamedParameter(NamedParameter $parameter) : void
     {
-        $this->print(NamedParameter::class);
-
-        $this->depth++;
-        $parameter->getName()->dispatch($this);
         $parameter->getValue()->dispatch($this);
-        $this->depth--;
+        $parameter->getName()->dispatch($this);
+
+        $this->stack->push(new NamedAnnotationParameter(
+            $this->stack->pop(),
+            $this->stack->pop()
+        ));
     }
 
     public function visitUnnamedParameter(UnnamedParameter $parameter) : void
     {
-        $this->print(UnnamedParameter::class);
-
-        $this->depth++;
         $parameter->getValue()->dispatch($this);
-        $this->depth--;
+
+        $this->stack->push(new UnnamedAnnotationParameter(
+            $this->stack->pop()
+        ));
     }
 
     public function visitListCollection(ListCollection $listCollection) : void
     {
-        $this->print(ListCollection::class);
-
-        $this->depth++;
+        $localList = [];
         foreach ($listCollection as $item) {
             $item->dispatch($this);
+            $localList[] = $this->stack->pop();
         }
-        $this->depth--;
+
+        $this->stack->push($localList);
     }
 
     public function visitMapCollection(MapCollection $mapCollection) : void
     {
-        $this->print(MapCollection::class);
+        $localMap = [];
 
-        $this->depth++;
         foreach ($mapCollection as $item) {
             $item->dispatch($this);
+            $localMap[$this->stack->pop()] = $this->stack->pop();
         }
-        $this->depth--;
+
+        $this->stack->push($localMap);
     }
 
     public function visitPair(Pair $pair) : void
     {
-        $this->print(Pair::class);
-
-        $this->depth++;
-        $pair->getKey()->dispatch($this);
         $pair->getValue()->dispatch($this);
-        $this->depth--;
+        $pair->getKey()->dispatch($this);
     }
 
     public function visitIdentifier(Identifier $identifier) : void
     {
-        $this->print(Identifier::class, ['value' => $identifier->getValue()]);
+        $this->stack->push($identifier->getValue());
     }
 
     public function visitConstantFetch(ConstantFetch $constantFetch) : void
     {
-        $this->print(ConstantFetch::class);
-
-        $this->depth++;
-        $constantFetch->getClass()->dispatch($this);
         $constantFetch->getName()->dispatch($this);
-        $this->depth--;
+        $constantFetch->getClass()->dispatch($this);
     }
 
     public function visitNullScalar(NullScalar $nullScalar) : void
     {
-        $this->print(NullScalar::class, ['value' => $nullScalar->getValue()]);
+        $this->stack->push($nullScalar->getValue());
     }
 
     public function visitBooleanScalar(BooleanScalar $booleanScalar) : void
     {
-        $this->print(BooleanScalar::class, ['value' => $booleanScalar->getValue()]);
+        $this->stack->push($booleanScalar->getValue());
     }
 
     public function visitIntegerScalar(IntegerScalar $integerScalar) : void
     {
-        $this->print(IntegerScalar::class, ['value' => $integerScalar->getValue()]);
+        $this->stack->push($integerScalar->getValue());
     }
 
     public function visitFloatScalar(FloatScalar $floatScalar) : void
     {
-        $this->print(FloatScalar::class, ['value' => $floatScalar->getValue()]);
+        $this->stack->push($floatScalar->getValue());
     }
 
     public function visitStringScalar(StringScalar $stringScalar) : void
     {
-        $this->print(StringScalar::class, ['value' => $stringScalar->getValue()]);
-    }
-
-    /**
-     * @param mixed[] $data
-     */
-    private function print(string $name, array $data = []) : void
-    {
-        echo str_repeat(self::INDENT, $this->depth + 1);
-        echo substr($name, strlen(Node::class) - 4);
-
-        if (count($data) !== 0) {
-            echo ' ', json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION);
-        }
-
-        echo "\n";
+        $this->stack->push($stringScalar->getValue());
     }
 }
