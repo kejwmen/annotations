@@ -25,7 +25,7 @@
     },
     "require-dev": {
         "doctrine/cache": "1.*",
-        "doctrine/coding-standard": "^4.0",
+        "doctrine/coding-standard": "^5@dev",
         "phpunit/phpunit": "^7.0"
     },
     "config": {
