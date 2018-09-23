@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Parser;
@@ -20,17 +21,14 @@ use Doctrine\Annotations\Parser\Ast\Scalar\Identifier;
 use Doctrine\Annotations\Parser\Ast\Scalar\IntegerScalar;
 use Doctrine\Annotations\Parser\Ast\Scalar\StringScalar;
 use Doctrine\Annotations\Parser\Compiler;
-use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use PHPUnit\Framework\TestCase;
 
 class CompilerTest extends TestCase
 {
-    /**
-     * @var Compiler
-     */
+    /** @var Compiler */
     private $compiler;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->compiler = new Compiler();
     }
@@ -38,14 +36,17 @@ class CompilerTest extends TestCase
     /**
      * @dataProvider examples
      */
-    public function testCompile(string $givenDocblock, Node $esxpectedAst)
+    public function testCompile(string $givenDocblock, Node $esxpectedAst) : void
     {
         $result = $this->compiler->compile($givenDocblock);
 
         $this->assertEquals($esxpectedAst, $result);
     }
 
-    public function examples(): iterable
+    /**
+     * @return mixed[]
+     */
+    public function examples() : iterable
     {
         yield 'simple with no parenthesis' => [
             <<<'DOCBLOCK'
@@ -59,7 +60,7 @@ DOCBLOCK
                     new Reference('Annotation', false),
                     new Parameters()
                 )
-            )
+            ),
         ];
 
         yield 'simple with empty parenthesis' => [
@@ -74,7 +75,7 @@ DOCBLOCK
                     new Reference('Annotation', false),
                     new Parameters()
                 )
-            )
+            ),
         ];
 
         yield 'multiple without parameters' => [
@@ -95,7 +96,7 @@ DOCBLOCK
                     new Reference('Annotation3', false),
                     new Parameters()
                 )
-            )
+            ),
         ];
 
         yield 'multiple with comments' => [
@@ -117,7 +118,7 @@ DOCBLOCK
                     new Reference('Annotation2', false),
                     new Parameters()
                 )
-            )
+            ),
         ];
 
         yield 'fully qualified with parameter' => [
@@ -134,7 +135,7 @@ DOCBLOCK
                         new UnnamedParameter(new StringScalar('value'))
                     )
                 )
-            )
+            ),
         ];
 
         yield 'with array' => [
@@ -149,7 +150,7 @@ DOCBLOCK
                     new Reference('return', false),
                     new Parameters()
                 )
-            )
+            ),
         ];
 
         yield 'fully qualified, nested, multiple parameters' =>  [
@@ -180,7 +181,7 @@ DOCBLOCK
                         )
                     )
                 )
-            )
+            ),
         ];
 
         yield 'nested, with arrays' => [
@@ -266,7 +267,7 @@ DOCBLOCK
                         )
                     )
                 )
-            )
+            ),
         ];
 
         yield 'ORM Id example' => [
@@ -295,7 +296,7 @@ DOCBLOCK
                     new Reference('ORM\\GeneratedValue', false),
                     new Parameters()
                 )
-            )
+            ),
         ];
 
         yield 'unicode' => [
@@ -310,7 +311,7 @@ DOCBLOCK
                     new Reference('Fancy😊Annotation', false),
                     new Parameters()
                 )
-            )
+            ),
         ];
 
         yield 'spaces after @' => [
@@ -321,7 +322,7 @@ DOCBLOCK
  */
 DOCBLOCK
             ,
-            new Annotations()
+            new Annotations(),
         ];
 
         yield 'numbers' => [
@@ -347,7 +348,7 @@ DOCBLOCK
                         new UnnamedParameter(new FloatScalar(-123.456E-789))
                     )
                 )
-            )
+            ),
         ];
 
         yield 'ORM Column example' => [
@@ -373,7 +374,7 @@ DOCBLOCK
                         )
                     )
                 )
-            )
+            ),
         ];
 
         yield 'complex ORM M:N' => [
@@ -405,7 +406,7 @@ DOCBLOCK
                         new NamedParameter(
                             new Identifier('cascade'),
                             new ListCollection(
-                                new StringScalar("persist")
+                                new StringScalar('persist')
                             )
                         )
                     )
@@ -455,7 +456,7 @@ DOCBLOCK
                         )
                     )
                 )
-            )
+            ),
         ];
 
         yield 'Symfony route' => [
@@ -482,7 +483,7 @@ DOCBLOCK
                         )
                     )
                 )
-            )
+            ),
         ];
 
         yield 'SymfonyFrameworkExtraBundle annotations' => [
@@ -514,7 +515,7 @@ DOCBLOCK
                         new UnnamedParameter(new StringScalar('is_granted(\'ISGRANTED_VOTER\', request)'))
                     )
                 )
-            )
+            ),
         ];
 
         yield 'JMS Serializer field' => [
@@ -567,7 +568,7 @@ DOCBLOCK
                         )
                     )
                 )
-            )
+            ),
         ];
 
         yield 'string escaping' => [
@@ -589,7 +590,7 @@ DOCBLOCK
                         new UnnamedParameter(new StringScalar('\\\\hello\\\\'))
                     )
                 )
-            )
+            ),
         ];
 
         yield 'constants' => [
@@ -617,7 +618,7 @@ DOCBLOCK
                         )
                     )
                 )
-            )
+            ),
         ];
 
         yield [
@@ -654,7 +655,7 @@ DOCBLOCK
                         )
                     )
                 )
-            )
+            ),
         ];
     }
 }
