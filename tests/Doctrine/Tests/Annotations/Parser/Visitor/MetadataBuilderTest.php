@@ -4,39 +4,54 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Parser\Visitor;
 
-use Doctrine\Annotations\Annotation;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
-use Doctrine\Annotations\Metadata\AnnotationProperty;
-use Doctrine\Annotations\Metadata\ReflectionMetadataAssembler;
-use Doctrine\Annotations\Parser\Visitor\MetadataBuilder;
-use Doctrine\Annotations\Parser\Visitor\Raw\AstBuilder;
-use Hoa\Compiler\Llk\Llk;
-use Hoa\File\Read;
+use Doctrine\Annotations\Metadata\AnnotationTarget;
+use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
+use Doctrine\Annotations\Parser\Ast\Annotation;
+use Doctrine\Annotations\Parser\Ast\Annotations;
+use Doctrine\Annotations\Parser\Ast\Parameter\UnnamedParameter;
+use Doctrine\Annotations\Parser\Ast\Parameters;
+use Doctrine\Annotations\Parser\Ast\Reference;
+use Doctrine\Annotations\Parser\Imports;
+use Doctrine\Annotations\Parser\Scope;
+use Doctrine\Annotations\Parser\Visitor\MetadataCollector;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
-class MetadataBuilderTest extends TestCase
+final class MetadataBuilderTest extends TestCase
 {
+    /** @var AnnotationMetadataAssembler|MockObject */
+    private $assembler;
+
+    /** @var MetadataCollector */
+    private $builder;
+
+    protected function setUp() : void
+    {
+        $this->assembler = $this->createMock(AnnotationMetadataAssembler::class);
+        $this->builder   = new MetadataCollector(
+            $this->assembler,
+            new Scope(
+                $this->createMock(ReflectionClass::class),
+                new Imports([])
+            )
+        );
+    }
+
     /**
-     * @param AnnotationMetadata[] $expected
+     * @param callable(AnnotationMetadataAssembler) : void $initializer
+     * @param callable(AnnotationMetadata[]) : void        $asserter
      *
      * @dataProvider docBlocksProvider()
      */
-    public function testMetadata(string $docBlock, array $expected) : void
+    public function testMetadata(Annotations $annotations, callable $initializer, callable $asserter) : void
     {
-        $builder  = new MetadataBuilder(
-            new ReflectionMetadataAssembler(
-                ['Annotation' => Annotation::class]
-            )
-        );
-        $compiler = Llk::load(new Read(__DIR__ . '/../../../../../../lib/Doctrine/Annotations/Parser/grammar.pp'));
+        $initializer($this->assembler);
 
-        $hoaAst = $compiler->parse($docBlock);
-        $ast    = (new AstBuilder())->visit($hoaAst);
-        $builder->visit($ast);
+        $this->builder->visit($annotations);
 
-        $metadata = $builder->result();
-
-        self::assertEquals($expected, $metadata);
+        $asserter(...$this->builder->collect());
     }
 
     /**
@@ -44,23 +59,86 @@ class MetadataBuilderTest extends TestCase
      */
     public function docBlocksProvider() : iterable
     {
-        yield 'simple with no parenthesis' => [
-            <<<'DOCBLOCK'
-/**
-* @Annotation
-*/
-DOCBLOCK
-        ,
-            [
-                new AnnotationMetadata(
-                    false,
-                    null,
-                    [],
-                    [new AnnotationProperty('value')],
-                    [],
-                    []
-                ),
-            ],
+        yield 'single without parameters' => [
+            new Annotations(
+                new Annotation(
+                    new Reference('Foo', true),
+                    new Parameters()
+                )
+            ),
+            static function (AnnotationMetadataAssembler $assembler) : void {
+                $assembler->method('assemble')
+                    ->with(
+                        $this->callback(static function (Reference $reference) : bool {
+                            return $reference->getIdentifier() === 'Foo' && $reference->isFullyQualified() === true;
+                        }),
+                        $this->isInstanceOf(Scope::class)
+                    )
+                    ->willReturn(new AnnotationMetadata(
+                        'Foo',
+                        new AnnotationTarget(AnnotationTarget::TARGET_ALL),
+                        false,
+                        [],
+                        null
+                    ));
+            },
+            static function (AnnotationMetadata ...$metadatas) : void {
+                self::assertCount(1, $metadatas);
+                self::assertSame('Foo', $metadatas[0]->getName());
+            },
+        ];
+        yield 'nested' => [
+            new Annotations(
+                new Annotation(
+                    new Reference('Foo', true),
+                    new Parameters(
+                        new UnnamedParameter(
+                            new Annotation(
+                                new Reference('Bar', false),
+                                new Parameters()
+                            )
+                        )
+                    )
+                )
+            ),
+            function (AnnotationMetadataAssembler $assembler) : void {
+                $assembler->method('assemble')
+                    ->withConsecutive(
+                        [
+                            $this->callback(static function (Reference $reference) : bool {
+                                return $reference->getIdentifier() === 'Bar' && $reference->isFullyQualified() === false;
+                            }),
+                            $this->isInstanceOf(Scope::class),
+                        ],
+                        [
+                            $this->callback(static function (Reference $reference) : bool {
+                                return $reference->getIdentifier() === 'Foo' && $reference->isFullyQualified() === true;
+                            }),
+                            $this->isInstanceOf(Scope::class),
+                        ]
+                    )
+                    ->willReturnOnConsecutiveCalls(
+                        new AnnotationMetadata(
+                            'Bar',
+                            new AnnotationTarget(AnnotationTarget::TARGET_ALL),
+                            false,
+                            [],
+                            null
+                        ),
+                        new AnnotationMetadata(
+                            'Foo',
+                            new AnnotationTarget(AnnotationTarget::TARGET_ALL),
+                            false,
+                            [],
+                            null
+                        )
+                    );
+            },
+            static function (AnnotationMetadata ...$metadatas) : void {
+                self::assertCount(2, $metadatas);
+                self::assertSame('Bar', $metadatas[0]->getName());
+                self::assertSame('Foo', $metadatas[1]->getName());
+            },
         ];
     }
 }

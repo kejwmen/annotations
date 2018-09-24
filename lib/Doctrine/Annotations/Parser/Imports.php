@@ -7,6 +7,7 @@ namespace Doctrine\Annotations\Parser;
 use ArrayAccess;
 use IteratorAggregate;
 use function assert;
+use function in_array;
 use function is_string;
 
 final class Imports implements ArrayAccess, IteratorAggregate
@@ -76,5 +77,10 @@ final class Imports implements ArrayAccess, IteratorAggregate
     public function offsetUnset($offset) : void
     {
         assert(false, 'immutable');
+    }
+
+    public function isKnown(string $name) : bool
+    {
+        return in_array($name, $this->map, true);
     }
 }
