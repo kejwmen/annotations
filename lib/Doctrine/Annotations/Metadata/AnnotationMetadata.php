@@ -4,62 +4,70 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata;
 
-use Doctrine\Annotations\Metadata\Attribute\AnnotationAttribute;
-use Doctrine\Annotations\Metadata\Parameter\AnnotationParameter;
+use function array_filter;
 
 final class AnnotationMetadata
 {
-    /**
-     * @var bool
-     */
+    /** @var string */
+    private $name;
+
+    /** @var AnnotationTarget */
+    private $target;
+
+    /** @var bool */
     private $hasConstructor;
 
-    /**
-     * @var string|null
-     */
-    private $defaultProperty;
-
-    /**
-     * @var AnnotationProperty[]
-     */
+    /** @var PropertyMetadata[] */
     private $properties;
 
-    /**
-     * @var AnnotationAttribute[]
-     */
-    private $attributes;
-
-    /**
-     * @var AnnotationTarget[]
-     */
-    private $targets;
-
-    /**
-     * @var AnnotationParameter[]
-     */
-    private $parameters;
+    /** @var PropertyMetadata|null */
+    private $defaultProperty;
 
     /**
      * TODO: Validate input
      *
-     * @param AnnotationProperty[] $properties
-     * @param AnnotationParameter[] $parameters
-     * @param AnnotationAttribute[] $attributes
-     * @param AnnotationTarget[] $targets
+     * @param PropertyMetadata[] $properties
      */
     public function __construct(
+        string $name,
+        AnnotationTarget $target,
         bool $hasConstructor,
-        ?string $defaultProperty,
-        array $parameters,
-        array $properties,
-        array $attributes,
-        array $targets
+        array $properties
     ) {
-        $this->hasConstructor = $hasConstructor;
-        $this->defaultProperty = $defaultProperty;
-        $this->properties = $properties;
-        $this->attributes = $attributes;
-        $this->targets = $targets;
-        $this->parameters = $parameters;
+        $this->name            = $name;
+        $this->target          = $target;
+        $this->hasConstructor  = $hasConstructor;
+        $this->properties      = $properties;
+        $this->defaultProperty = array_filter($properties, function (PropertyMetadata $property) : bool {
+            return $property->isDefault();
+        })[0] ?? null;
+    }
+
+    public function getName() : string
+    {
+        return $this->name;
+    }
+
+    public function getTarget() : AnnotationTarget
+    {
+        return $this->target;
+    }
+
+    public function hasConstructor() : bool
+    {
+        return $this->hasConstructor;
+    }
+
+    /**
+     * @return PropertyMetadata[]
+     */
+    public function getProperties() : array
+    {
+        return $this->properties;
+    }
+
+    public function getDefaultProperty() : ?PropertyMetadata
+    {
+        return $this->defaultProperty;
     }
 }
