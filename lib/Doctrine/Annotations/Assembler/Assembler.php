@@ -215,7 +215,7 @@ final class Assembler implements Visitor
     }
 
     /**
-     * @param iterable<string, mixed> $parameters
+     * @param mixed[] $parameters iterable<string, mixed>
      */
     private function construct(string $name, iterable $parameters) : object
     {

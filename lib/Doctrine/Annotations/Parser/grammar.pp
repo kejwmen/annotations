@@ -35,7 +35,7 @@
 %token  string:string      (?:[^"\\]+|(\\\\)*\\"|(\\\\)+|\\?[^"\\]+)+
 %token  string:_quote      "                           -> __shift__
 
-#docblock:
+#annotations:
     ::doc_::
     (::text:: | annotation())*
     ::_doc::
