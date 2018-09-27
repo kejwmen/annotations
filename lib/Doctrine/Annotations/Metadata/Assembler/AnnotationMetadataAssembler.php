@@ -24,7 +24,8 @@ use Doctrine\Annotations\Parser\Scope;
 use ReflectionClass;
 use ReflectionProperty;
 use function assert;
-use function in_array;
+use function is_array;
+use function iterator_to_array;
 use function stripos;
 
 final class AnnotationMetadataAssembler
@@ -68,11 +69,10 @@ final class AnnotationMetadataAssembler
         assert($docComment !== false, 'not an annotation');
 
         $annotations   = $this->parser->compile($docComment);
-        $internalScope = new Scope($scope->getSubject(), InternalAnnotations::createImports());
 
         assert(stripos($docComment, '@Annotation') !== false);
 
-        $hydratedAnnotations = $this->hydrateInternalAnnotations($annotations, $internalScope);
+        $hydratedAnnotations = $this->hydrateInternalAnnotations($annotations, $scope);
 
         assert($this->findAnnotation(AnnotationAnnotation::class, $hydratedAnnotations) !== null, 'not annotated with @Annotation');
         assert(! $hasConstructor || $classReflection->getConstructor()->isPublic(), 'constructor must be public');
@@ -105,10 +105,14 @@ final class AnnotationMetadataAssembler
     /**
      * @return object[]
      */
-    private function hydrateInternalAnnotations(Annotations $annotations) : array
+    private function hydrateInternalAnnotations(Annotations $annotations, Scope $scope) : array
     {
-        $this->internalAssembler->visit($annotations);
-        return $this->internalAssembler->collect();
+        $assembled = $this->internalAssembler->collect(
+            $annotations,
+            new Scope($scope->getSubject(), InternalAnnotations::createImports())
+        );
+
+        return is_array($assembled) ? $assembled : iterator_to_array($assembled);
     }
 
     /**
