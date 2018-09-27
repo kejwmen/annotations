@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Assembler;
 
-use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\MetadataCollection;
 use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Parameter\NamedParameter;
@@ -24,10 +23,22 @@ final class Assembler
     /** @var ReferenceResolver */
     private $referenceResolver;
 
-    public function __construct(MetadataCollection $metadataCollection, ReferenceResolver $referenceResolver)
-    {
-        $this->metadataCollection = $metadataCollection;
-        $this->referenceResolver  = $referenceResolver;
+    /** @var ConstructorStrategy */
+    private $constructorStrategy;
+
+    /** @var PropertyStrategy */
+    private $propertyStrategy;
+
+    public function __construct(
+        MetadataCollection $metadataCollection,
+        ReferenceResolver $referenceResolver,
+        ConstructorStrategy $constructorStrategy,
+        PropertyStrategy $propertyStrategy
+    ) {
+        $this->metadataCollection  = $metadataCollection;
+        $this->referenceResolver   = $referenceResolver;
+        $this->constructorStrategy = $constructorStrategy;
+        $this->propertyStrategy    = $propertyStrategy;
     }
 
     public function assemble(Annotation $annotation, Scope $scope) : object
@@ -38,10 +49,10 @@ final class Assembler
         $properties = $this->collectProperties($annotation->getParameters());
 
         if ($metadata->hasConstructor()) {
-            return $this->createAnnotationWithConstructor($metadata, $properties);
+            return $this->constructorStrategy->construct($metadata, $properties);
         }
 
-        return $this->createAnnotationWithoutConstructor($metadata, $properties);
+        return $this->propertyStrategy->construct($metadata, $properties);
     }
 
     /**
@@ -49,6 +60,8 @@ final class Assembler
      */
     private function collectProperties(Parameters $parameters) : array
     {
+        // TODO validate properties
+
         if (count($parameters) === 1) {
             $parameter = iterator_to_array($parameters)[0];
             if ($parameter instanceof UnnamedParameter) {
@@ -67,29 +80,5 @@ final class Assembler
         }
 
         return $parameterValues;
-    }
-
-    /**
-     * @param mixed[] $properties
-     */
-    private function createAnnotationWithConstructor(AnnotationMetadata $metadata, array $properties) : object
-    {
-        $class = $metadata->getName();
-        return new $class($properties);
-    }
-
-    /**
-     * @param mixed[] $properties
-     */
-    private function createAnnotationWithoutConstructor(AnnotationMetadata $metadata, array $properties) : object
-    {
-        $class      = $metadata->getName();
-        $annotation = new $class();
-
-        foreach ($properties as $name => $value) {
-            $annotation->$name = $value;
-        }
-
-        return $annotation;
     }
 }
