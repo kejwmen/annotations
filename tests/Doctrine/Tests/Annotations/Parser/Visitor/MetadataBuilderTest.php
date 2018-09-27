@@ -13,7 +13,7 @@ use Doctrine\Annotations\Parser\Ast\Parameters;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Imports;
 use Doctrine\Annotations\Parser\Scope;
-use Doctrine\Annotations\Parser\Visitor\MetadataCollector;
+use Doctrine\Annotations\Metadata\MetadataCollector;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
