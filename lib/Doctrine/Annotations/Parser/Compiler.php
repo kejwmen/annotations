@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Annotations\Parser;
 
 use Doctrine\Annotations\Parser\Ast\Annotations;
-use Doctrine\Annotations\Parser\Visitor\Raw\AstBuilder;
+use Doctrine\Annotations\Parser\Visitor\AstBuilder;
 use Hoa\Compiler\Llk\Llk;
 use Hoa\Compiler\Llk\Parser;
 use Hoa\File\Read;
@@ -15,7 +15,7 @@ use Hoa\File\Read;
  */
 final class Compiler
 {
-    private const ROOT_NODE = 'docblock';
+    private const ROOT_NODE = Nodes::ANNOTATIONS;
 
     /** @var Parser */
     private $parser;

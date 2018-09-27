@@ -30,8 +30,6 @@ use SplStack;
 use function array_key_exists;
 use function assert;
 use function constant;
-use function count;
-use function iterator_to_array;
 
 final class Assembler implements Visitor
 {
