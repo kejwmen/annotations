@@ -9,7 +9,6 @@ use Doctrine\Annotations\Parser\Ast\Annotations;
 use Doctrine\Annotations\Parser\Ast\Collection\ListCollection;
 use Doctrine\Annotations\Parser\Ast\Collection\MapCollection;
 use Doctrine\Annotations\Parser\Ast\ConstantFetch;
-use Doctrine\Annotations\Parser\Ast\Node;
 use Doctrine\Annotations\Parser\Ast\Pair;
 use Doctrine\Annotations\Parser\Ast\Parameter\NamedParameter;
 use Doctrine\Annotations\Parser\Ast\Parameter\UnnamedParameter;
@@ -24,8 +23,6 @@ use Doctrine\Annotations\Parser\Ast\Scalar\StringScalar;
 
 interface Visitor
 {
-    public function visit(Node $node) : void;
-
     public function visitAnnotations(Annotations $annotations) : void;
 
     public function visitAnnotation(Annotation $annotation) : void;
