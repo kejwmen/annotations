@@ -7,6 +7,7 @@ namespace Doctrine\Annotations\Parser\Ast\Collection;
 use Doctrine\Annotations\Parser\Ast\Collection;
 use Doctrine\Annotations\Parser\Ast\Pair;
 use Doctrine\Annotations\Parser\Visitor\Visitor;
+use function count;
 
 final class MapCollection implements Collection
 {
@@ -24,6 +25,11 @@ final class MapCollection implements Collection
     public function getIterator() : iterable
     {
         yield from $this->pairs;
+    }
+
+    public function count() : int
+    {
+        return count($this->pairs);
     }
 
     public function dispatch(Visitor $visitor) : void
