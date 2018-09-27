@@ -26,6 +26,11 @@ final class MapCollection implements Collection
         yield from $this->pairs;
     }
 
+    public function count() : int
+    {
+        return count($this->pairs);
+    }
+
     public function dispatch(Visitor $visitor) : void
     {
         $visitor->visitMapCollection($this);

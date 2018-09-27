@@ -80,7 +80,7 @@ final class AnnotationMetadataAssembler
 
         return new AnnotationMetadata(
             $realName,
-            $this->determineTarget($hydratedAnnotations, $internalScope),
+            $this->determineTarget($hydratedAnnotations),
             $hasConstructor,
             $this->assembleProperties($classReflection)
         );
@@ -89,7 +89,7 @@ final class AnnotationMetadataAssembler
     /**
      * @param object[] $annotations
      */
-    private function determineTarget(array $annotations, Scope $scope) : AnnotationTarget
+    private function determineTarget(array $annotations) : AnnotationTarget
     {
         /** @var TargetAnnotation|null $target */
         $target = $this->findAnnotation(TargetAnnotation::class, $annotations);
@@ -105,20 +105,10 @@ final class AnnotationMetadataAssembler
     /**
      * @return object[]
      */
-    private function hydrateInternalAnnotations(Annotations $annotations, Scope $scope) : array
+    private function hydrateInternalAnnotations(Annotations $annotations) : array
     {
-        $objects = [];
-
-        foreach ($annotations as $annotation) {
-            // TODO extract
-            if (in_array($annotation->getName()->getIdentifier(), ['author', 'since', 'var'], true)) {
-                continue;
-            }
-
-            $objects[] = $this->internalAssembler->assemble($annotation, $scope);
-        }
-
-        return $objects;
+        $this->internalAssembler->visit($annotations);
+        return $this->internalAssembler->collect();
     }
 
     /**
