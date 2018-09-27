@@ -10,7 +10,6 @@ use Doctrine\Annotations\Parser\Ast\Annotations;
 use Doctrine\Annotations\Parser\Ast\Collection\ListCollection;
 use Doctrine\Annotations\Parser\Ast\Collection\MapCollection;
 use Doctrine\Annotations\Parser\Ast\ConstantFetch;
-use Doctrine\Annotations\Parser\Ast\Node;
 use Doctrine\Annotations\Parser\Ast\Pair;
 use Doctrine\Annotations\Parser\Ast\Parameter\NamedParameter;
 use Doctrine\Annotations\Parser\Ast\Parameter\UnnamedParameter;
@@ -26,13 +25,14 @@ use Doctrine\Annotations\Parser\Reference\ReferenceResolver;
 use Doctrine\Annotations\Parser\Scope;
 use Doctrine\Annotations\Parser\Visitor\Visitor;
 use ReflectionClass;
+use SplObjectStorage;
 use SplStack;
 use function array_key_exists;
 use function assert;
 use function constant;
 use function in_array;
 
-final class Assembler implements Visitor
+final class Assembler
 {
     /** @var MetadataCollection */
     private $metadataCollection;
@@ -46,184 +46,217 @@ final class Assembler implements Visitor
     /** @var PropertyStrategy */
     private $propertyStrategy;
 
-    /** @var Scope */
-    private $scope;
-
-    /** @var object[] */
-    private $annotations = [];
-
-    /** @var SplStack */
-    private $stack;
-
     public function __construct(
         MetadataCollection $metadataCollection,
         ReferenceResolver $referenceResolver,
         ConstructorStrategy $constructorStrategy,
-        PropertyStrategy $propertyStrategy,
-        Scope $scope
+        PropertyStrategy $propertyStrategy
     ) {
         $this->metadataCollection  = $metadataCollection;
         $this->referenceResolver   = $referenceResolver;
         $this->constructorStrategy = $constructorStrategy;
         $this->propertyStrategy    = $propertyStrategy;
-        $this->scope               = $scope;
     }
 
     /**
      * @return object[]
      */
-    public function collect() : iterable
+    public function collect(Annotations $node, Scope $scope) : iterable
     {
-        return $this->annotations;
+        $storage = new SplObjectStorage();
+
+        $node->dispatch($this->createInternalVisitor($storage, $scope));
+
+        return yield from $storage;
     }
 
-    public function visit(Node $node) : void
+    private function createInternalVisitor(SplObjectStorage $storage, Scope $scope) : Visitor
     {
-        $this->annotations = [];
-        $this->stack       = new SplStack();
+        return new class (
+            $this->metadataCollection,
+            $this->referenceResolver,
+            $this->constructorStrategy,
+            $this->propertyStrategy,
+            $scope,
+            $storage
+        ) implements Visitor {
+            /** @var MetadataCollection */
+            private $metadataCollection;
 
-        $node->dispatch($this);
-    }
+            /** @var ReferenceResolver */
+            private $referenceResolver;
 
-    public function visitAnnotations(Annotations $annotations) : void
-    {
-        foreach ($annotations as $annotation) {
-            $annotation->dispatch($this);
+            /** @var ConstructorStrategy */
+            private $constructorStrategy;
 
-            $this->annotations[] = $this->stack->pop();
-        }
-    }
+            /** @var PropertyStrategy */
+            private $propertyStrategy;
 
-    public function visitAnnotation(Annotation $annotation) : void
-    {
-        // TODO refactor out
-        if (in_array($annotation->getName()->getIdentifier(), ['author', 'since', 'var'], true)) {
-            return;
-        }
+            /** @var Scope */
+            private $scope;
 
-        $annotation->getParameters()->dispatch($this);
-        $annotation->getName()->dispatch($this);
+            /** @var SplObjectStorage<object> */
+            private $storage;
 
-        $this->stack->push($this->construct($this->stack->pop(), $this->stack->pop()));
-    }
+            /** @var SplStack<mixed> */
+            private $stack;
 
-    public function visitReference(Reference $reference) : void
-    {
-        $this->stack->push($this->referenceResolver->resolve($reference, $this->scope));
-    }
+            public function __construct(
+                MetadataCollection $metadataCollection,
+                ReferenceResolver $referenceResolver,
+                ConstructorStrategy $constructorStrategy,
+                PropertyStrategy $propertyStrategy,
+                Scope $scope,
+                SplObjectStorage $storage
+            ) {
+                $this->metadataCollection  = $metadataCollection;
+                $this->referenceResolver   = $referenceResolver;
+                $this->constructorStrategy = $constructorStrategy;
+                $this->propertyStrategy    = $propertyStrategy;
+                $this->scope               = $scope;
+                $this->storage             = $storage;
+                $this->stack               = new SplStack();
+            }
 
-    public function visitParameters(Parameters $parameters) : void
-    {
-        $new = [];
+            public function visitAnnotations(Annotations $annotations) : void
+            {
+                foreach ($annotations as $annotation) {
+                    $annotation->dispatch($this);
 
-        foreach ($parameters as $parameter) {
-            $parameter->dispatch($this);
+                    $this->storage->attach($this->stack->pop());
+                }
+            }
 
-            assert(! array_key_exists($this->stack->current(), $new));
+            public function visitAnnotation(Annotation $annotation) : void
+            {
+                // TODO refactor out
+                if (in_array($annotation->getName()->getIdentifier(), ['author', 'since', 'var'], true)) {
+                    return;
+                }
 
-            $new[$this->stack->pop()] = $this->stack->pop();
-        }
+                $annotation->getParameters()->dispatch($this);
+                $annotation->getName()->dispatch($this);
 
-        $this->stack->push($new);
-    }
+                $this->stack->push($this->construct($this->stack->pop(), $this->stack->pop()));
+            }
 
-    public function visitUnnamedParameter(UnnamedParameter $parameter) : void
-    {
-        $parameter->getValue()->dispatch($this);
+            public function visitReference(Reference $reference) : void
+            {
+                $this->stack->push($this->referenceResolver->resolve($reference, $this->scope));
+            }
 
-        $this->stack->push('value');
-        $this->stack->push($this->stack->pop());
-    }
+            public function visitParameters(Parameters $parameters) : void
+            {
+                $new = [];
 
-    public function visitNamedParameter(NamedParameter $parameter) : void
-    {
-        $parameter->getValue()->dispatch($this);
-        $parameter->getName()->dispatch($this);
+                foreach ($parameters as $parameter) {
+                    $parameter->dispatch($this);
 
-        // pass through
-    }
+                    assert(! array_key_exists($this->stack->current(), $new));
 
-    public function visitIdentifier(Identifier $identifier) : void
-    {
-        $this->stack->push($identifier->getValue());
-    }
+                    $new[$this->stack->pop()] = $this->stack->pop();
+                }
 
-    public function visitPair(Pair $pair) : void
-    {
-        $pair->getValue()->dispatch($this);
-        $pair->getKey()->dispatch($this);
+                $this->stack->push($new);
+            }
 
-        // pass through
-    }
+            public function visitUnnamedParameter(UnnamedParameter $parameter) : void
+            {
+                $parameter->getValue()->dispatch($this);
 
-    public function visitBooleanScalar(BooleanScalar $booleanScalar) : void
-    {
-        $this->stack->push($booleanScalar->getValue());
-    }
+                $this->stack->push('value');
+                $this->stack->push($this->stack->pop());
+            }
 
-    public function visitIntegerScalar(IntegerScalar $integerScalar) : void
-    {
-        $this->stack->push($integerScalar->getValue());
-    }
+            public function visitNamedParameter(NamedParameter $parameter) : void
+            {
+                $parameter->getValue()->dispatch($this);
+                $parameter->getName()->dispatch($this);
+                // pass through
+            }
 
-    public function visitFloatScalar(FloatScalar $floatScalar) : void
-    {
-        $this->stack->push($floatScalar->getValue());
-    }
+            public function visitIdentifier(Identifier $identifier) : void
+            {
+                $this->stack->push($identifier->getValue());
+            }
 
-    public function visitStringScalar(StringScalar $stringScalar) : void
-    {
-        $this->stack->push($stringScalar->getValue());
-    }
+            public function visitPair(Pair $pair) : void
+            {
+                $pair->getValue()->dispatch($this);
+                $pair->getKey()->dispatch($this);
+                // pass through
+            }
 
-    public function visitNullScalar(NullScalar $nullScalar) : void
-    {
-        $this->stack->push($nullScalar->getValue());
-    }
+            public function visitBooleanScalar(BooleanScalar $booleanScalar) : void
+            {
+                $this->stack->push($booleanScalar->getValue());
+            }
 
-    public function visitListCollection(ListCollection $listCollection) : void
-    {
-        $list = [];
+            public function visitIntegerScalar(IntegerScalar $integerScalar) : void
+            {
+                $this->stack->push($integerScalar->getValue());
+            }
 
-        foreach ($listCollection as $listItem) {
-            $listItem->dispatch($this);
+            public function visitFloatScalar(FloatScalar $floatScalar) : void
+            {
+                $this->stack->push($floatScalar->getValue());
+            }
 
-            $list[] = $this->stack->pop();
-        }
+            public function visitStringScalar(StringScalar $stringScalar) : void
+            {
+                $this->stack->push($stringScalar->getValue());
+            }
 
-        $this->stack->push($list);
-    }
+            public function visitNullScalar(NullScalar $nullScalar) : void
+            {
+                $this->stack->push($nullScalar->getValue());
+            }
 
-    public function visitMapCollection(MapCollection $mapCollection) : void
-    {
-        $map = [];
+            public function visitListCollection(ListCollection $listCollection) : void
+            {
+                $list = [];
 
-        foreach ($mapCollection as $mapItem) {
-            $mapItem->dispatch($this);
-            $map[$this->stack->pop()] = $this->stack->pop();
-        }
+                foreach ($listCollection as $listItem) {
+                    $listItem->dispatch($this);
 
-        $this->stack->push($map);
-    }
+                    $list[] = $this->stack->pop();
+                }
 
-    public function visitConstantFetch(ConstantFetch $constantFetch) : void
-    {
-        $constantFetch->getName()->dispatch($this);
-        $constantFetch->getClass()->dispatch($this);
+                $this->stack->push($list);
+            }
 
-        $this->stack->push(constant($this->stack->pop() . '::' . $this->stack->pop()));
-    }
+            public function visitMapCollection(MapCollection $mapCollection) : void
+            {
+                $map = [];
 
-    /**
-     * @param mixed[] $parameters iterable<string, mixed>
-     */
-    private function construct(string $name, iterable $parameters) : object
-    {
-        // TODO refactor out
-        if ((new ReflectionClass($name))->getConstructor() !== null) {
-            return $this->constructorStrategy->construct($this->metadataCollection[$name], $parameters);
-        }
+                foreach ($mapCollection as $mapItem) {
+                    $mapItem->dispatch($this);
+                    $map[$this->stack->pop()] = $this->stack->pop();
+                }
 
-        return $this->propertyStrategy->construct($this->metadataCollection[$name], $parameters);
+                $this->stack->push($map);
+            }
+
+            public function visitConstantFetch(ConstantFetch $constantFetch) : void
+            {
+                $constantFetch->getName()->dispatch($this);
+                $constantFetch->getClass()->dispatch($this);
+
+                $this->stack->push(constant($this->stack->pop() . '::' . $this->stack->pop()));
+            }
+
+            /**
+             * @param mixed[] $parameters iterable<string, mixed>
+             */
+            private function construct(string $name, iterable $parameters) : object
+            {
+                // TODO refactor out
+                if ((new ReflectionClass($name))->getConstructor() !== null) {
+                    return $this->constructorStrategy->construct($this->metadataCollection[$name], $parameters);
+                }
+
+                return $this->propertyStrategy->construct($this->metadataCollection[$name], $parameters);
+            }
+        };
     }
 }
