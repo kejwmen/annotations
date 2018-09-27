@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata\Assembler;
 
-use function array_filter;
-use function count;
 use Doctrine\Annotations\Annotation\Annotation as AnnotationAnnotation;
 use Doctrine\Annotations\Annotation\Required as RequiredAnnotation;
 use Doctrine\Annotations\Annotation\Target as TargetAnnotation;
@@ -18,7 +16,6 @@ use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\ScopeManufacturer;
 use Doctrine\Annotations\Metadata\Type\MixedType;
 use Doctrine\Annotations\Metadata\TypeParser;
-use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Compiler;
