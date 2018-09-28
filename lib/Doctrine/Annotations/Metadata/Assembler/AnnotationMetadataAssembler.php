@@ -115,7 +115,7 @@ final class AnnotationMetadataAssembler
     {
         $assembled = $this->internalAssembler->collect(
             $annotations,
-            new Scope($scope->getSubject(), InternalAnnotations::createImports())
+            new Scope($scope->getSubject(), InternalAnnotations::createImports(), clone $scope->getIgnoredAnnotations())
         );
 
         return is_array($assembled) ? $assembled : iterator_to_array($assembled);
@@ -159,10 +159,10 @@ final class AnnotationMetadataAssembler
             );
         }
 
-        $scope       = $this->scopeManufacturer->manufacturePropertyScope($property);
-        $annotations = $this->parser->compile($docBlock);
+        $scope               = $this->scopeManufacturer->manufacturePropertyScope($property);
+        $hydratedAnnotations = $this->hydrateInternalAnnotations($this->parser->compile($docBlock), $scope);
 
-        $required = $this->findAnnotation(RequiredAnnotation::class, $annotations, $scope) !== null;
+        $required = $this->findAnnotation(RequiredAnnotation::class, $hydratedAnnotations, $scope) !== null;
 
         return new PropertyMetadata(
             $property->getName(),
