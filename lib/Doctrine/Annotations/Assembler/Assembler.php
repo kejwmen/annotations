@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Doctrine\Annotations\Assembler;
 
 use Doctrine\Annotations\Metadata\MetadataCollection;
+use Doctrine\Annotations\Metadata\Reflection\ClassReflectionProvider;
 use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
 use Doctrine\Annotations\Parser\Ast\Collection\ListCollection;
 use Doctrine\Annotations\Parser\Ast\Collection\MapCollection;
 use Doctrine\Annotations\Parser\Ast\ConstantFetch;
-use Doctrine\Annotations\Parser\Ast\Node;
 use Doctrine\Annotations\Parser\Ast\Pair;
 use Doctrine\Annotations\Parser\Ast\Parameter\NamedParameter;
 use Doctrine\Annotations\Parser\Ast\Parameter\UnnamedParameter;
@@ -25,7 +25,6 @@ use Doctrine\Annotations\Parser\Ast\Scalar\StringScalar;
 use Doctrine\Annotations\Parser\Reference\ReferenceResolver;
 use Doctrine\Annotations\Parser\Scope;
 use Doctrine\Annotations\Parser\Visitor\Visitor;
-use ReflectionClass;
 use SplObjectStorage;
 use SplStack;
 use function array_key_exists;
@@ -46,16 +45,21 @@ final class Assembler
     /** @var PropertyStrategy */
     private $propertyStrategy;
 
+    /** @var ClassReflectionProvider */
+    private $classReflectionProvider;
+
     public function __construct(
         MetadataCollection $metadataCollection,
         ReferenceResolver $referenceResolver,
         ConstructorStrategy $constructorStrategy,
-        PropertyStrategy $propertyStrategy
+        PropertyStrategy $propertyStrategy,
+        ClassReflectionProvider $classReflectionProvider
     ) {
         $this->metadataCollection  = $metadataCollection;
         $this->referenceResolver   = $referenceResolver;
         $this->constructorStrategy = $constructorStrategy;
         $this->propertyStrategy    = $propertyStrategy;
+        $this->classReflectionProvider = $classReflectionProvider;
     }
 
     /**
@@ -77,6 +81,7 @@ final class Assembler
             $this->referenceResolver,
             $this->constructorStrategy,
             $this->propertyStrategy,
+            $this->classReflectionProvider,
             $scope,
             $storage
         ) implements Visitor {
@@ -92,6 +97,9 @@ final class Assembler
             /** @var PropertyStrategy */
             private $propertyStrategy;
 
+            /** @var ClassReflectionProvider */
+            private $classReflectionProvider;
+
             /** @var Scope */
             private $scope;
 
@@ -106,16 +114,18 @@ final class Assembler
                 ReferenceResolver $referenceResolver,
                 ConstructorStrategy $constructorStrategy,
                 PropertyStrategy $propertyStrategy,
+                ClassReflectionProvider $classReflectionProvider,
                 Scope $scope,
                 SplObjectStorage $storage
             ) {
-                $this->metadataCollection  = $metadataCollection;
-                $this->referenceResolver   = $referenceResolver;
-                $this->constructorStrategy = $constructorStrategy;
-                $this->propertyStrategy    = $propertyStrategy;
-                $this->scope               = $scope;
-                $this->storage             = $storage;
-                $this->stack               = new SplStack();
+                $this->metadataCollection      = $metadataCollection;
+                $this->referenceResolver       = $referenceResolver;
+                $this->constructorStrategy     = $constructorStrategy;
+                $this->propertyStrategy        = $propertyStrategy;
+                $this->classReflectionProvider = $classReflectionProvider;
+                $this->scope                   = $scope;
+                $this->storage                 = $storage;
+                $this->stack                   = new SplStack();
             }
 
             public function visitAnnotations(Annotations $annotations) : void
@@ -251,7 +261,7 @@ final class Assembler
             private function construct(string $name, iterable $parameters) : object
             {
                 // TODO refactor out
-                if ((new ReflectionClass($name))->getConstructor() !== null) {
+                if ($this->classReflectionProvider->getClassReflection($name)->getConstructor() !== null) {
                     return $this->constructorStrategy->construct($this->metadataCollection[$name], $parameters);
                 }
 

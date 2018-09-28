@@ -13,6 +13,7 @@ use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
 use Doctrine\Annotations\Metadata\InternalAnnotations;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
+use Doctrine\Annotations\Metadata\Reflection\ClassReflectionProvider;
 use Doctrine\Annotations\Metadata\ScopeManufacturer;
 use Doctrine\Annotations\Metadata\Type\MixedType;
 use Doctrine\Annotations\Metadata\TypeParser;
@@ -36,6 +37,9 @@ final class AnnotationMetadataAssembler
     /** @var ReferenceResolver */
     private $referenceResolver;
 
+    /** @var ClassReflectionProvider */
+    private $classReflectionProvider;
+
     /** @var TypeParser */
     private $typeParser;
 
@@ -48,21 +52,23 @@ final class AnnotationMetadataAssembler
     public function __construct(
         Compiler $parser,
         ReferenceResolver $referenceResolver,
+        ClassReflectionProvider $classReflectionProvider,
         TypeParser $typeParser,
         ScopeManufacturer $scopeManufacturer,
         Assembler $internalAssembler
     ) {
-        $this->parser            = $parser;
-        $this->referenceResolver = $referenceResolver;
-        $this->typeParser        = $typeParser;
-        $this->scopeManufacturer = $scopeManufacturer;
-        $this->internalAssembler = $internalAssembler;
+        $this->parser                  = $parser;
+        $this->referenceResolver       = $referenceResolver;
+        $this->classReflectionProvider = $classReflectionProvider;
+        $this->typeParser              = $typeParser;
+        $this->scopeManufacturer       = $scopeManufacturer;
+        $this->internalAssembler       = $internalAssembler;
     }
 
     public function assemble(Reference $reference, Scope $scope) : AnnotationMetadata
     {
         $realName        = $this->referenceResolver->resolve($reference, $scope);
-        $classReflection = new ReflectionClass($realName);
+        $classReflection = $this->classReflectionProvider->getClassReflection($realName);
         $docComment      = $classReflection->getDocComment();
         $hasConstructor  = $classReflection->getConstructor() !== null;
 
