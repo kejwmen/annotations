@@ -23,7 +23,10 @@ final class Scope
     /** @var Imports */
     private $imports;
 
-    public function __construct(Reflector $subject, Imports $imports)
+    /** @var IgnoredAnnotations */
+    private $ignoredAnnotations;
+
+    public function __construct(Reflector $subject, Imports $imports, IgnoredAnnotations $ignoredAnnotations)
     {
         assert(
             $subject instanceof ReflectionClass
@@ -31,8 +34,9 @@ final class Scope
             || $subject instanceof ReflectionFunctionAbstract
         );
 
-        $this->subject = $subject;
-        $this->imports = $imports;
+        $this->subject            = $subject;
+        $this->imports            = $imports;
+        $this->ignoredAnnotations = $ignoredAnnotations;
     }
 
     /**
@@ -46,5 +50,10 @@ final class Scope
     public function getImports() : Imports
     {
         return $this->imports;
+    }
+
+    public function getIgnoredAnnotations() : IgnoredAnnotations
+    {
+        return $this->ignoredAnnotations;
     }
 }

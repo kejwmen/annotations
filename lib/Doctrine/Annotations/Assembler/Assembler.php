@@ -30,7 +30,6 @@ use SplStack;
 use function array_key_exists;
 use function assert;
 use function constant;
-use function in_array;
 
 final class Assembler
 {
@@ -132,19 +131,20 @@ final class Assembler
             public function visitAnnotations(Annotations $annotations) : void
             {
                 foreach ($annotations as $annotation) {
+                    if ($this->scope->getIgnoredAnnotations()->has($annotation->getName()->getIdentifier())) {
+                        continue;
+                    }
+
                     $annotation->dispatch($this);
 
                     $this->storage->attach($this->stack->pop());
                 }
+
+                assert($this->stack->isEmpty());
             }
 
             public function visitAnnotation(Annotation $annotation) : void
             {
-                // TODO refactor out
-                if (in_array($annotation->getName()->getIdentifier(), ['author', 'since', 'var'], true)) {
-                    return;
-                }
-
                 $annotation->getParameters()->dispatch($this);
                 $annotation->getName()->dispatch($this);
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata;
 
+use Doctrine\Annotations\ImplicitIgnoredAnnotationNames;
+use Doctrine\Annotations\Parser\IgnoredAnnotations;
 use Doctrine\Annotations\Parser\Imports;
 use Doctrine\Annotations\Parser\Scope;
 use Doctrine\Annotations\PhpParser;
@@ -24,7 +26,8 @@ final class ScopeManufacturer
     {
         return new Scope(
             $class,
-            $this->collectImports($class)
+            $this->collectImports($class),
+            new IgnoredAnnotations(...ImplicitIgnoredAnnotationNames::LIST)
         );
     }
 
@@ -32,7 +35,8 @@ final class ScopeManufacturer
     {
         return new Scope(
             $property,
-            $this->collectImports($property->getDeclaringClass())
+            $this->collectImports($property->getDeclaringClass()),
+            new IgnoredAnnotations(...ImplicitIgnoredAnnotationNames::LIST)
         );
     }
 

@@ -47,4 +47,12 @@
         <exclude-pattern>tests/Doctrine/Tests/Annotations/Parser/GrammarTest.php</exclude-pattern>
         <exclude-pattern>tests/Doctrine/Tests/Annotations/Parser/Visitor/MetadataBuilderTest.php</exclude-pattern>
     </rule>
+
+    <rule ref="Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase">
+        <exclude-pattern>lib/Doctrine/Annotations/ImplicitIgnoredAnnotationNames.php</exclude-pattern>
+    </rule>
+
+    <rule ref="Squiz.Arrays.ArrayDeclaration.NoKeySpecified">
+        <exclude-pattern>lib/Doctrine/Annotations/ImplicitIgnoredAnnotationNames.php</exclude-pattern>
+    </rule>
 </ruleset>
