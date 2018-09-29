@@ -703,5 +703,33 @@ DOCBLOCK
 
 TRACE
         ];
+
+        yield 'inline annotation' => [
+<<<'DOCBLOCK'
+/**
+ * Hello world from @Annotation
+ */
+DOCBLOCK
+            ,
+<<<'TRACE'
+>  #annotations
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, Annotation)
+
+TRACE
+        ];
+
+        yield 'oneline annotation' => [
+<<<'DOCBLOCK'
+/** @var string */
+DOCBLOCK
+            ,
+<<<'TRACE'
+>  #annotations
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, var)
+
+TRACE
+        ];
     }
 }
