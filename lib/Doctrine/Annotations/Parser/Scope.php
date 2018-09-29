@@ -25,17 +25,27 @@ final class Scope
     /** @var IgnoredAnnotations */
     private $ignoredAnnotations;
 
-    public function __construct(Reflector $subject, Imports $imports, IgnoredAnnotations $ignoredAnnotations)
+    /** @var int */
+    private $nestingLevel;
+
+    public function __construct(
+        Reflector $subject,
+        Imports $imports,
+        IgnoredAnnotations $ignoredAnnotations,
+        int $nestingLevel = 0
+    )
     {
         assert(
             $subject instanceof ReflectionClass
             || $subject instanceof ReflectionProperty
             || $subject instanceof ReflectionFunctionAbstract
         );
+        assert($nestingLevel >= 0);
 
         $this->subject            = $subject;
         $this->imports            = $imports;
         $this->ignoredAnnotations = $ignoredAnnotations;
+        $this->nestingLevel       = $nestingLevel;
     }
 
     /**
@@ -54,5 +64,22 @@ final class Scope
     public function getIgnoredAnnotations() : IgnoredAnnotations
     {
         return $this->ignoredAnnotations;
+    }
+
+    public function isNested() : bool
+    {
+        return $this->nestingLevel > 1;
+    }
+
+    public function increaseNestingLevel() : void
+    {
+        $this->nestingLevel++;
+    }
+
+    public function decreaseNestingLevel() : void
+    {
+        assert($this->nestingLevel > 0);
+
+        $this->nestingLevel--;
     }
 }

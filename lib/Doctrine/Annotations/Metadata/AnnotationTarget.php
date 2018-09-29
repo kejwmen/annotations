@@ -34,4 +34,29 @@ final class AnnotationTarget
     {
         return $this->target;
     }
+
+    public function class() : bool
+    {
+        return ($this->target & self::TARGET_CLASS) === self::TARGET_CLASS;
+    }
+
+    public function property() : bool
+    {
+        return ($this->target & self::TARGET_PROPERTY) === self::TARGET_PROPERTY;
+    }
+
+    public function method() : bool
+    {
+        return ($this->target & self::TARGET_METHOD) === self::TARGET_METHOD;
+    }
+
+    public function annotation() : bool
+    {
+        return ($this->target & self::TARGET_ANNOTATION) === self::TARGET_ANNOTATION;
+    }
+
+    public function all() : bool
+    {
+        return ($this->target & self::TARGET_ALL) === self::TARGET_ALL;
+    }
 }
