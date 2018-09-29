@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Annotations\Metadata;
+namespace Doctrine\Annotations\TypeParser;
 
 use Doctrine\Annotations\Metadata\Type\BooleanType;
 use Doctrine\Annotations\Metadata\Type\FloatType;
@@ -27,7 +27,7 @@ use function count;
 use function strcasecmp;
 use function strtolower;
 
-final class TypeParser
+final class PHPStanTypeParser implements TypeParser
 {
     /** @var Lexer */
     private $lexer;
