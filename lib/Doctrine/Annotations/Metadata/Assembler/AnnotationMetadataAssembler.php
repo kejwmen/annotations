@@ -23,7 +23,6 @@ use Doctrine\Annotations\Parser\Scope;
 use Doctrine\Annotations\TypeParser\TypeParser;
 use ReflectionClass;
 use ReflectionProperty;
-use function array_map;
 use function assert;
 use function is_array;
 use function iterator_to_array;
@@ -141,12 +140,16 @@ final class AnnotationMetadataAssembler
      */
     private function assembleProperties(ReflectionClass $class) : array
     {
-        return array_map(function (ReflectionProperty $property) : PropertyMetadata {
-            return $this->assembleProperty($property);
-        }, $class->getProperties(ReflectionProperty::IS_PUBLIC));
+        $metadatas = [];
+
+        foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $i => $property) {
+            $metadatas[] = $this->assembleProperty($property, $i === 0);
+        }
+
+        return $metadatas;
     }
 
-    private function assembleProperty(ReflectionProperty $property) : PropertyMetadata
+    private function assembleProperty(ReflectionProperty $property, bool $first) : PropertyMetadata
     {
         $docBlock = $property->getDocComment();
 
@@ -154,7 +157,8 @@ final class AnnotationMetadataAssembler
             return new PropertyMetadata(
                 $property->getName(),
                 new MixedType(),
-                false
+                false,
+                $first
             );
         }
 
@@ -166,7 +170,8 @@ final class AnnotationMetadataAssembler
         return new PropertyMetadata(
             $property->getName(),
             $this->typeParser->parsePropertyType($property->getDocComment(), $required),
-            $required
+            $required,
+            $first
         );
     }
 }

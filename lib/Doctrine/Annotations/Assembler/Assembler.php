@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Annotations\Assembler;
 
 use Doctrine\Annotations\Assembler\Acceptor\ReferenceAcceptor;
+use Doctrine\Annotations\Constructor\Constructor;
 use Doctrine\Annotations\Metadata\MetadataCollection;
 use Doctrine\Annotations\Metadata\Reflection\ClassReflectionProvider;
 use Doctrine\Annotations\Parser\Ast\Annotation;
@@ -40,11 +41,8 @@ final class Assembler
     /** @var ReferenceResolver */
     private $referenceResolver;
 
-    /** @var ConstructorStrategy */
-    private $constructorStrategy;
-
-    /** @var PropertyStrategy */
-    private $propertyStrategy;
+    /** @var Constructor */
+    private $constructor;
 
     /** @var ClassReflectionProvider */
     private $classReflectionProvider;
@@ -55,15 +53,13 @@ final class Assembler
     public function __construct(
         MetadataCollection $metadataCollection,
         ReferenceResolver $referenceResolver,
-        ConstructorStrategy $constructorStrategy,
-        PropertyStrategy $propertyStrategy,
+        Constructor $constructor,
         ClassReflectionProvider $classReflectionProvider,
         ReferenceAcceptor $referenceAcceptor
     ) {
         $this->metadataCollection      = $metadataCollection;
         $this->referenceResolver       = $referenceResolver;
-        $this->constructorStrategy     = $constructorStrategy;
-        $this->propertyStrategy        = $propertyStrategy;
+        $this->constructor             = $constructor;
         $this->classReflectionProvider = $classReflectionProvider;
         $this->referenceAcceptor       = $referenceAcceptor;
     }
@@ -85,8 +81,7 @@ final class Assembler
         return new class (
             $this->metadataCollection,
             $this->referenceResolver,
-            $this->constructorStrategy,
-            $this->propertyStrategy,
+            $this->constructor,
             $this->classReflectionProvider,
             $this->referenceAcceptor,
             $scope,
@@ -98,11 +93,8 @@ final class Assembler
             /** @var ReferenceResolver */
             private $referenceResolver;
 
-            /** @var ConstructorStrategy */
-            private $constructorStrategy;
-
-            /** @var PropertyStrategy */
-            private $propertyStrategy;
+            /** @var Constructor */
+            private $constructor;
 
             /** @var ClassReflectionProvider */
             private $classReflectionProvider;
@@ -122,8 +114,7 @@ final class Assembler
             public function __construct(
                 MetadataCollection $metadataCollection,
                 ReferenceResolver $referenceResolver,
-                ConstructorStrategy $constructorStrategy,
-                PropertyStrategy $propertyStrategy,
+                Constructor $constructor,
                 ClassReflectionProvider $classReflectionProvider,
                 ReferenceAcceptor $referenceAcceptor,
                 Scope $scope,
@@ -131,8 +122,7 @@ final class Assembler
             ) {
                 $this->metadataCollection      = $metadataCollection;
                 $this->referenceResolver       = $referenceResolver;
-                $this->constructorStrategy     = $constructorStrategy;
-                $this->propertyStrategy        = $propertyStrategy;
+                $this->constructor             = $constructor;
                 $this->classReflectionProvider = $classReflectionProvider;
                 $this->referenceAcceptor       = $referenceAcceptor;
                 $this->scope                   = $scope;
@@ -163,10 +153,20 @@ final class Assembler
                     return;
                 }
 
+                $this->scope->increaseNestingLevel();
+
                 $annotation->getParameters()->dispatch($this);
                 $annotation->getName()->dispatch($this);
 
-                $this->stack->push($this->construct($this->stack->pop(), $this->stack->pop()));
+                $this->stack->push(
+                    $this->constructor->construct(
+                        $this->metadataCollection[$this->stack->pop()],
+                        $this->scope,
+                        $this->stack->pop()
+                    )
+                );
+
+                $this->scope->decreaseNestingLevel();
             }
 
             public function visitReference(Reference $reference) : void
@@ -193,8 +193,8 @@ final class Assembler
             {
                 $parameter->getValue()->dispatch($this);
 
-                $this->stack->push('value');
                 $this->stack->push($this->stack->pop());
+                $this->stack->push(null);
             }
 
             public function visitNamedParameter(NamedParameter $parameter) : void
@@ -272,19 +272,6 @@ final class Assembler
                 $constantFetch->getClass()->dispatch($this);
 
                 $this->stack->push(constant($this->stack->pop() . '::' . $this->stack->pop()));
-            }
-
-            /**
-             * @param mixed[] $parameters iterable<string, mixed>
-             */
-            private function construct(string $name, iterable $parameters) : object
-            {
-                // TODO refactor out
-                if ($this->classReflectionProvider->getClassReflection($name)->getConstructor() !== null) {
-                    return $this->constructorStrategy->construct($this->metadataCollection[$name], $parameters);
-                }
-
-                return $this->propertyStrategy->construct($this->metadataCollection[$name], $parameters);
             }
         };
     }

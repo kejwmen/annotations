@@ -4,7 +4,7 @@ namespace Doctrine\Tests\Annotations\Fixtures;
 
 /**
  * @Annotation
- * @Target("ALL")
+ * @Target({"ALL"})
  */
 class AnnotationTargetAll
 {

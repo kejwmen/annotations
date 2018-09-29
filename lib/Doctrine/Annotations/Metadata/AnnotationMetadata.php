@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata;
 
+use function array_combine;
 use function array_filter;
+use function array_map;
+use function array_values;
 
 final class AnnotationMetadata
 {
@@ -34,13 +37,19 @@ final class AnnotationMetadata
         bool $hasConstructor,
         array $properties
     ) {
-        $this->name            = $name;
-        $this->target          = $target;
-        $this->hasConstructor  = $hasConstructor;
-        $this->properties      = $properties;
-        $this->defaultProperty = array_filter($properties, static function (PropertyMetadata $property) : bool {
+        $this->name           = $name;
+        $this->target         = $target;
+        $this->hasConstructor = $hasConstructor;
+        $this->properties     = array_combine(
+            array_map(static function (PropertyMetadata $property) : string {
+                return $property->getName();
+            }, $properties),
+            $properties
+        );
+
+        $this->defaultProperty = array_values(array_filter($properties, static function (PropertyMetadata $property) : bool {
             return $property->isDefault();
-        })[0] ?? null;
+        }))[0] ?? null;
     }
 
     public function getName() : string
