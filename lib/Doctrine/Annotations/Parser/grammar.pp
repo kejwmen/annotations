@@ -7,14 +7,13 @@
 %skip   docblock:star      \*(?!/)
 %token  docblock:_doc      \*/                         -> default
 %token  docblock:at        @(?!\s)                     -> annot
-%token  docblock:text      .+
+%token  docblock:text      [^*@]+|@(?=\s)|\*(?!/)
 
 %token  annot:valued_identifier \\?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)*(?=\()
 %token  annot:simple_identifier \\?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)* -> __shift__
 %token  annot:parenthesis_  \(                          -> value
 
-%skip   value:star          [*]
-%skip   value:_doc          [*/]
+%skip   value:star          [*](?!/)
 %skip   value:space         [\x20\x09\x0a\x0d]+
 %token  value:_parenthesis  \)                          -> __shift__ * 2
 %token  value:at            @(?!\s)                     -> annot
