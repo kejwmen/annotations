@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata;
 
+use Doctrine\Annotations\Assembler\Acceptor\ReferenceAcceptor;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
 use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
@@ -21,6 +22,7 @@ use Doctrine\Annotations\Parser\Ast\Scalar\IntegerScalar;
 use Doctrine\Annotations\Parser\Ast\Scalar\NullScalar;
 use Doctrine\Annotations\Parser\Ast\Scalar\StringScalar;
 use Doctrine\Annotations\Parser\Ast\Parameter\UnnamedParameter;
+use Doctrine\Annotations\Parser\Reference\ReferenceResolver;
 use Doctrine\Annotations\Parser\Scope;
 use Doctrine\Annotations\Parser\Visitor\Visitor;
 use SplObjectStorage;
@@ -31,33 +33,56 @@ final class MetadataCollector
     /** @var AnnotationMetadataAssembler */
     private $assembler;
 
-    /** @var Scope */
-    private $scope;
+    /** @var ReferenceAcceptor */
+    private $referenceAcceptor;
 
-    public function __construct(AnnotationMetadataAssembler $assembler, Scope $scope)
-    {
-        $this->assembler = $assembler;
-        $this->scope     = $scope;
+    /** @var ReferenceResolver */
+    private $referenceResolver;
+
+    public function __construct(
+        AnnotationMetadataAssembler $assembler,
+        ReferenceAcceptor $referenceAcceptor,
+        ReferenceResolver $referenceResolver
+    ) {
+        $this->assembler         = $assembler;
+        $this->referenceAcceptor = $referenceAcceptor;
+        $this->referenceResolver = $referenceResolver;
     }
 
-    /**
-     * @return AnnotationMetadata[]
-     */
-    public function collect(Annotations $node) : iterable
+    public function collect(Annotations $node, Scope $scope, MetadataCollection $metadataCollection) : void
     {
         $storage = new SplObjectStorage();
 
-        $node->dispatch($this->createInternalVisitor($storage));
+        $node->dispatch($this->createInternalVisitor($storage, $scope));
 
-        return yield from $storage;
+        $this->filldMissingMetadata($metadataCollection, $scope, ...$storage);
     }
 
-    private function createInternalVisitor(SplObjectStorage $storage) : Visitor
+    private function filldMissingMetadata(
+        MetadataCollection $metadataCollection,
+        Scope $scope,
+        Reference ...$references
+    ) : void {
+        foreach ($references as $reference) {
+            $name = $this->referenceResolver->resolve($reference, $scope);
+
+            if (isset($metadataCollection[$name])) {
+                continue;
+            }
+
+            $metadataCollection[] = $this->assembler->assemble($reference, $scope);
+        }
+    }
+
+    private function createInternalVisitor(SplObjectStorage $storage, Scope $scope) : Visitor
     {
-        return new class ($this->assembler, $this->scope, $storage) implements Visitor
+        return new class ($this->assembler, $this->referenceAcceptor, $scope, $storage) implements Visitor
         {
             /** @var AnnotationMetadataAssembler */
             private $assembler;
+
+            /** @var ReferenceAcceptor */
+            private $referenceAcceptor;
 
             /** @var Scope */
             private $scope;
@@ -70,13 +95,15 @@ final class MetadataCollector
 
             public function __construct(
                 AnnotationMetadataAssembler $assembler,
+                ReferenceAcceptor $referenceAcceptor,
                 Scope $scope,
                 SplObjectStorage $storage
             ) {
-                $this->assembler = $assembler;
-                $this->scope     = $scope;
-                $this->storage   = $storage;
-                $this->stack     = new SplStack();
+                $this->assembler         = $assembler;
+                $this->referenceAcceptor = $referenceAcceptor;
+                $this->scope             = $scope;
+                $this->storage           = $storage;
+                $this->stack             = new SplStack();
             }
 
             public function visitAnnotations(Annotations $annotations) : void
@@ -88,15 +115,14 @@ final class MetadataCollector
 
             public function visitAnnotation(Annotation $annotation) : void
             {
+                if (! $this->referenceAcceptor->accepts($annotation->getName(), $this->scope)) {
+                    return;
+                }
+
                 $annotation->getParameters()->dispatch($this);
                 $annotation->getName()->dispatch($this);
 
-                $this->storage->attach(
-                    $this->assembler->assemble(
-                        $this->stack->pop(),
-                        $this->scope
-                    )
-                );
+                $this->storage->attach($this->stack->pop());
             }
 
             public function visitReference(Reference $reference) : void

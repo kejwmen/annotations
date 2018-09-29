@@ -12,9 +12,12 @@ use function is_string;
 
 final class Imports implements ArrayAccess, IteratorAggregate
 {
-    /** @var string[] alias => FCQN */
+    /** @var array<string, string> alias => FCQN */
     private $map = [];
 
+    /**
+     * @param iterable<string, string> $map
+     */
     public function __construct(iterable $map)
     {
         foreach ($map as $alias => $name) {

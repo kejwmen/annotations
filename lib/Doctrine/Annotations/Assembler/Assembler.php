@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Assembler;
 
+use Doctrine\Annotations\Assembler\Acceptor\ReferenceAcceptor;
 use Doctrine\Annotations\Metadata\MetadataCollection;
 use Doctrine\Annotations\Metadata\Reflection\ClassReflectionProvider;
 use Doctrine\Annotations\Parser\Ast\Annotation;
@@ -48,18 +49,23 @@ final class Assembler
     /** @var ClassReflectionProvider */
     private $classReflectionProvider;
 
+    /** @var ReferenceAcceptor */
+    private $referenceAcceptor;
+
     public function __construct(
         MetadataCollection $metadataCollection,
         ReferenceResolver $referenceResolver,
         ConstructorStrategy $constructorStrategy,
         PropertyStrategy $propertyStrategy,
-        ClassReflectionProvider $classReflectionProvider
+        ClassReflectionProvider $classReflectionProvider,
+        ReferenceAcceptor $referenceAcceptor
     ) {
         $this->metadataCollection  = $metadataCollection;
         $this->referenceResolver   = $referenceResolver;
         $this->constructorStrategy = $constructorStrategy;
         $this->propertyStrategy    = $propertyStrategy;
         $this->classReflectionProvider = $classReflectionProvider;
+        $this->referenceAcceptor   = $referenceAcceptor;
     }
 
     /**
@@ -82,6 +88,7 @@ final class Assembler
             $this->constructorStrategy,
             $this->propertyStrategy,
             $this->classReflectionProvider,
+            $this->referenceAcceptor,
             $scope,
             $storage
         ) implements Visitor {
@@ -100,6 +107,9 @@ final class Assembler
             /** @var ClassReflectionProvider */
             private $classReflectionProvider;
 
+            /** @var ReferenceAcceptor */
+            private $referenceAcceptor;
+
             /** @var Scope */
             private $scope;
 
@@ -115,6 +125,7 @@ final class Assembler
                 ConstructorStrategy $constructorStrategy,
                 PropertyStrategy $propertyStrategy,
                 ClassReflectionProvider $classReflectionProvider,
+                ReferenceAcceptor $referenceAcceptor,
                 Scope $scope,
                 SplObjectStorage $storage
             ) {
@@ -123,6 +134,7 @@ final class Assembler
                 $this->constructorStrategy     = $constructorStrategy;
                 $this->propertyStrategy        = $propertyStrategy;
                 $this->classReflectionProvider = $classReflectionProvider;
+                $this->referenceAcceptor       = $referenceAcceptor;
                 $this->scope                   = $scope;
                 $this->storage                 = $storage;
                 $this->stack                   = new SplStack();
@@ -131,11 +143,13 @@ final class Assembler
             public function visitAnnotations(Annotations $annotations) : void
             {
                 foreach ($annotations as $annotation) {
-                    if ($this->scope->getIgnoredAnnotations()->has($annotation->getName()->getIdentifier())) {
-                        continue;
-                    }
+                    $stackSize = $this->stack->count();
 
                     $annotation->dispatch($this);
+
+                    if ($this->stack->count() === $stackSize) {
+                        continue;
+                    }
 
                     $this->storage->attach($this->stack->pop());
                 }
@@ -145,6 +159,10 @@ final class Assembler
 
             public function visitAnnotation(Annotation $annotation) : void
             {
+                if (! $this->referenceAcceptor->accepts($annotation->getName(), $this->scope)) {
+                    return;
+                }
+
                 $annotation->getParameters()->dispatch($this);
                 $annotation->getName()->dispatch($this);
 
