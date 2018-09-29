@@ -16,12 +16,13 @@ use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Reflection\ClassReflectionProvider;
 use Doctrine\Annotations\Metadata\ScopeManufacturer;
 use Doctrine\Annotations\Metadata\Type\MixedType;
-use Doctrine\Annotations\Metadata\TypeParser;
+use Doctrine\Annotations\TypeParser\PHPStanTypeParser;
 use Doctrine\Annotations\Parser\Ast\Annotations;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Compiler;
 use Doctrine\Annotations\Parser\Reference\ReferenceResolver;
 use Doctrine\Annotations\Parser\Scope;
+use Doctrine\Annotations\TypeParser\TypeParser;
 use ReflectionClass;
 use ReflectionProperty;
 use function assert;
@@ -166,7 +167,7 @@ final class AnnotationMetadataAssembler
 
         return new PropertyMetadata(
             $property->getName(),
-            new MixedType(),//$this->typeParser->parsePropertyType($property->getDocComment(), $required),
+            $this->typeParser->parsePropertyType($property->getDocComment(), $required),
             $required
         );
     }

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Metadata;
 
-use Doctrine\Annotations\Metadata\TypeParser;
+use Doctrine\Annotations\TypeParser\PHPStanTypeParser;
+use Doctrine\Annotations\TypeParser\TypeParser;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
@@ -18,7 +19,7 @@ final class TypeParserTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->parser = new TypeParser(
+        $this->parser = new PHPStanTypeParser(
             new Lexer(),
             new PhpDocParser(new BaseTypeParser(), new ConstExprParser())
         );

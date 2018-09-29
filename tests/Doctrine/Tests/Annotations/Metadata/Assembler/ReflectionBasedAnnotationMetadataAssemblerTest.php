@@ -8,7 +8,7 @@ use Doctrine\Annotations\Metadata\AnnotationTarget;
 use Doctrine\Annotations\Metadata\Assembler\ReflectionBasedAnnotationMetadataAssembler;
 use Doctrine\Annotations\Metadata\ScopeManufacturer;
 use Doctrine\Annotations\Metadata\Type\MixedType;
-use Doctrine\Annotations\Metadata\TypeParser;
+use Doctrine\Annotations\TypeParser\PHPStanTypeParser;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Compiler;
 use Doctrine\Annotations\Parser\Imports;
@@ -33,7 +33,7 @@ final class ReflectionBasedAnnotationMetadataAssemblerTest extends TestCase
         $this->assembler = new ReflectionBasedAnnotationMetadataAssembler(
             new Compiler(),
             new FallbackReferenceResolver(),
-            new TypeParser(new Lexer(), new PhpDocParser(new PhpDocTypeParser(), new ConstExprParser())),
+            new PHPStanTypeParser(new Lexer(), new PhpDocParser(new PhpDocTypeParser(), new ConstExprParser())),
             new ScopeManufacturer(new PhpParser())
         );
     }
