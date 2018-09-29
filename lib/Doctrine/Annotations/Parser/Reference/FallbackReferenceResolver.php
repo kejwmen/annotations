@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Doctrine\Annotations\Parser\Reference;
 
 use Doctrine\Annotations\Parser\Ast\Reference;
+use Doctrine\Annotations\Parser\Reference\Exception\ReferenceNotResolvable;
 use Doctrine\Annotations\Parser\Scope;
-use function assert;
 use function class_exists;
-use function sprintf;
 use function strtolower;
 
 /**
@@ -20,7 +19,9 @@ final class FallbackReferenceResolver implements ReferenceResolver
     {
         $class = $this->resolveFullyQualifiedName($reference, $scope);
 
-        assert(class_exists($class), sprintf('Class %s not found', $class));
+        if (! class_exists($class)) {
+            throw ReferenceNotResolvable::new($reference);
+        }
 
         return $class;
     }

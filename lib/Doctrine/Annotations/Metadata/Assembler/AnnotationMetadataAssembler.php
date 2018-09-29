@@ -76,7 +76,7 @@ final class AnnotationMetadataAssembler
 
         $annotations = $this->parser->compile($docComment);
 
-        assert(stripos($docComment, '@Annotation') !== false);
+        assert(stripos($docComment, '@') !== false);
 
         $hydratedAnnotations = $this->hydrateInternalAnnotations($annotations, $scope);
 

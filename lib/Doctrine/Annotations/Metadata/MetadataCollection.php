@@ -9,7 +9,7 @@ use function assert;
 
 final class MetadataCollection implements ArrayAccess
 {
-    /** @var AnnotationMetadata[] */
+    /** @var array<string, AnnotationMetadata> */
     private $metadata = [];
 
     public function __construct(AnnotationMetadata ...$metadatas)
@@ -19,11 +19,13 @@ final class MetadataCollection implements ArrayAccess
         }
     }
 
-    public function add(AnnotationMetadata $metadata) : void
+    public function add(AnnotationMetadata ...$metadatas) : void
     {
-        assert(! isset($this[$metadata->getName()]));
+        foreach ($metadatas as $metadata) {
+            assert(! isset($this[$metadata->getName()]));
 
-        $this->metadata[$metadata->getName()] = $metadata;
+            $this->metadata[$metadata->getName()] = $metadata;
+        }
     }
 
     /**
@@ -68,6 +70,8 @@ final class MetadataCollection implements ArrayAccess
      */
     public function offsetUnset($name) : void
     {
-        assert(false, 'immutable');
+        assert(isset($this[$name]));
+
+        unset($this->metadata[$name]);
     }
 }

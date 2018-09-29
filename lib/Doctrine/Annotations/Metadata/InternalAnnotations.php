@@ -16,6 +16,18 @@ use Doctrine\Annotations\Parser\Imports;
 
 final class InternalAnnotations
 {
+    /**
+     * @return string[] iterable<string>
+     */
+    public static function getNames() : iterable
+    {
+        yield Annotation::class;
+        yield Enum::class;
+        yield IgnoreAnnotation::class;
+        yield Required::class;
+        yield Target::class;
+    }
+
     public static function createMetadata() : MetadataCollection
     {
         return new MetadataCollection(
