@@ -11,7 +11,9 @@ use Doctrine\Annotations\Annotation\Required;
 use Doctrine\Annotations\Annotation\Target;
 use Doctrine\Annotations\Metadata\Type\IntegerType;
 use Doctrine\Annotations\Metadata\Type\ListType;
+use Doctrine\Annotations\Metadata\Type\NullType;
 use Doctrine\Annotations\Metadata\Type\StringType;
+use Doctrine\Annotations\Metadata\Type\UnionType;
 use Doctrine\Annotations\Parser\Imports;
 
 final class InternalAnnotations
@@ -34,24 +36,21 @@ final class InternalAnnotations
             new AnnotationMetadata(
                 Annotation::class,
                 new AnnotationTarget(AnnotationTarget::TARGET_ALL),
-                false,
-                []
+                false
             ),
             new AnnotationMetadata(
                 Enum::class,
                 new AnnotationTarget(AnnotationTarget::TARGET_ALL),
                 true,
                 [
-                    'value' => new PropertyMetadata(
+                    new PropertyMetadata(
                         'value',
                         new ListType(new StringType()),
-                        true,
                         true
                     ),
-                    'literal' => new PropertyMetadata(
+                    new PropertyMetadata(
                         'literal',
-                        new ListType(new StringType()),
-                        false
+                        new UnionType(new ListType(new StringType()), new NullType())
                     ),
                 ]
             ),
@@ -63,7 +62,6 @@ final class InternalAnnotations
                     new PropertyMetadata(
                         'names',
                         new ListType(new StringType()),
-                        true,
                         true
                     ),
                 ]
@@ -71,8 +69,7 @@ final class InternalAnnotations
             new AnnotationMetadata(
                 Required::class,
                 new AnnotationTarget(AnnotationTarget::TARGET_PROPERTY),
-                false,
-                []
+                false
             ),
             new AnnotationMetadata(
                 Target::class,
@@ -81,19 +78,16 @@ final class InternalAnnotations
                 [
                     new PropertyMetadata(
                         'value',
-                        new ListType(new StringType()),
-                        false,
+                        new UnionType(new ListType(new StringType()), new NullType()),
                         true
                     ),
                     new PropertyMetadata(
                         'targets',
-                        new IntegerType(),
-                        false
+                        new UnionType(new IntegerType(), new NullType())
                     ),
                     new PropertyMetadata(
                         'literal',
-                        new IntegerType(),
-                        false
+                        new UnionType(new IntegerType(), new NullType())
                     ),
                 ]
             )

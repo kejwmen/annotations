@@ -20,4 +20,9 @@ final class IntegerType implements ScalarType
     {
         return is_int($value);
     }
+
+    public function acceptsNull() : bool
+    {
+        return false;
+    }
 }

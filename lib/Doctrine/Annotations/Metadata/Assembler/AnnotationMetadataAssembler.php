@@ -15,6 +15,8 @@ use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Reflection\ClassReflectionProvider;
 use Doctrine\Annotations\Metadata\ScopeManufacturer;
 use Doctrine\Annotations\Metadata\Type\MixedType;
+use Doctrine\Annotations\Metadata\Type\NullType;
+use Doctrine\Annotations\Metadata\Type\UnionType;
 use Doctrine\Annotations\Parser\Ast\Annotations;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Compiler;
@@ -157,7 +159,6 @@ final class AnnotationMetadataAssembler
             return new PropertyMetadata(
                 $property->getName(),
                 new MixedType(),
-                false,
                 $first
             );
         }
@@ -165,13 +166,15 @@ final class AnnotationMetadataAssembler
         $scope               = $this->scopeManufacturer->manufacturePropertyScope($property);
         $hydratedAnnotations = $this->hydrateInternalAnnotations($this->parser->compile($docBlock), $scope);
 
-        $required = $this->findAnnotation(RequiredAnnotation::class, $hydratedAnnotations, $scope) !== null;
+        $required = $this->findAnnotation(RequiredAnnotation::class, $hydratedAnnotations) !== null;
 
-        return new PropertyMetadata(
-            $property->getName(),
-            $this->typeParser->parsePropertyType($property->getDocComment(), $required),
-            $required,
-            $first
-        );
+        $type = $this->typeParser->parsePropertyType($property->getDocComment(), $scope);
+
+        if ($required && ! $type->acceptsNull()) {
+            // TODO: throw deprecated warning?
+            $type = new UnionType($type, new NullType());
+        }
+
+        return new PropertyMetadata($property->getName(), $type, $first);
     }
 }

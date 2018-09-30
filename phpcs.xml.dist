@@ -46,6 +46,7 @@
         <exclude-pattern>tests/Doctrine/Tests/Annotations/Parser/CompilerTest.php</exclude-pattern>
         <exclude-pattern>tests/Doctrine/Tests/Annotations/Parser/GrammarTest.php</exclude-pattern>
         <exclude-pattern>tests/Doctrine/Tests/Annotations/Parser/Visitor/MetadataBuilderTest.php</exclude-pattern>
+        <exclude-pattern>tests/Doctrine/Tests/Annotations/TypeParser/PHPStanTypeParserTest.php</exclude-pattern>
     </rule>
 
     <rule ref="Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase">

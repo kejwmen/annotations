@@ -51,4 +51,9 @@ final class ListType implements Type
 
         return true;
     }
+
+    public function acceptsNull() : bool
+    {
+        return $this->valueType->acceptsNull();
+    }
 }

@@ -12,4 +12,6 @@ interface Type
      * @param mixed $value
      */
     public function validate($value) : bool;
+
+    public function acceptsNull() : bool;
 }

@@ -18,4 +18,9 @@ final class MixedType implements Type
     {
         return true;
     }
+
+    public function acceptsNull() : bool
+    {
+        return true;
+    }
 }
