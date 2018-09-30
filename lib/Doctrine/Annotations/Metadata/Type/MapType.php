@@ -51,4 +51,9 @@ final class MapType implements CompositeType
 
         return true;
     }
+
+    public function acceptsNull() : bool
+    {
+        return $this->valueType->acceptsNull();
+    }
 }

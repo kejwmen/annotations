@@ -15,17 +15,13 @@ final class PropertyMetadata
     private $type;
 
     /** @var bool */
-    private $mandatory;
-
-    /** @var bool */
     private $default;
 
-    public function __construct(string $name, Type $type, bool $mandatory, bool $default = false)
+    public function __construct(string $name, Type $type, bool $default = false)
     {
-        $this->name      = $name;
-        $this->type      = $type;
-        $this->mandatory = $mandatory;
-        $this->default   = $default;
+        $this->name    = $name;
+        $this->type    = $type;
+        $this->default = $default;
     }
 
     public function getName() : string
@@ -36,11 +32,6 @@ final class PropertyMetadata
     public function getType() : Type
     {
         return $this->type;
-    }
-
-    public function isMandatory() : bool
-    {
-        return $this->mandatory;
     }
 
     public function isDefault() : bool

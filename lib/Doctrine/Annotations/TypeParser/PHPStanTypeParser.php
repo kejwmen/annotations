@@ -7,23 +7,33 @@ namespace Doctrine\Annotations\TypeParser;
 use Doctrine\Annotations\Metadata\Type\BooleanType;
 use Doctrine\Annotations\Metadata\Type\FloatType;
 use Doctrine\Annotations\Metadata\Type\IntegerType;
+use Doctrine\Annotations\Metadata\Type\IntersectionType;
 use Doctrine\Annotations\Metadata\Type\ListType;
 use Doctrine\Annotations\Metadata\Type\MapType;
 use Doctrine\Annotations\Metadata\Type\MixedType;
+use Doctrine\Annotations\Metadata\Type\NullType;
+use Doctrine\Annotations\Metadata\Type\ObjectType;
 use Doctrine\Annotations\Metadata\Type\StringType;
 use Doctrine\Annotations\Metadata\Type\Type;
+use Doctrine\Annotations\Metadata\Type\UnionType;
+use Doctrine\Annotations\Parser\Ast\Reference;
+use Doctrine\Annotations\Parser\Reference\ReferenceResolver;
+use Doctrine\Annotations\Parser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
+use function array_map;
 use function assert;
 use function count;
+use function ltrim;
 use function strcasecmp;
 use function strtolower;
 
@@ -35,42 +45,27 @@ final class PHPStanTypeParser implements TypeParser
     /** @var PhpDocParser */
     private $phpDocParser;
 
-    public function __construct(Lexer $lexer, PhpDocParser $phpDocParser)
+    /** @var ReferenceResolver */
+    private $referenceResolver;
+
+    public function __construct(Lexer $lexer, PhpDocParser $phpDocParser, ReferenceResolver $referenceResolver)
     {
-        $this->lexer        = $lexer;
-        $this->phpDocParser = $phpDocParser;
+        $this->lexer             = $lexer;
+        $this->phpDocParser      = $phpDocParser;
+        $this->referenceResolver = $referenceResolver;
     }
 
-    public function parsePropertyType(string $docBlock, bool $required) : ?Type
+    public function parsePropertyType(string $docBlock, Scope $scope) : Type
     {
         $tags = $this->parse($docBlock)->getVarTagValues();
 
-        assert(count($tags) <= 1);
+        assert(count($tags) <= 1, 'multiple @var tags not allowed');
 
         if (count($tags) === 0) {
             return new MixedType();
         }
 
-        $typeNode = $tags[0]->type;
-
-        if (! $required) {
-            assert(
-                $typeNode instanceof NullableTypeNode
-                || ($typeNode instanceof UnionTypeNode && count($typeNode->types) === 2)
-            );
-
-            if ($typeNode->types[0] instanceof IdentifierTypeNode && strcasecmp($typeNode->types[0]->name, 'null') === 0) {
-                return $this->resolveType($typeNode->types[1]);
-            }
-
-            if ($typeNode->types[1] instanceof IdentifierTypeNode && strcasecmp($typeNode->types[1]->name, 'null') === 0) {
-                return $this->resolveType($typeNode->types[0]);
-            }
-
-            assert(false, 'null|null found');
-        }
-
-        return $this->resolveType($typeNode);
+        return $this->resolveType($tags[0]->type, $scope);
     }
 
     private function parse(string $docBlock) : PhpDocNode
@@ -78,52 +73,88 @@ final class PHPStanTypeParser implements TypeParser
         return $this->phpDocParser->parse(new TokenIterator($this->lexer->tokenize($docBlock)));
     }
 
-    private function resolveType(TypeNode $typeNode) : Type
+    private function resolveType(TypeNode $typeNode, Scope $scope) : Type
     {
-        if ($typeNode instanceof GenericTypeNode) {
-            return $this->resolveGenericNode($typeNode);
+        if ($typeNode instanceof IdentifierTypeNode && strcasecmp($typeNode->name, 'null') === 0) {
+            return new NullType();
+        }
+
+        if ($typeNode instanceof NullableTypeNode) {
+            return new UnionType($this->resolveType($typeNode->type, $scope), new NullType());
+        }
+
+        if ($typeNode instanceof UnionTypeNode) {
+            return new UnionType(
+                ...array_map(
+                    function (TypeNode $type) use ($scope) : Type {
+                        return $this->resolveType($type, $scope);
+                    },
+                    $typeNode->types
+                )
+            );
+        }
+
+        if ($typeNode instanceof IntersectionTypeNode) {
+            return new IntersectionType(
+                ...array_map(
+                    function (TypeNode $type) use ($scope) : Type {
+                        return $this->resolveType($type, $scope);
+                    },
+                    $typeNode->types
+                )
+            );
         }
 
         if ($typeNode instanceof ArrayTypeNode) {
-            return $this->resolveArrayTypeNode($typeNode);
+            return $this->resolveArrayTypeNode($typeNode, $scope);
         }
 
-        assert($typeNode instanceof IdentifierTypeNode);
+        if ($typeNode instanceof GenericTypeNode) {
+            return $this->resolveGenericNode($typeNode, $scope);
+        }
 
-        return $this->resolveScalarNode($typeNode);
+        assert($typeNode instanceof IdentifierTypeNode, 'Unsupported node type');
+
+        return $this->resolveIdentifierNode($typeNode, $scope);
     }
 
-    private function resolveGenericNode(GenericTypeNode $typeNode) : Type
+    private function resolveGenericNode(GenericTypeNode $typeNode, Scope $scope) : Type
     {
-        assert(strcasecmp($typeNode->type->name, 'array') === 0);
+        assert(
+            strcasecmp($typeNode->type->name, 'array') === 0
+            || strcasecmp($typeNode->type->name, 'iterable') === 0
+        );
 
         if (count($typeNode->genericTypes) === 1) {
-            return new ListType($this->resolveType($typeNode->genericTypes[0]));
+            return new ListType($this->resolveType($typeNode->genericTypes[0], $scope));
         }
 
         if (count($typeNode->genericTypes) === 2) {
             assert($typeNode->genericTypes[0] instanceof IdentifierTypeNode);
 
             return new MapType(
-                $this->resolveScalarNode($typeNode->genericTypes[0]),
-                $this->resolveType($typeNode->genericTypes[1])
+                $this->resolveIdentifierNode($typeNode->genericTypes[0], $scope),
+                $this->resolveType($typeNode->genericTypes[1], $scope)
             );
         }
 
-        assert(false, '>2 generic array args');
+        assert(false, '>2 generic type args');
     }
 
-    private function resolveArrayTypeNode(ArrayTypeNode $typeNode) : Type
+    private function resolveArrayTypeNode(ArrayTypeNode $typeNode, Scope $scope) : Type
     {
-        return new ListType($this->resolveType($typeNode->type));
+        return new ListType($this->resolveType($typeNode->type, $scope));
     }
 
-    private function resolveScalarNode(TypeNode $typeNode) : Type
+    private function resolveIdentifierNode(TypeNode $typeNode, Scope $scope) : Type
     {
         assert($typeNode instanceof IdentifierTypeNode);
 
-        switch (strtolower($typeNode->name)) {
+        $canonicalName = strtolower($typeNode->name);
+
+        switch ($canonicalName) {
             case 'bool':
+            case 'boolean':
                 return new BooleanType();
             case 'int' :
             case 'integer' :
@@ -135,9 +166,21 @@ final class PHPStanTypeParser implements TypeParser
             case 'string':
                 return new StringType();
             case 'mixed':
-                return new MixedType();
+                return new MixedType(); // TODO not really a scalar
         }
 
-        assert(false, 'invalid type');
+        assert($canonicalName !== 'callable', 'callable not supported');
+        assert($canonicalName !== 'this', '$this not supported');
+
+        $fullyQualified = $typeNode->name[0] === '\\';
+        return new ObjectType(
+            $this->referenceResolver->resolve(
+                new Reference(
+                    $typeNode->name[0] === '\\' ? ltrim($typeNode->name, '\\') : $typeNode->name,
+                    $fullyQualified
+                ),
+                $scope
+            )
+        );
     }
 }

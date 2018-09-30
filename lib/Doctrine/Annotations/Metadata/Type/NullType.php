@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata\Type;
 
-final class MixedType implements Type
+final class NullType implements ScalarType
 {
     public function describe() : string
     {
-        return 'mixed';
+        return 'null';
     }
 
     public function validate($value) : bool
     {
-        return true;
+        return $value === null;
     }
 
     public function acceptsNull() : bool

@@ -36,7 +36,7 @@ final class AnnotationMetadata
         string $name,
         AnnotationTarget $target,
         bool $hasConstructor,
-        array $properties
+        array $properties = []
     ) {
         $this->name            = $name;
         $this->target          = $target;
