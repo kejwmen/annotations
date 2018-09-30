@@ -97,11 +97,11 @@ final class InternalAnnotations
     public static function createImports() : Imports
     {
         return new Imports([
-            'Annotation'       => Annotation::class,
-            'Enum'             => Enum::class,
-            'IgnoreAnnotation' => IgnoreAnnotation::class,
-            'Required'         => Required::class,
-            'Target'           => Target::class,
+            'annotation'       => Annotation::class,
+            'enum'             => Enum::class,
+            'ignoreannotation' => IgnoreAnnotation::class,
+            'required'         => Required::class,
+            'target'           => Target::class,
         ]);
     }
 }

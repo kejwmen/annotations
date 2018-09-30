@@ -169,14 +169,11 @@ final class PHPStanTypeParser implements TypeParser
                 return new MixedType(); // TODO not really a scalar
         }
 
-        assert($canonicalName !== 'callable', 'callable not supported');
-        assert($canonicalName !== 'this', '$this not supported');
-
         $fullyQualified = $typeNode->name[0] === '\\';
         return new ObjectType(
             $this->referenceResolver->resolve(
                 new Reference(
-                    $typeNode->name[0] === '\\' ? ltrim($typeNode->name, '\\') : $typeNode->name,
+                    $fullyQualified ? ltrim($typeNode->name, '\\') : $typeNode->name,
                     $fullyQualified
                 ),
                 $scope
