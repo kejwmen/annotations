@@ -9,6 +9,7 @@ use IteratorAggregate;
 use function assert;
 use function in_array;
 use function is_string;
+use function strtolower;
 
 final class Imports implements ArrayAccess, IteratorAggregate
 {
@@ -22,9 +23,9 @@ final class Imports implements ArrayAccess, IteratorAggregate
     {
         foreach ($map as $alias => $name) {
             assert(is_string($alias) && is_string($name));
-            assert(! isset($this[$alias]));
+            assert(! isset($this[strtolower($alias)]));
 
-            $this->map[$alias] = $name;
+            $this->map[strtolower($alias)] = $name;
         }
     }
 
@@ -43,9 +44,9 @@ final class Imports implements ArrayAccess, IteratorAggregate
      */
     public function offsetGet($offset) : string
     {
-        assert(isset($this[$offset]));
+        assert(isset($this[strtolower($offset)]));
 
-        return $this->map[$offset];
+        return $this->map[strtolower($offset)];
     }
 
     /**
@@ -66,7 +67,7 @@ final class Imports implements ArrayAccess, IteratorAggregate
      */
     public function offsetExists($offset) : bool
     {
-        return isset($this->map[$offset]);
+        return isset($this->map[strtolower($offset)]);
     }
 
     /**
@@ -81,6 +82,6 @@ final class Imports implements ArrayAccess, IteratorAggregate
 
     public function isKnown(string $name) : bool
     {
-        return in_array($name, $this->map, true);
+        return in_array(strtolower($name), $this->map, true);
     }
 }
