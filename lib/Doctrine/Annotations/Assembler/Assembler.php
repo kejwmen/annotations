@@ -32,6 +32,7 @@ use SplStack;
 use function array_key_exists;
 use function assert;
 use function constant;
+use function strtolower;
 
 final class Assembler
 {
@@ -271,7 +272,17 @@ final class Assembler
                 $constantFetch->getName()->dispatch($this);
                 $constantFetch->getClass()->dispatch($this);
 
-                $this->stack->push(constant($this->stack->pop() . '::' . $this->stack->pop()));
+                // TODO refactor out
+
+                $className    = $this->stack->pop();
+                $constantName = $this->stack->pop();
+
+                if (strtolower($constantName) === 'class') {
+                    $this->stack->push($className);
+                    return;
+                }
+
+                $this->stack->push(constant($className . '::' . $constantName));
             }
         };
     }
