@@ -37,6 +37,7 @@ use ReflectionMethod;
 use ReflectionProperty;
 use Reflector;
 use function assert;
+use function iterator_to_array;
 
 final class NewAnnotationReader implements Reader
 {
@@ -137,7 +138,7 @@ final class NewAnnotationReader implements Reader
      */
     public function getClassAnnotations(ReflectionClass $class) : iterable
     {
-        yield from $this->collectAnnotations($class);
+        return iterator_to_array($this->collectAnnotations($class), false);
     }
 
     /**
@@ -155,7 +156,7 @@ final class NewAnnotationReader implements Reader
      */
     public function getMethodAnnotations(ReflectionMethod $method) : iterable
     {
-        yield from $this->collectAnnotations($method);
+        return iterator_to_array($this->collectAnnotations($method), false);
     }
 
     /**
@@ -173,7 +174,7 @@ final class NewAnnotationReader implements Reader
      */
     public function getPropertyAnnotations(ReflectionProperty $property) : iterable
     {
-        yield from $this->collectAnnotations($property);
+        return iterator_to_array($this->collectAnnotations($property), false);
     }
 
     /**
