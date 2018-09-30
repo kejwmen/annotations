@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata\Type;
 
+use function is_array;
+use function is_object;
+use function is_scalar;
+
 final class MixedType implements Type
 {
     public function describe() : string
@@ -16,7 +20,7 @@ final class MixedType implements Type
      */
     public function validate($value) : bool
     {
-        return true;
+        return $value === null || is_scalar($value) || is_array($value) || is_object($value);
     }
 
     public function acceptsNull() : bool
