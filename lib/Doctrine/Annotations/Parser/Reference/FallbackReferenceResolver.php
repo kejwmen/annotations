@@ -28,7 +28,13 @@ final class FallbackReferenceResolver implements ReferenceResolver
             return $imports[$identifierLower];
         }
 
-        $namespace = $scope->getSubject()->getNamespaceName();
+        $subject = $scope->getSubject();
+
+        if (!$subject instanceof \ReflectionClass || !$subject instanceof \ReflectionFunctionAbstract) {
+            return $identifier;
+        }
+
+        $namespace = $subject->getNamespaceName();
 
         if ($namespace === '') {
             return $identifier;

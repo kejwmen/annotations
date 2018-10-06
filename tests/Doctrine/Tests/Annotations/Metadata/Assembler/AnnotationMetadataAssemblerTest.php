@@ -6,12 +6,20 @@ namespace Doctrine\Tests\Annotations\Metadata\Assembler;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
+use Doctrine\Annotations\Metadata\Type\BooleanType;
+use Doctrine\Annotations\Metadata\Type\FloatType;
+use Doctrine\Annotations\Metadata\Type\IntegerType;
+use Doctrine\Annotations\Metadata\Type\ListType;
 use Doctrine\Annotations\Metadata\Type\MixedType;
+use Doctrine\Annotations\Metadata\Type\NullType;
 use Doctrine\Annotations\Metadata\Type\ObjectType;
 use Doctrine\Annotations\Metadata\Type\StringType;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAnnotation;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithRequiredAttributes;
+use Doctrine\Tests\Annotations\Fixtures\AnnotationWithRequiredAttributesWithoutConstructor;
+use Doctrine\Tests\Annotations\Fixtures\AnnotationWithVarType;
+use Doctrine\Tests\Annotations\Metadata\Type\TestNullableType;
 use PHPUnit\Framework\TestCase;
 use Doctrine\Annotations\Assembler\Acceptor\InternalAcceptor;
 use Doctrine\Annotations\Assembler\Assembler;
@@ -120,6 +128,103 @@ class AnnotationMetadataAssemblerTest extends TestCase
                 $properties = $metadata->getProperties();
                 $this->assertEmpty($properties);
                 $this->assertNull($metadata->getDefaultProperty());
+            }
+        ];
+
+        yield 'fixture - AnnotationWithRequiredAttributesWithoutConstructor' => [
+            new Reference(AnnotationWithRequiredAttributesWithoutConstructor::class, true),
+            new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
+            function (AnnotationMetadata $metadata) {
+                $this->assertSame(AnnotationWithRequiredAttributesWithoutConstructor::class, $metadata->getName());
+                $this->assertTrue($metadata->getTarget()->all(), 'Invalid target');
+                $this->assertFalse($metadata->hasConstructor(), 'Has constructor');
+                $properties = $metadata->getProperties();
+                $this->assertEquals(
+                    [
+                        'value' => new PropertyMetadata(
+                            'value',
+                            TestNullableType::fromType(new StringType()),
+                            true
+                        ),
+                        'annot' => new PropertyMetadata(
+                            'annot',
+                            TestNullableType::fromType(new ObjectType(AnnotationTargetAnnotation::class))
+                        )
+                    ],
+                    $properties
+                );
+                $this->assertEquals(
+                    new PropertyMetadata('value', TestNullableType::fromType(new StringType()), true),
+                    $metadata->getDefaultProperty()
+                );
+            }
+        ];
+
+        yield 'fixture - AnnotationWithVarType' => [
+            new Reference(AnnotationWithVarType::class, true),
+            new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
+            function (AnnotationMetadata $metadata) {
+                $this->assertSame(AnnotationWithVarType::class, $metadata->getName());
+                $this->assertTrue($metadata->getTarget()->all(), 'Invalid target');
+                $this->assertFalse($metadata->hasConstructor(), 'Has constructor');
+                $properties = $metadata->getProperties();
+
+                $expectedProperties = [
+                    'mixed' => new PropertyMetadata(
+                        'mixed',
+                        new MixedType(),
+                        true
+                    ),
+                    'boolean' => new PropertyMetadata(
+                        'boolean',
+                        new BooleanType()
+                    ),
+                    'bool' => new PropertyMetadata(
+                        'bool',
+                        new BooleanType()
+                    ),
+                    'float' => new PropertyMetadata(
+                        'float',
+                        new FloatType()
+                    ),
+                    'string' => new PropertyMetadata(
+                        'string',
+                        new StringType()
+                    ),
+                    'integer' => new PropertyMetadata(
+                        'integer',
+                        new IntegerType()
+                    ),
+                    'array' => new PropertyMetadata(
+                        'array',
+                        new ListType(new MixedType())
+                    ),
+                    'annotation' => new PropertyMetadata(
+                        'annotation',
+                        new ObjectType(AnnotationTargetAll::class)
+                    ),
+                    'arrayOfIntegers' => new PropertyMetadata(
+                        'arrayOfIntegers',
+                        new ListType(new IntegerType())
+                    ),
+                    'arrayOfStrings' => new PropertyMetadata(
+                        'arrayOfStrings',
+                        new ListType(new StringType())
+                    ),
+                    'arrayOfAnnotations' => new PropertyMetadata(
+                        'arrayOfAnnotations',
+                        new ListType(new ObjectType(AnnotationTargetAll::class))
+                    ),
+                ];
+
+                $this->assertEquals(
+                    $expectedProperties,
+                    $properties
+                );
+                $this->assertEquals(
+                    $expectedProperties[0],
+                    $metadata->getDefaultProperty()
+                );
             }
         ];
     }
