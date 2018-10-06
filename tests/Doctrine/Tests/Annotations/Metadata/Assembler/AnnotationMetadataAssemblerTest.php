@@ -222,7 +222,7 @@ class AnnotationMetadataAssemblerTest extends TestCase
                     $properties
                 );
                 $this->assertEquals(
-                    $expectedProperties[0],
+                    reset($expectedProperties),
                     $metadata->getDefaultProperty()
                 );
             }

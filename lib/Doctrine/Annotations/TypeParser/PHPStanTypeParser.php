@@ -165,6 +165,8 @@ final class PHPStanTypeParser implements TypeParser
                 return new FloatType();
             case 'string':
                 return new StringType();
+            case 'array':
+                return new ListType(new MixedType());
             case 'mixed':
                 return new MixedType(); // TODO not really a scalar
         }
