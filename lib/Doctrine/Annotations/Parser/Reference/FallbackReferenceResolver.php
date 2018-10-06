@@ -8,12 +8,11 @@ use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Scope;
 use ReflectionClass;
 use ReflectionFunction;
+use ReflectionFunctionAbstract;
 use ReflectionMethod;
 use ReflectionProperty;
 use Reflector;
 use function assert;
-use function explode;
-use function strpos;
 use function strtolower;
 
 /**
@@ -36,12 +35,10 @@ final class FallbackReferenceResolver implements ReferenceResolver
             return $imports[$identifierLower];
         }
 
-        if (strpos($identifierLower, '\\') !== false) {
-            $namespacePart = explode('\\', $identifierLower, 2)[0];
+        $subject = $scope->getSubject();
 
-            if (isset($imports[$namespacePart])) {
-                return $imports[$namespacePart] . '\\' . explode('\\', $identifier, 2)[1];
-            }
+        if (! $subject instanceof ReflectionClass && ! $subject instanceof ReflectionFunctionAbstract) {
+            return $identifier;
         }
 
         $namespace = $this->getSubjectNamespaceName($scope->getSubject());
