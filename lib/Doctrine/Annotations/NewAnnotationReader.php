@@ -96,7 +96,7 @@ final class NewAnnotationReader implements Reader
             ),
             new ScopeManufacturer($this->usesParser),
             new Assembler(
-                $this->metadataCollection,
+                InternalAnnotations::createMetadata(),
                 $staticReferenceResolver,
                 $this->constructor,
                 $this->reflectionProvider,

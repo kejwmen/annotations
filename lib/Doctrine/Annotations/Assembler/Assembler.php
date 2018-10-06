@@ -162,7 +162,6 @@ final class Assembler
                 $annotation->getParameters()->dispatch($this);
                 $annotation->getName()->dispatch($this);
 
-
                 $this->stack->push(
                     $this->constructor->construct(
                         $this->metadataCollection[$this->stack->pop()],
