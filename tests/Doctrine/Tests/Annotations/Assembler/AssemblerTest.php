@@ -20,10 +20,13 @@ use Doctrine\Annotations\Parser\Scope;
 use Doctrine\Annotations\PhpParser;
 use Doctrine\Tests\Annotations\Assembler\Acceptor\AlwaysAcceptingAcceptor;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAll;
+use Doctrine\Tests\Annotations\Fixtures\AnnotationWithConstants;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithVarType;
 use Doctrine\Tests\Annotations\Fixtures\ClassWithAnnotationTargetAll;
+use Doctrine\Tests\Annotations\Fixtures\ClassWithAnnotationWithConstants;
 use Doctrine\Tests\Annotations\Fixtures\ClassWithFullValidUsageOfAnnotationWithVarType;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationTargetAllMetadata;
+use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithConstantsMetadata;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithVarTypeMetadata;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -93,8 +96,8 @@ class AssemblerTest extends TestCase
                 $this->assertInstanceOf(AnnotationWithVarType::class, $resultAnnotation);
 
                 $this->assertNull($resultAnnotation->mixed);
-                $this->assertSame(true, $resultAnnotation->boolean);
-                $this->assertSame(false, $resultAnnotation->bool);
+                $this->assertTrue($resultAnnotation->boolean);
+                $this->assertFalse($resultAnnotation->bool);
                 $this->assertSame(3.14, $resultAnnotation->float);
                 $this->assertSame('foo', $resultAnnotation->string);
                 $this->assertSame(42, $resultAnnotation->integer);
@@ -111,6 +114,19 @@ class AssemblerTest extends TestCase
                 $this->assertNull($resultAnnotation->arrayOfAnnotations[0]->name);
                 $this->assertInstanceOf(AnnotationTargetAll::class, $resultAnnotation->arrayOfAnnotations[1]);
                 $this->assertSame(123, $resultAnnotation->arrayOfAnnotations[1]->name);
+            },
+        ];
+
+        yield 'fixture - ClassWithAnnotationWithConstants' => [
+            ClassWithAnnotationWithConstants::class,
+            [AnnotationWithConstantsMetadata::get()],
+            function (array $result) : void {
+                $this->assertCount(1, $result);
+                /** @var AnnotationWithConstants $resultAnnotation */
+                $resultAnnotation = $result[0];
+                $this->assertInstanceOf(AnnotationWithConstants::class, $resultAnnotation);
+
+                $this->assertSame(AnnotationWithConstants::FLOAT, $resultAnnotation->value);
             },
         ];
     }
