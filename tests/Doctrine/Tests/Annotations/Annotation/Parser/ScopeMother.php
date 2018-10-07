@@ -19,6 +19,15 @@ final class ScopeMother
         );
     }
 
+    public static function withReflector(\Reflector $reflector): Scope
+    {
+        return new Scope(
+            $reflector,
+            new Imports([]),
+            new IgnoredAnnotations()
+        );
+    }
+
     /**
      * @param string[] $names
      */
@@ -28,6 +37,18 @@ final class ScopeMother
             new \ReflectionClass(self::class),
             new Imports([]),
             new IgnoredAnnotations(...$names)
+        );
+    }
+
+    /**
+     * @param array<string,string> $importsMap
+     */
+    public static function withImports(array $importsMap): Scope
+    {
+        return new Scope(
+            new \ReflectionClass(self::class),
+            new Imports($importsMap),
+            new IgnoredAnnotations()
         );
     }
 }

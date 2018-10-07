@@ -30,7 +30,7 @@ final class FallbackReferenceResolver implements ReferenceResolver
 
         $subject = $scope->getSubject();
 
-        if (!$subject instanceof \ReflectionClass || !$subject instanceof \ReflectionFunctionAbstract) {
+        if (!$subject instanceof \ReflectionClass && !$subject instanceof \ReflectionFunctionAbstract) {
             return $identifier;
         }
 
