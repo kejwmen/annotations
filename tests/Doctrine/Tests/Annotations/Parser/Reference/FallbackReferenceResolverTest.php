@@ -55,13 +55,13 @@ class FallbackReferenceResolverTest extends TestCase
 
         yield 'of subject that cannot be referenced with namespace' => [
             new Reference('foo', false),
-            ScopeMother::withReflector(new \ReflectionProperty(Target::class, 'value')),
+            ScopeMother::withSubject(new \ReflectionProperty(Target::class, 'value')),
             'foo'
         ];
 
         yield 'global class' => [
             new Reference('foo', false),
-            ScopeMother::withReflector(new \ReflectionClass(\stdClass::class)),
+            ScopeMother::withSubject(new \ReflectionClass(\stdClass::class)),
             'foo'
         ];
 
@@ -69,7 +69,7 @@ class FallbackReferenceResolverTest extends TestCase
 
         yield 'fallback' => [
             new Reference('foo', false),
-            ScopeMother::withReflector($targetReflection),
+            ScopeMother::withSubject($targetReflection),
             $targetReflection->getNamespaceName() . '\\' . 'foo'
         ];
     }
