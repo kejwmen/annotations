@@ -20,6 +20,7 @@ use Doctrine\Annotations\Metadata\Type\BooleanType;
 use Doctrine\Annotations\Metadata\Type\FloatType;
 use Doctrine\Annotations\Metadata\Type\IntegerType;
 use Doctrine\Annotations\Metadata\Type\ListType;
+use Doctrine\Annotations\Metadata\Type\MapType;
 use Doctrine\Annotations\Metadata\Type\MixedType;
 use Doctrine\Annotations\Metadata\Type\ObjectType;
 use Doctrine\Annotations\Metadata\Type\StringType;
@@ -203,6 +204,10 @@ class AnnotationMetadataAssemblerTest extends TestCase
                     'array' => new PropertyMetadata(
                         'array',
                         new ListType(new MixedType())
+                    ),
+                    'arrayMap' => new PropertyMetadata(
+                        'arrayMap',
+                        new MapType(new StringType(), new MixedType())
                     ),
                     'annotation' => new PropertyMetadata(
                         'annotation',

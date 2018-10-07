@@ -45,6 +45,11 @@ final class AnnotationWithVarType
     public $array;
 
     /**
+     * @var array<string,mixed>
+     */
+    public $arrayMap;
+
+    /**
      * @var \Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAll
      */
     public $annotation;

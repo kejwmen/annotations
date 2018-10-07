@@ -6,6 +6,7 @@ namespace Doctrine\Annotations\Metadata;
 
 use ArrayAccess;
 use function assert;
+use function sprintf;
 
 final class MetadataCollection implements ArrayAccess
 {
@@ -35,7 +36,7 @@ final class MetadataCollection implements ArrayAccess
      */
     public function offsetGet($name) : AnnotationMetadata
     {
-        assert(isset($this[$name]));
+        assert(isset($this[$name]), sprintf('Metadata for name %s does not exist', $name));
 
         return $this->metadata[$name];
     }
