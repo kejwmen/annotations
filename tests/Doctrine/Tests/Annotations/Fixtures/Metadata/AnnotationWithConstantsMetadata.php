@@ -22,7 +22,8 @@ final class AnnotationWithConstantsMetadata
                 // TODO: Add other properties
                 new PropertyMetadata(
                     'value',
-                    new MixedType()
+                    new MixedType(),
+                    true
                 )
             ]
         );
