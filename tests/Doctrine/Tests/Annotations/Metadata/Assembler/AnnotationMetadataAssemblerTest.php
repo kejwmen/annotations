@@ -17,9 +17,13 @@ use Doctrine\Annotations\Metadata\Type\ObjectType;
 use Doctrine\Annotations\Metadata\Type\StringType;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAnnotation;
+use Doctrine\Tests\Annotations\Fixtures\AnnotationWithConstants;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithRequiredAttributes;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithRequiredAttributesWithoutConstructor;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithVarType;
+use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationTargetAllMetadata;
+use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithConstantsMetadata;
+use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithVarTypeMetadata;
 use Doctrine\Tests\Annotations\Metadata\Type\TestNullableType;
 use PHPUnit\Framework\TestCase;
 use Doctrine\Annotations\Assembler\Acceptor\InternalAcceptor;
@@ -103,19 +107,7 @@ class AnnotationMetadataAssemblerTest extends TestCase
             new Reference(AnnotationTargetAll::class, true),
             new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
             function (AnnotationMetadata $metadata) {
-                $this->assertSame(AnnotationTargetAll::class, $metadata->getName());
-                $this->assertTrue($metadata->getTarget()->all(), 'Invalid target');
-                $this->assertFalse($metadata->hasConstructor(), 'Has constructor');
-                $properties = $metadata->getProperties();
-                $this->assertEquals(
-                    [
-                        'data' => new PropertyMetadata('data', new MixedType(), true),
-                        'name' => new PropertyMetadata('name', new MixedType()),
-                        'target' => new PropertyMetadata('target', new MixedType())
-                    ],
-                    $properties
-                );
-                $this->assertEquals(new PropertyMetadata('data', new MixedType(), true), $metadata->getDefaultProperty());
+                $this->assertEquals(AnnotationTargetAllMetadata::get(), $metadata);
             }
         ];
 
@@ -165,71 +157,15 @@ class AnnotationMetadataAssemblerTest extends TestCase
             new Reference(AnnotationWithVarType::class, true),
             new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
             function (AnnotationMetadata $metadata) {
-                $this->assertSame(AnnotationWithVarType::class, $metadata->getName());
-                $this->assertTrue($metadata->getTarget()->all(), 'Invalid target');
-                $this->assertFalse($metadata->hasConstructor(), 'Has constructor');
-                $properties = $metadata->getProperties();
+                $this->assertEquals(AnnotationWithVarTypeMetadata::get(), $metadata);
+            }
+        ];
 
-                $expectedProperties = [
-                    'mixed' => new PropertyMetadata(
-                        'mixed',
-                        new MixedType(),
-                        true
-                    ),
-                    'boolean' => new PropertyMetadata(
-                        'boolean',
-                        new BooleanType()
-                    ),
-                    'bool' => new PropertyMetadata(
-                        'bool',
-                        new BooleanType()
-                    ),
-                    'float' => new PropertyMetadata(
-                        'float',
-                        new FloatType()
-                    ),
-                    'string' => new PropertyMetadata(
-                        'string',
-                        new StringType()
-                    ),
-                    'integer' => new PropertyMetadata(
-                        'integer',
-                        new IntegerType()
-                    ),
-                    'array' => new PropertyMetadata(
-                        'array',
-                        new ListType(new MixedType())
-                    ),
-                    'arrayMap' => new PropertyMetadata(
-                        'arrayMap',
-                        new MapType(new StringType(), new MixedType())
-                    ),
-                    'annotation' => new PropertyMetadata(
-                        'annotation',
-                        new ObjectType(AnnotationTargetAll::class)
-                    ),
-                    'arrayOfIntegers' => new PropertyMetadata(
-                        'arrayOfIntegers',
-                        new ListType(new IntegerType())
-                    ),
-                    'arrayOfStrings' => new PropertyMetadata(
-                        'arrayOfStrings',
-                        new ListType(new StringType())
-                    ),
-                    'arrayOfAnnotations' => new PropertyMetadata(
-                        'arrayOfAnnotations',
-                        new ListType(new ObjectType(AnnotationTargetAll::class))
-                    ),
-                ];
-
-                $this->assertEquals(
-                    $expectedProperties,
-                    $properties
-                );
-                $this->assertEquals(
-                    reset($expectedProperties),
-                    $metadata->getDefaultProperty()
-                );
+        yield 'fixture - AnnotationWithConstants' => [
+            new Reference(AnnotationWithConstants::class, true),
+            new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
+            function (AnnotationMetadata $metadata) {
+                $this->assertEquals(AnnotationWithConstantsMetadata::get(), $metadata);
             }
         ];
     }

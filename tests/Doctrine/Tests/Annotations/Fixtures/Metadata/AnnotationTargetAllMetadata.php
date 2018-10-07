@@ -22,11 +22,19 @@ final class AnnotationTargetAllMetadata
             new AnnotationTarget(AnnotationTarget::TARGET_ALL),
             false,
             [
-                // TODO: Add other properties
+                new PropertyMetadata(
+                    'data',
+                    new MixedType(),
+                    true
+                ),
                 new PropertyMetadata(
                     'name',
                     new MixedType()
-                )
+                ),
+                new PropertyMetadata(
+                    'target',
+                    new MixedType()
+                ),
             ]
         );
     }
