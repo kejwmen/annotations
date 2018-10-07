@@ -14,14 +14,14 @@ final class StaticReferenceResolver implements ReferenceResolver
     {
         if ($reference->isFullyQualified()) {
             if (! $scope->getImports()->isKnown($reference->getIdentifier())) {
-                throw ReferenceNotResolvable::new($reference);
+                throw ReferenceNotResolvable::unknownImport($reference);
             }
 
             return $reference->getIdentifier();
         }
 
         if (! isset($scope->getImports()[$reference->getIdentifier()])) {
-            throw ReferenceNotResolvable::new($reference);
+            throw ReferenceNotResolvable::unknownAlias($reference);
         }
 
         return $scope->getImports()[$reference->getIdentifier()];
