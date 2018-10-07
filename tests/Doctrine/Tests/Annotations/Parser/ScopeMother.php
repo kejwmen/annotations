@@ -8,6 +8,7 @@ use Doctrine\Annotations\Parser\IgnoredAnnotations;
 use Doctrine\Annotations\Parser\Imports;
 use Doctrine\Annotations\Parser\Scope;
 use ReflectionClass;
+use Reflector;
 
 final class ScopeMother
 {
@@ -15,6 +16,15 @@ final class ScopeMother
     {
         return new Scope(
             new ReflectionClass(self::class),
+            new Imports([]),
+            new IgnoredAnnotations()
+        );
+    }
+
+    public static function withReflector(Reflector $reflector) : Scope
+    {
+        return new Scope(
+            $reflector,
             new Imports([]),
             new IgnoredAnnotations()
         );
@@ -29,6 +39,18 @@ final class ScopeMother
             new ReflectionClass(self::class),
             new Imports([]),
             new IgnoredAnnotations(...$names)
+        );
+    }
+
+    /**
+     * @param string[] $importsMap
+     */
+    public static function withImports(array $importsMap) : Scope
+    {
+        return new Scope(
+            new ReflectionClass(self::class),
+            new Imports($importsMap),
+            new IgnoredAnnotations()
         );
     }
 }
