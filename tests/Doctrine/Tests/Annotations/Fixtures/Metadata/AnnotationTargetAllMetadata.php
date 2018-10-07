@@ -8,6 +8,7 @@ use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Type\IntegerType;
+use Doctrine\Annotations\Metadata\Type\MixedType;
 use Doctrine\Annotations\Metadata\Type\NullType;
 use Doctrine\Annotations\Metadata\Type\UnionType;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAll;
@@ -24,7 +25,7 @@ final class AnnotationTargetAllMetadata
                 // TODO: Add other properties
                 new PropertyMetadata(
                     'name',
-                    new UnionType(new IntegerType(), new NullType())
+                    new MixedType()
                 )
             ]
         );

@@ -19,7 +19,10 @@ use Doctrine\Annotations\Parser\Scope;
 use Doctrine\Annotations\PhpParser;
 use Doctrine\Tests\Annotations\Assembler\Acceptor\AlwaysAcceptingAcceptor;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAll;
+use Doctrine\Tests\Annotations\Fixtures\AnnotationWithConstants;
+use Doctrine\Tests\Annotations\Fixtures\AnnotationWithVarType;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationTargetAllMetadata;
+use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithVarTypeMetadata;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -59,7 +62,7 @@ class AssemblerTest extends TestCase
 
     public function validExamples(): iterable
     {
-        yield 'Class with AnnotationTargetAll' => [
+        yield 'fixture - ClassWithAnnotationTargetAll' => [
             ClassWithAnnotationTargetAll::class,
             [
                 AnnotationTargetAllMetadata::get()
@@ -70,6 +73,40 @@ class AssemblerTest extends TestCase
                 $resultAnnotation = $result[0];
                 $this->assertInstanceOf(AnnotationTargetAll::class, $resultAnnotation);
                 $this->assertSame(123, $resultAnnotation->name);
+            }
+        ];
+
+        yield 'fixture - ClassWithFullValidUsageOfAnnotationWithVarType' => [
+            ClassWithFullValidUsageOfAnnotationWithVarType::class,
+            [
+                AnnotationTargetAllMetadata::get(),
+                AnnotationWithVarTypeMetadata::get()
+            ],
+            function (array $result) {
+                $this->assertCount(1, $result);
+                /** @var AnnotationWithVarType $resultAnnotation */
+                $resultAnnotation = $result[0];
+                $this->assertInstanceOf(AnnotationWithVarType::class, $resultAnnotation);
+
+                $this->assertNull($resultAnnotation->mixed);
+                $this->assertSame(true, $resultAnnotation->boolean);
+                $this->assertSame(false, $resultAnnotation->bool);
+                $this->assertSame(3.14, $resultAnnotation->float);
+                $this->assertSame('foo', $resultAnnotation->string);
+                $this->assertSame(42, $resultAnnotation->integer);
+                $this->assertSame(['foo', 42, false], $resultAnnotation->array);
+                $this->assertSame(['foo' => 'bar'], $resultAnnotation->arrayMap);
+                $this->assertInstanceOf(AnnotationTargetAll::class, $resultAnnotation->annotation);
+                $this->assertSame("baz", $resultAnnotation->annotation->name);
+                $this->assertSame([1,2,3], $resultAnnotation->arrayOfIntegers);
+                $this->assertSame(['foo', 'bar', 'baz'], $resultAnnotation->arrayOfStrings);
+
+                $this->assertInternalType('array', $resultAnnotation->arrayOfAnnotations);
+                $this->assertCount(2, $resultAnnotation->arrayOfAnnotations);
+                $this->assertInstanceOf(AnnotationTargetAll::class, $resultAnnotation->arrayOfAnnotations[0]);
+                $this->assertNull($resultAnnotation->arrayOfAnnotations[0]->name);
+                $this->assertInstanceOf(AnnotationTargetAll::class, $resultAnnotation->arrayOfAnnotations[1]);
+                $this->assertSame(123, $resultAnnotation->arrayOfAnnotations[1]->name);
             }
         ];
     }
@@ -104,5 +141,28 @@ class AssemblerTest extends TestCase
  * @AnnotationTargetAll(name=123)
  */
 class ClassWithAnnotationTargetAll
+{
+}
+
+/**
+ * @AnnotationWithVarType(
+ *     mixed=null,
+ *     boolean=true,
+ *     bool=false,
+ *     float=3.14,
+ *     string="foo",
+ *     integer=42,
+ *     array={"foo", 42, false},
+ *     arrayMap={"foo": "bar"},
+ *     annotation=@AnnotationTargetAll(name="baz"),
+ *     arrayOfIntegers={1,2,3},
+ *     arrayOfStrings={"foo","bar","baz"},
+ *     arrayOfAnnotations={
+ *         @AnnotationTargetAll,
+ *         @AnnotationTargetAll(name=123)
+ *     }
+ * )
+ */
+class ClassWithFullValidUsageOfAnnotationWithVarType
 {
 }

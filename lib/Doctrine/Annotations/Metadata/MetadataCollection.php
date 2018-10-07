@@ -35,7 +35,7 @@ final class MetadataCollection implements ArrayAccess
      */
     public function offsetGet($name) : AnnotationMetadata
     {
-        assert(isset($this[$name]));
+        assert(isset($this[$name]), \sprintf('Metadata for name %s does not exist', $name));
 
         return $this->metadata[$name];
     }
