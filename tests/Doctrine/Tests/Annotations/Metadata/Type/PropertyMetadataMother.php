@@ -9,7 +9,7 @@ use Doctrine\Annotations\Metadata\Type\Type;
 
 final class PropertyMetadataMother
 {
-    public static function withType(Type $type): PropertyMetadata
+    public static function withType(Type $type) : PropertyMetadata
     {
         return new PropertyMetadata('foo', $type);
     }

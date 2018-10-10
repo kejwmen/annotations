@@ -10,7 +10,7 @@ use Doctrine\Annotations\Parser\Scope;
 
 final class AlwaysAcceptingAcceptor implements ReferenceAcceptor
 {
-    public function accepts(Reference $reference, Scope $scope): bool
+    public function accepts(Reference $reference, Scope $scope) : bool
     {
         return true;
     }

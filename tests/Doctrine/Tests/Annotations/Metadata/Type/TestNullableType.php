@@ -10,7 +10,7 @@ use Doctrine\Annotations\Metadata\Type\UnionType;
 
 final class TestNullableType
 {
-    public static function fromType(Type $type): UnionType
+    public static function fromType(Type $type) : UnionType
     {
         return new UnionType($type, new NullType());
     }

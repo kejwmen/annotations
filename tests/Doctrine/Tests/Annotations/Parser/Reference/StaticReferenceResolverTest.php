@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Parser\Reference;
@@ -17,7 +18,7 @@ class StaticReferenceResolverTest extends TestCase
     /** @var StaticReferenceResolver */
     private $resolver;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->resolver = new StaticReferenceResolver();
     }
@@ -25,7 +26,7 @@ class StaticReferenceResolverTest extends TestCase
     /**
      * @dataProvider resolvableExamples
      */
-    public function testResolvesResolvableExamples(Reference $reference, Scope $scope, string $expected): void
+    public function testResolvesResolvableExamples(Reference $reference, Scope $scope, string $expected) : void
     {
         $result = $this->resolver->resolve($reference, $scope);
 
@@ -33,49 +34,49 @@ class StaticReferenceResolverTest extends TestCase
     }
 
 
-    public function resolvableExamples(): iterable
+    public function resolvableExamples() : iterable
     {
         yield 'FCQN' => [
             new Reference(self::class, true),
             ScopeMother::withImports([
-                'this' => self::class
+                'this' => self::class,
             ]),
-            self::class
+            self::class,
         ];
 
         yield 'aliased' => [
             new Reference('foo', false),
             ScopeMother::withImports([
-                'foo' => Target::class
+                'foo' => Target::class,
             ]),
-            Target::class
+            Target::class,
         ];
     }
 
     /**
      * @dataProvider notResolvableExamples
      */
-    public function testResolvesNotResolvableExamplesAndThrows(Reference $reference, Scope $scope): void
+    public function testResolvesNotResolvableExamplesAndThrows(Reference $reference, Scope $scope) : void
     {
         $this->expectException(ReferenceNotResolvable::class);
 
         $this->resolver->resolve($reference, $scope);
     }
 
-    public function notResolvableExamples(): iterable
+    public function notResolvableExamples() : iterable
     {
         yield 'unknown FQCN' => [
             new Reference(Target::class, true),
             ScopeMother::withImports([
-                'that' => Required::class
-            ])
+                'that' => Required::class,
+            ]),
         ];
 
         yield 'without alias' => [
             new Reference('foo', false),
             ScopeMother::withImports([
-                'bar' => Target::class
-            ])
+                'bar' => Target::class,
+            ]),
         ];
     }
 }

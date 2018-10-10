@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Assembler;
@@ -26,6 +27,7 @@ use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithConstantsMetadata
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithVarTypeMetadata;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use function iterator_to_array;
 
 class AssemblerTest extends TestCase
 {
@@ -35,22 +37,22 @@ class AssemblerTest extends TestCase
     /** @var PhpParser */
     private $phpParser;
 
-    public function setUp()
+    public function setUp() : void
     {
-        $this->compiler = new Compiler();
+        $this->compiler  = new Compiler();
         $this->phpParser = new PhpParser();
     }
 
     /**
-     * @dataProvider validExamples
-     *
      * @param AnnotationMetadata[] $metadata
+     *
+     * @dataProvider validExamples
      */
-    public function testAssemblingValidExamples(string $class, array $metadata, callable $asserter)
+    public function testAssemblingValidExamples(string $class, array $metadata, callable $asserter) : void
     {
         $reflection = new ReflectionClass($class);
-        $ast = $this->compiler->compile($reflection->getDocComment());
-        $scope = $this->createScope($reflection);
+        $ast        = $this->compiler->compile($reflection->getDocComment());
+        $scope      = $this->createScope($reflection);
 
         $metadataCollection = new MetadataCollection(...$metadata);
 
@@ -61,29 +63,29 @@ class AssemblerTest extends TestCase
         $asserter(iterator_to_array($result));
     }
 
-    public function validExamples(): iterable
+    public function validExamples() : iterable
     {
         yield 'fixture - ClassWithAnnotationTargetAll' => [
             ClassWithAnnotationTargetAll::class,
             [
-                AnnotationTargetAllMetadata::get()
+                AnnotationTargetAllMetadata::get(),
             ],
-            function (array $result) {
+            function (array $result) : void {
                 $this->assertCount(1, $result);
                 /** @var AnnotationTargetAll $resultAnnotation */
                 $resultAnnotation = $result[0];
                 $this->assertInstanceOf(AnnotationTargetAll::class, $resultAnnotation);
                 $this->assertSame(123, $resultAnnotation->name);
-            }
+            },
         ];
 
         yield 'fixture - ClassWithFullValidUsageOfAnnotationWithVarType' => [
             ClassWithFullValidUsageOfAnnotationWithVarType::class,
             [
                 AnnotationTargetAllMetadata::get(),
-                AnnotationWithVarTypeMetadata::get()
+                AnnotationWithVarTypeMetadata::get(),
             ],
-            function (array $result) {
+            function (array $result) : void {
                 $this->assertCount(1, $result);
                 /** @var AnnotationWithVarType $resultAnnotation */
                 $resultAnnotation = $result[0];
@@ -98,7 +100,7 @@ class AssemblerTest extends TestCase
                 $this->assertSame(['foo', 42, false], $resultAnnotation->array);
                 $this->assertSame(['foo' => 'bar'], $resultAnnotation->arrayMap);
                 $this->assertInstanceOf(AnnotationTargetAll::class, $resultAnnotation->annotation);
-                $this->assertSame("baz", $resultAnnotation->annotation->name);
+                $this->assertSame('baz', $resultAnnotation->annotation->name);
                 $this->assertSame([1,2,3], $resultAnnotation->arrayOfIntegers);
                 $this->assertSame(['foo', 'bar', 'baz'], $resultAnnotation->arrayOfStrings);
 
@@ -108,26 +110,26 @@ class AssemblerTest extends TestCase
                 $this->assertNull($resultAnnotation->arrayOfAnnotations[0]->name);
                 $this->assertInstanceOf(AnnotationTargetAll::class, $resultAnnotation->arrayOfAnnotations[1]);
                 $this->assertSame(123, $resultAnnotation->arrayOfAnnotations[1]->name);
-            }
+            },
         ];
 
         yield 'fixture - ClassWithAnnotationWithConstants' => [
             ClassWithAnnotationWithConstants::class,
             [
-                AnnotationWithConstantsMetadata::get()
+                AnnotationWithConstantsMetadata::get(),
             ],
-            function (array $result) {
+            function (array $result) : void {
                 $this->assertCount(1, $result);
                 /** @var AnnotationWithConstants $resultAnnotation */
                 $resultAnnotation = $result[0];
                 $this->assertInstanceOf(AnnotationWithConstants::class, $resultAnnotation);
 
                 $this->assertSame(AnnotationWithConstants::FLOAT, $resultAnnotation->value);
-            }
+            },
         ];
     }
 
-    private function createScope(\ReflectionClass $reflection): Scope
+    private function createScope(ReflectionClass $reflection) : Scope
     {
         return new Scope(
             $reflection,
@@ -136,7 +138,7 @@ class AssemblerTest extends TestCase
         );
     }
 
-    private function createAssembler(MetadataCollection $collection): Assembler
+    private function createAssembler(MetadataCollection $collection) : Assembler
     {
         return new Assembler(
             $collection,

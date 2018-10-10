@@ -9,7 +9,7 @@ use Doctrine\Annotations\Metadata\AnnotationTarget;
 
 final class AnnotationMetadataMother
 {
-    public static function example(): AnnotationMetadata
+    public static function example() : AnnotationMetadata
     {
         return new AnnotationMetadata(
             'foo',
@@ -19,7 +19,7 @@ final class AnnotationMetadataMother
         );
     }
 
-    public static function withTarget(AnnotationTarget $target): AnnotationMetadata
+    public static function withTarget(AnnotationTarget $target) : AnnotationMetadata
     {
         return new AnnotationMetadata(
             'foo',

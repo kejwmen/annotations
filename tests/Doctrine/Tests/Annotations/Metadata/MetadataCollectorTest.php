@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Parser\Visitor;
@@ -6,6 +7,7 @@ namespace Doctrine\Tests\Annotations\Parser\Visitor;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
+use Doctrine\Annotations\Metadata\MetadataCollector;
 use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
 use Doctrine\Annotations\Parser\Ast\Parameter\UnnamedParameter;
@@ -13,7 +15,6 @@ use Doctrine\Annotations\Parser\Ast\Parameters;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Reference\StaticReferenceResolver;
 use Doctrine\Annotations\Parser\Scope;
-use Doctrine\Annotations\Metadata\MetadataCollector;
 use Doctrine\Tests\Annotations\Assembler\Acceptor\AlwaysAcceptingAcceptor;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -31,7 +32,7 @@ final class MetadataCollectorTest extends TestCase
         $this->markTestIncomplete('Collector has incorrect setup');
 
         $this->assembler = $this->createMock(AnnotationMetadataAssembler::class);
-        $this->collector   = new MetadataCollector(
+        $this->collector = new MetadataCollector(
             $this->assembler,
             new AlwaysAcceptingAcceptor(),
             new StaticReferenceResolver()
@@ -40,7 +41,7 @@ final class MetadataCollectorTest extends TestCase
 
     /**
      * @param callable(AnnotationMetadataAssembler) : void $initializer
-     * @param callable(AnnotationMetadata[]) : void $asserter
+     * @param callable(AnnotationMetadata[]) : void        $asserter
      *
      * @dataProvider docBlocksProvider()
      */
@@ -65,7 +66,7 @@ final class MetadataCollectorTest extends TestCase
             function (AnnotationMetadataAssembler $assembler) : void {
                 $assembler->method('assemble')
                     ->with(
-                        $this->callback(function (Reference $reference) : bool {
+                        $this->callback(static function (Reference $reference) : bool {
                             return $reference->getIdentifier() === 'Foo' && $reference->isFullyQualified() === true;
                         }),
                         $this->isInstanceOf(Scope::class)
@@ -77,7 +78,7 @@ final class MetadataCollectorTest extends TestCase
                         []
                     ));
             },
-            function (AnnotationMetadata ...$metadatas) : void {
+            static function (AnnotationMetadata ...$metadatas) : void {
                 self::assertCount(1, $metadatas);
                 self::assertSame('Foo', $metadatas[0]->getName());
             },
@@ -100,16 +101,16 @@ final class MetadataCollectorTest extends TestCase
                 $assembler->method('assemble')
                     ->withConsecutive(
                         [
-                            $this->callback(function (Reference $reference) : bool {
+                            $this->callback(static function (Reference $reference) : bool {
                                 return $reference->getIdentifier() === 'Bar' && $reference->isFullyQualified() === false;
                             }),
-                            $this->isInstanceOf(Scope::class)
+                            $this->isInstanceOf(Scope::class),
                         ],
                         [
-                            $this->callback(function (Reference $reference) : bool {
+                            $this->callback(static function (Reference $reference) : bool {
                                 return $reference->getIdentifier() === 'Foo' && $reference->isFullyQualified() === true;
                             }),
-                            $this->isInstanceOf(Scope::class)
+                            $this->isInstanceOf(Scope::class),
                         ]
                     )
                     ->willReturnOnConsecutiveCalls(
@@ -127,7 +128,7 @@ final class MetadataCollectorTest extends TestCase
                         )
                     );
             },
-            function (AnnotationMetadata ...$metadatas) : void {
+            static function (AnnotationMetadata ...$metadatas) : void {
                 self::assertCount(2, $metadatas);
                 self::assertSame('Bar', $metadatas[0]->getName());
                 self::assertSame('Foo', $metadatas[1]->getName());

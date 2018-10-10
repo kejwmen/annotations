@@ -25,7 +25,8 @@ final class ObjectTypeTest extends TypeTest
     {
         yield [new stdClass()];
         yield [
-            new class extends stdClass {},
+            new class extends stdClass {
+            },
         ];
     }
 
