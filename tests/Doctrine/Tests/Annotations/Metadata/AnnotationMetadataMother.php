@@ -9,6 +9,16 @@ use Doctrine\Annotations\Metadata\AnnotationTarget;
 
 final class AnnotationMetadataMother
 {
+    public static function example(): AnnotationMetadata
+    {
+        return new AnnotationMetadata(
+            'foo',
+            new AnnotationTarget(AnnotationTarget::TARGET_ALL),
+            false,
+            []
+        );
+    }
+
     public static function withTarget(AnnotationTarget $target): AnnotationMetadata
     {
         return new AnnotationMetadata(

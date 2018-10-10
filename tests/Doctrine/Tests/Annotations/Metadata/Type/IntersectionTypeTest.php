@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\Annotations\Metadata\Type;
 
 use Doctrine\Annotations\Metadata\Type\IntersectionType;
+use Doctrine\Annotations\Metadata\Type\NullType;
 use Doctrine\Annotations\Metadata\Type\ObjectType;
 use Doctrine\Annotations\Metadata\Type\Type;
 use IteratorAggregate;
@@ -51,8 +52,15 @@ final class IntersectionTypeTest extends TypeTest
         ];
     }
 
-    public function testAcceptsNull() : void
+    public function testNotAcceptsNullStoringNotNullAcceptingType() : void
     {
         self::assertFalse($this->getType()->acceptsNull());
+    }
+
+    public function testAcceptsNull() : void
+    {
+        $type = new IntersectionType(new NullType());
+
+        self::assertTrue($type->acceptsNull());
     }
 }

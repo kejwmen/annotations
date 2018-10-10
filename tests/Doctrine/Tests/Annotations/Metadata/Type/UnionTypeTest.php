@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\Annotations\Metadata\Type\IntegerType;
 use Doctrine\Annotations\Metadata\Type\NullType;
 use Doctrine\Annotations\Metadata\Type\ObjectType;
+use Doctrine\Annotations\Metadata\Type\StringType;
 use Doctrine\Annotations\Metadata\Type\Type;
 use Doctrine\Annotations\Metadata\Type\UnionType;
 use stdClass;
@@ -43,5 +44,12 @@ final class UnionTypeTest extends TypeTest
     public function testAcceptsNull() : void
     {
         self::assertTrue($this->getType()->acceptsNull());
+    }
+
+    public function testNotAcceptsNullStoringNotNullAcceptingType() : void
+    {
+        $type = new UnionType(new StringType());
+
+        self::assertFalse($type->acceptsNull());
     }
 }
