@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Assembler\Validator;
 
+use Doctrine\Annotations\Assembler\Validator\Exception\InvalidValue;
 use Doctrine\Annotations\Assembler\Validator\ValueValidator;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Type\StringType;
@@ -41,6 +42,29 @@ class ValueValidatorTest extends TestCase
         yield 'valid string' => [
             PropertyMetadataMother::withType(new StringType()),
             'foo',
+        ];
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @dataProvider invalidExamples
+     */
+    public function testNotValidatesInvalidExamplesAndThrows(PropertyMetadata $propertyMetadata, $value) : void
+    {
+        $this->expectException(InvalidValue::class);
+
+        $this->validator->validate(AnnotationMetadataMother::example(), $propertyMetadata, $value);
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function invalidExamples() : iterable
+    {
+        yield 'value not matching property type' => [
+            PropertyMetadataMother::withType(new StringType()),
+            42,
         ];
     }
 }
