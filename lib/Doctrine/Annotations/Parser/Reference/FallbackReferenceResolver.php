@@ -12,6 +12,8 @@ use ReflectionMethod;
 use ReflectionProperty;
 use Reflector;
 use function assert;
+use function explode;
+use function strpos;
 use function strtolower;
 
 /**
@@ -32,6 +34,14 @@ final class FallbackReferenceResolver implements ReferenceResolver
 
         if (isset($imports[$identifierLower])) {
             return $imports[$identifierLower];
+        }
+
+        if (strpos($identifierLower, '\\') !== false) {
+            $namespacePart = explode('\\', $identifierLower, 2)[0];
+
+            if (isset($imports[$namespacePart])) {
+                return $imports[$namespacePart] . '\\' . explode('\\', $identifier, 2)[1];
+            }
         }
 
         $subject = $scope->getSubject();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Assembler\Validator;
 
+use Doctrine\Annotations\Assembler\Validator\Exception\InvalidTarget;
 use Doctrine\Annotations\Assembler\Validator\TargetValidator;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
@@ -78,6 +79,42 @@ class TargetValidatorTest extends TestCase
 
             yield sprintf('Target of value %d for reflector %s', AnnotationTarget::TARGET_ALL, get_class($reflector)) => [
                 AnnotationMetadataMother::withTarget(new AnnotationTarget(AnnotationTarget::TARGET_ALL)),
+                ScopeMother::withSubject($reflector),
+            ];
+        }
+    }
+
+    /**
+     * @dataProvider invalidExamples
+     */
+    public function testValidatesInvalidExamplesAndThrows(AnnotationMetadata $metadata, Scope $scope) : void
+    {
+        $this->expectException(InvalidTarget::class);
+
+        $this->validator->validate($metadata, $scope);
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function invalidExamples() : iterable
+    {
+        foreach ([AnnotationTarget::TARGET_CLASS, AnnotationTarget::TARGET_METHOD, AnnotationTarget::TARGET_PROPERTY] as $target) {
+            yield sprintf('Target of value %d for nested scope', $target) => [
+                AnnotationMetadataMother::withTarget(new AnnotationTarget($target)),
+                ScopeMother::withNestingLevel(2),
+            ];
+        }
+
+        $notMatchingReflectors = [
+            AnnotationTarget::TARGET_CLASS => new ReflectionMethod(self::class, 'setUp'),
+            AnnotationTarget::TARGET_METHOD => new ReflectionProperty(self::class, 'validator'),
+            AnnotationTarget::TARGET_PROPERTY => new ReflectionClass(self::class),
+        ];
+
+        foreach ($notMatchingReflectors as $target => $reflector) {
+            yield sprintf('Target of value %d for reflector %s', $target, get_class($reflector)) => [
+                AnnotationMetadataMother::withTarget(new AnnotationTarget($target)),
                 ScopeMother::withSubject($reflector),
             ];
         }
