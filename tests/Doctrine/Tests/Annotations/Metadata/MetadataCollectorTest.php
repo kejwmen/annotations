@@ -14,6 +14,7 @@ use Doctrine\Annotations\Parser\Ast\Parameter\UnnamedParameter;
 use Doctrine\Annotations\Parser\Ast\Parameters;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Reference\StaticReferenceResolver;
+use Doctrine\Annotations\Parser\Scope;
 use Doctrine\Tests\Annotations\Assembler\Acceptor\AlwaysAcceptingAcceptor;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -66,6 +67,7 @@ final class MetadataCollectorTest extends TestCase
                 )
             ),
             static function (AnnotationMetadataAssembler $assembler) : void {
+                /** @var AnnotationMetadataAssembler|MockObject $assembler */
                 $assembler->method('assemble')
                     ->with(
                         $this->callback(static function (Reference $reference) : bool {
@@ -100,6 +102,7 @@ final class MetadataCollectorTest extends TestCase
                 )
             ),
             function (AnnotationMetadataAssembler $assembler) : void {
+                /** @var AnnotationMetadataAssembler|MockObject $assembler */
                 $assembler->method('assemble')
                     ->withConsecutive(
                         [

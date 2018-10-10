@@ -51,7 +51,7 @@ final class Imports implements ArrayAccess, IteratorAggregate
 
     /**
      * @param string $offset
-     * @param string $value
+     * @param mixed  $value
      *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
      */

@@ -8,6 +8,7 @@ use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Scope;
 use ReflectionClass;
 use ReflectionFunction;
+use ReflectionFunctionAbstract;
 use ReflectionMethod;
 use ReflectionProperty;
 use Reflector;
