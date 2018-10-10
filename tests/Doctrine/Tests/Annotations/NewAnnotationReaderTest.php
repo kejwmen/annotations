@@ -43,8 +43,8 @@ class NewAnnotationReaderTest extends TestCase
 
     public function examples(): iterable
     {
-        yield 'Test class' => [
-            Test::class,
+        yield 'ClassWithAnnotationTargetAll' => [
+            ClassWithAnnotationTargetAll::class,
             [$this->createAnnotationTargetAll(123)]
         ];
     }
@@ -62,6 +62,6 @@ class NewAnnotationReaderTest extends TestCase
 /**
  * @AnnotationTargetAll(name=123)
  */
-class Test
+class ClassWithAnnotationTargetAll
 {
 }
