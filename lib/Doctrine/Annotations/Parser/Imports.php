@@ -37,24 +37,24 @@ final class Imports implements ArrayAccess, IteratorAggregate
         yield from $this->map;
     }
 
-    public function offsetGet(string $offset) : string
+    public function offsetGet($offset) : string
     {
         assert(isset($this[strtolower($offset)]));
 
         return $this->map[strtolower($offset)];
     }
 
-    public function offsetSet(string $offset, string $value) : void
+    public function offsetSet($offset, $value) : void
     {
         assert(false, 'immutable');
     }
 
-    public function offsetExists(string $offset) : bool
+    public function offsetExists($offset) : bool
     {
         return isset($this->map[strtolower($offset)]);
     }
 
-    public function offsetUnset(string $offset) : void
+    public function offsetUnset($offset) : void
     {
         assert(false, 'immutable');
     }
