@@ -10,6 +10,7 @@ use Doctrine\Annotations\Annotation\Target as TargetAnnotation;
 use Doctrine\Annotations\Assembler\Assembler;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
+use Doctrine\Annotations\Metadata\Constraint\TypeConstraint;
 use Doctrine\Annotations\Metadata\InternalAnnotations;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Reflection\ClassReflectionProvider;
@@ -158,7 +159,7 @@ final class AnnotationMetadataAssembler
         if ($docBlock === false) {
             return new PropertyMetadata(
                 $property->getName(),
-                new MixedType(),
+                new TypeConstraint(new MixedType()),
                 $first
             );
         }
@@ -175,6 +176,6 @@ final class AnnotationMetadataAssembler
             $type = new UnionType($type, new NullType());
         }
 
-        return new PropertyMetadata($property->getName(), $type, $first);
+        return new PropertyMetadata($property->getName(), new TypeConstraint($type), $first);
     }
 }

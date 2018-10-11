@@ -6,6 +6,7 @@ namespace Doctrine\Tests\Annotations\Fixtures\Metadata;
 
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
+use Doctrine\Annotations\Metadata\Constraint\TypeConstraint;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Type\IntegerType;
 use Doctrine\Annotations\Metadata\Type\MixedType;
@@ -24,16 +25,16 @@ final class AnnotationTargetAllMetadata
             [
                 new PropertyMetadata(
                     'data',
-                    new MixedType(),
+                    new TypeConstraint(new MixedType()),
                     true
                 ),
                 new PropertyMetadata(
                     'name',
-                    new MixedType()
+                    new TypeConstraint(new MixedType())
                 ),
                 new PropertyMetadata(
                     'target',
-                    new MixedType()
+                    new TypeConstraint(new MixedType())
                 ),
             ]
         );

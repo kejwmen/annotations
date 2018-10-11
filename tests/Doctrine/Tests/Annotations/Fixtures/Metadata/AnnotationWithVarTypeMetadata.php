@@ -6,6 +6,7 @@ namespace Doctrine\Tests\Annotations\Fixtures\Metadata;
 
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
+use Doctrine\Annotations\Metadata\Constraint\TypeConstraint;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Type\BooleanType;
 use Doctrine\Annotations\Metadata\Type\FloatType;
@@ -30,52 +31,52 @@ final class AnnotationWithVarTypeMetadata
             [
                 new PropertyMetadata(
                     'mixed',
-                    new MixedType(),
+                    new TypeConstraint(new MixedType()),
                     true
                 ),
                 new PropertyMetadata(
                     'boolean',
-                    new BooleanType()
+                    new TypeConstraint(new BooleanType())
                 ),
                 new PropertyMetadata(
                     'bool',
-                    new BooleanType()
+                    new TypeConstraint(new BooleanType())
                 ),
                 new PropertyMetadata(
                     'float',
-                    new FloatType()
+                    new TypeConstraint(new FloatType())
                 ),
                 new PropertyMetadata(
                     'string',
-                    new StringType()
+                    new TypeConstraint(new StringType())
                 ),
                 new PropertyMetadata(
                     'integer',
-                    new IntegerType()
+                    new TypeConstraint(new IntegerType())
                 ),
                 new PropertyMetadata(
                     'array',
-                    new MapType(new UnionType(new IntegerType(), new StringType()), new MixedType())
+                    new TypeConstraint(new MapType(new UnionType(new IntegerType(), new StringType()), new MixedType()))
                 ),
                 new PropertyMetadata(
                     'arrayMap',
-                    new MapType(new StringType(), new MixedType())
+                    new TypeConstraint(new MapType(new StringType(), new MixedType()))
                 ),
                 new PropertyMetadata(
                     'annotation',
-                    new ObjectType(AnnotationTargetAll::class)
+                    new TypeConstraint(new ObjectType(AnnotationTargetAll::class))
                 ),
                 new PropertyMetadata(
                     'arrayOfIntegers',
-                    new ListType(new IntegerType())
+                    new TypeConstraint(new ListType(new IntegerType()))
                 ),
                 new PropertyMetadata(
                     'arrayOfStrings',
-                    new ListType(new StringType())
+                    new TypeConstraint(new ListType(new StringType()))
                 ),
                 new PropertyMetadata(
                     'arrayOfAnnotations',
-                    new ListType(new ObjectType(AnnotationTargetAll::class))
+                    new TypeConstraint(new ListType(new ObjectType(AnnotationTargetAll::class)))
                 ),
             ]
         );

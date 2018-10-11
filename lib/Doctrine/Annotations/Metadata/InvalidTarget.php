@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Annotations\Assembler\Validator\Exception;
+namespace Doctrine\Annotations\Metadata;
 
-use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use LogicException;
 use function sprintf;
 
