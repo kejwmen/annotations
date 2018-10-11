@@ -4,24 +4,25 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata;
 
-use Doctrine\Annotations\Metadata\Type\Type;
+use Doctrine\Annotations\Metadata\Constraint\Constraint;
+use Doctrine\Annotations\Metadata\Constraint\ConstraintNotFulfilled;
 
 final class PropertyMetadata
 {
     /** @var string */
     private $name;
 
-    /** @var Type */
-    private $type;
+    /** @var Constraint */
+    private $valueConstraint;
 
     /** @var bool */
     private $default;
 
-    public function __construct(string $name, Type $type, bool $default = false)
+    public function __construct(string $name, Constraint $valueConstraint, bool $default = false)
     {
-        $this->name    = $name;
-        $this->type    = $type;
-        $this->default = $default;
+        $this->name            = $name;
+        $this->valueConstraint = $valueConstraint;
+        $this->default         = $default;
     }
 
     public function getName() : string
@@ -29,13 +30,24 @@ final class PropertyMetadata
         return $this->name;
     }
 
-    public function getType() : Type
-    {
-        return $this->type;
-    }
-
     public function isDefault() : bool
     {
         return $this->default;
+    }
+
+    /**
+     * @return true
+     *
+     * @throws InvalidPropertyValue
+     */
+    public function validateValue($value) : bool
+    {
+        try {
+            $this->valueConstraint->validate($value);
+        } catch (ConstraintNotFulfilled $exception) {
+            throw InvalidPropertyValue::new($this, $exception);
+        }
+
+        return true;
     }
 }

@@ -2,15 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Tests\Annotations\Assembler\Validator;
+namespace Doctrine\Tests\Annotations\Metadata;
 
-use Doctrine\Annotations\Assembler\Validator\Exception\InvalidTarget;
-use Doctrine\Annotations\Assembler\Validator\TargetValidator;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
+use Doctrine\Annotations\Metadata\InvalidTarget;
 use Doctrine\Annotations\Parser\Scope;
 use Doctrine\Tests\Annotations\Annotation\Parser\ScopeMother;
-use Doctrine\Tests\Annotations\Metadata\AnnotationMetadataMother;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
@@ -19,45 +17,39 @@ use Reflector;
 use function get_class;
 use function sprintf;
 
-class TargetValidatorTest extends TestCase
+class AnnotationMetadataTest extends TestCase
 {
-    /** @var TargetValidator */
-    private $validator;
-
-    public function setUp() : void
-    {
-        $this->validator = new TargetValidator();
-    }
-
     /**
-     * @dataProvider validExamples
+     * @dataProvider targetsWithMatchingScopeExamples
      */
-    public function testValidatesValidExamples(AnnotationMetadata $metadata, Scope $scope) : void
+    public function testValidatesTargetForMatchingScope(AnnotationTarget $target, Scope $scope) : void
     {
-        $this->validator->validate($metadata, $scope);
+        $metadata = AnnotationMetadataMother::withTarget($target);
 
-        $this->assertTrue(true);
+        $result = $metadata->validateTarget($scope);
+
+        $this->assertTrue($result);
     }
 
-    public function validExamples() : iterable
+    public function targetsWithMatchingScopeExamples() : iterable
     {
         /** @var Reflector[] $reflectors */
         $reflectors = [
             new ReflectionClass(self::class),
-            new ReflectionProperty(self::class, 'validator'),
+            new ReflectionProperty(AnnotationMetadata::class, 'name'),
             new ReflectionMethod(self::class, 'setUp'),
         ];
 
         foreach ($reflectors as $reflector) {
             yield 'TargetAll for reflector ' . get_class($reflector) => [
-                AnnotationMetadataMother::withTarget(new AnnotationTarget(AnnotationTarget::TARGET_ALL)),
+                new AnnotationTarget(AnnotationTarget::TARGET_ALL),
                 ScopeMother::withSubject($reflector),
             ];
         }
 
         foreach ([AnnotationTarget::TARGET_ALL, AnnotationTarget::TARGET_ANNOTATION] as $target) {
             yield sprintf('Target of value %d for nested scope', $target) => [
-                AnnotationMetadataMother::withTarget(new AnnotationTarget($target)),
+                new AnnotationTarget($target),
                 ScopeMother::withNestingLevel(2),
             ];
         }
@@ -70,45 +62,47 @@ class TargetValidatorTest extends TestCase
 
         foreach ($matchingReflectors as $target => $reflector) {
             yield sprintf('Target of value %d for reflector %s', $target, get_class($reflector)) => [
-                AnnotationMetadataMother::withTarget(new AnnotationTarget($target)),
+                new AnnotationTarget($target),
                 ScopeMother::withSubject($reflector),
             ];
 
             yield sprintf('Target of value %d for reflector %s', AnnotationTarget::TARGET_ALL, get_class($reflector)) => [
-                AnnotationMetadataMother::withTarget(new AnnotationTarget(AnnotationTarget::TARGET_ALL)),
+                new AnnotationTarget(AnnotationTarget::TARGET_ALL),
                 ScopeMother::withSubject($reflector),
             ];
         }
     }
 
     /**
-     * @dataProvider invalidExamples
+     * @dataProvider targetsWithNotMatchingScopeExamples
      */
-    public function testValidatesInvalidExamplesAndThrows(AnnotationMetadata $metadata, Scope $scope) : void
+    public function testValidatesTargetForNotMatchingScopeAndThrows(AnnotationTarget $target, Scope $scope) : void
     {
+        $metadata = AnnotationMetadataMother::withTarget($target);
+
         $this->expectException(InvalidTarget::class);
 
-        $this->validator->validate($metadata, $scope);
+        $metadata->validateTarget($scope);
     }
 
-    public function invalidExamples() : iterable
+    public function targetsWithNotMatchingScopeExamples() : iterable
     {
         foreach ([AnnotationTarget::TARGET_CLASS, AnnotationTarget::TARGET_METHOD, AnnotationTarget::TARGET_PROPERTY] as $target) {
             yield sprintf('Target of value %d for nested scope', $target) => [
-                AnnotationMetadataMother::withTarget(new AnnotationTarget($target)),
+                new AnnotationTarget($target),
                 ScopeMother::withNestingLevel(2),
             ];
         }
 
         $notMatchingReflectors = [
             AnnotationTarget::TARGET_CLASS => new ReflectionMethod(self::class, 'setUp'),
-            AnnotationTarget::TARGET_METHOD => new ReflectionProperty(self::class, 'validator'),
+            AnnotationTarget::TARGET_METHOD => new ReflectionProperty(AnnotationMetadata::class, 'name'),
             AnnotationTarget::TARGET_PROPERTY => new ReflectionClass(self::class),
         ];
 
         foreach ($notMatchingReflectors as $target => $reflector) {
             yield sprintf('Target of value %d for reflector %s', $target, get_class($reflector)) => [
-                AnnotationMetadataMother::withTarget(new AnnotationTarget($target)),
+                new AnnotationTarget($target),
                 ScopeMother::withSubject($reflector),
             ];
         }

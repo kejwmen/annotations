@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata;
 
+use Doctrine\Annotations\Parser\Scope;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionProperty;
 use function array_combine;
 use function array_filter;
 use function array_map;
@@ -78,5 +82,43 @@ final class AnnotationMetadata
     public function getDefaultProperty() : ?PropertyMetadata
     {
         return $this->defaultProperty;
+    }
+
+    /**
+     * @return true
+     *
+     * @throws InvalidTarget
+     */
+    public function validateTarget(Scope $scope) : bool
+    {
+        $target = $this->getTarget();
+
+        if ($target->all()) {
+            return true;
+        }
+
+        if ($scope->isNested()) {
+            if (! $target->annotation()) {
+                throw InvalidTarget::annotation($this);
+            }
+
+            return true;
+        }
+
+        $subject = $scope->getSubject();
+
+        if ($subject instanceof ReflectionClass && ! $target->class()) {
+            throw InvalidTarget::class($this);
+        }
+
+        if ($subject instanceof ReflectionProperty && ! $target->property()) {
+            throw InvalidTarget::property($this);
+        }
+
+        if ($subject instanceof ReflectionMethod && ! $target->method()) {
+            throw InvalidTarget::method($this);
+        }
+
+        return true;
     }
 }

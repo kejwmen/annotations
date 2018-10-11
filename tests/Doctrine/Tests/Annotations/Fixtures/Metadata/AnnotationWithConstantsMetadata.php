@@ -6,6 +6,7 @@ namespace Doctrine\Tests\Annotations\Fixtures\Metadata;
 
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
+use Doctrine\Annotations\Metadata\Constraint\TypeConstraint;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Type\MixedType;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithConstants;
@@ -22,7 +23,7 @@ final class AnnotationWithConstantsMetadata
                 // TODO: Add other properties
                 new PropertyMetadata(
                     'value',
-                    new MixedType(),
+                    new TypeConstraint(new MixedType()),
                     true
                 )
             ]

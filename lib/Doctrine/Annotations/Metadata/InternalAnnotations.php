@@ -9,6 +9,7 @@ use Doctrine\Annotations\Annotation\Enum;
 use Doctrine\Annotations\Annotation\IgnoreAnnotation;
 use Doctrine\Annotations\Annotation\Required;
 use Doctrine\Annotations\Annotation\Target;
+use Doctrine\Annotations\Metadata\Constraint\TypeConstraint;
 use Doctrine\Annotations\Metadata\Type\IntegerType;
 use Doctrine\Annotations\Metadata\Type\ListType;
 use Doctrine\Annotations\Metadata\Type\NullType;
@@ -45,12 +46,12 @@ final class InternalAnnotations
                 [
                     new PropertyMetadata(
                         'value',
-                        new ListType(new StringType()),
+                        new TypeConstraint(new ListType(new StringType())),
                         true
                     ),
                     new PropertyMetadata(
                         'literal',
-                        new UnionType(new ListType(new StringType()), new NullType())
+                        new TypeConstraint(new UnionType(new ListType(new StringType()), new NullType()))
                     ),
                 ]
             ),
@@ -58,11 +59,12 @@ final class InternalAnnotations
                 IgnoreAnnotation::class,
                 new AnnotationTarget(AnnotationTarget::TARGET_ALL),
                 true,
-                [new PropertyMetadata(
-                    'names',
-                    new ListType(new StringType()),
-                    true
-                ),
+                [
+                    new PropertyMetadata(
+                        'names',
+                        new TypeConstraint(new ListType(new StringType())),
+                        true
+                    ),
                 ]
             ),
             new AnnotationMetadata(
@@ -77,16 +79,16 @@ final class InternalAnnotations
                 [
                     new PropertyMetadata(
                         'value',
-                        new UnionType(new ListType(new StringType()), new NullType()),
+                        new TypeConstraint(new UnionType(new ListType(new StringType()), new NullType())),
                         true
                     ),
                     new PropertyMetadata(
                         'targets',
-                        new UnionType(new IntegerType(), new NullType())
+                        new TypeConstraint(new UnionType(new IntegerType(), new NullType()))
                     ),
                     new PropertyMetadata(
                         'literal',
-                        new UnionType(new IntegerType(), new NullType())
+                        new TypeConstraint(new UnionType(new IntegerType(), new NullType()))
                     ),
                 ]
             )

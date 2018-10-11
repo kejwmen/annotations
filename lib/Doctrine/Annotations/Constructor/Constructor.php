@@ -8,6 +8,8 @@ use Doctrine\Annotations\Assembler\Validator\TargetValidator;
 use Doctrine\Annotations\Assembler\Validator\ValueValidator;
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
+use Doctrine\Annotations\Metadata\InvalidAnnotationValue;
+use Doctrine\Annotations\Metadata\InvalidPropertyValue;
 use Doctrine\Annotations\Parser\Scope;
 
 final class Constructor
@@ -25,7 +27,7 @@ final class Constructor
      */
     public function construct(AnnotationMetadata $annotationMetadata, Scope $scope, iterable $parameters) : object
     {
-        (new TargetValidator())->validate($annotationMetadata, $scope);
+        $annotationMetadata->validateTarget($scope);
 
         foreach ($parameters as $propertyName => $propertyValue) {
             if ($propertyName === '') {
@@ -36,11 +38,13 @@ final class Constructor
                 $propertyName = $annotationMetadata->getDefaultProperty()->getName();
             }
 
-            (new ValueValidator())->validate(
-                $annotationMetadata,
-                $annotationMetadata->getProperties()[$propertyName],
-                $propertyValue
-            );
+            $propertyMetadata = $annotationMetadata->getProperties()[$propertyName];
+
+            try {
+                $propertyMetadata->validateValue($propertyValue);
+            } catch (InvalidPropertyValue $exception) {
+                throw InvalidAnnotationValue::new($annotationMetadata, $exception);
+            }
         }
 
         return $this->instantiator->instantiate($annotationMetadata, $parameters);
