@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Parser\Ast\Collection;
 
-use function count;
 use Doctrine\Annotations\Parser\Ast\Collection;
 use Doctrine\Annotations\Parser\Ast\ValuableNode;
 use Doctrine\Annotations\Parser\Visitor\Visitor;
+use function count;
 
 final class ListCollection implements Collection
 {

@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata\Type;
 
+use function array_map;
+use function assert;
+use function count;
+use function implode;
+
 final class IntersectionType implements CompositeType
 {
     /** @var Type[] */

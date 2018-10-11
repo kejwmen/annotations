@@ -9,7 +9,7 @@ use function array_fill_keys;
 
 final class IgnoredAnnotations
 {
-    /** @var string[] */
+    /** @var array<string,true> */
     private $names;
 
     public function __construct(string ...$names)

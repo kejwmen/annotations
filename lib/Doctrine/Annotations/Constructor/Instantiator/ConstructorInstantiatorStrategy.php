@@ -6,6 +6,7 @@ namespace Doctrine\Annotations\Constructor\Instantiator;
 
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use function array_key_exists;
+use function assert;
 
 final class ConstructorInstantiatorStrategy implements InstantiatorStrategy
 {

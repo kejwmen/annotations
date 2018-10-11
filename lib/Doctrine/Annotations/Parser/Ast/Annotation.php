@@ -20,17 +20,11 @@ final class Annotation implements ValuableNode
         $this->parameters = $parameters;
     }
 
-    /**
-     * @return Reference
-     */
     public function getName() : Reference
     {
         return $this->name;
     }
 
-    /**
-     * @return Parameters
-     */
     public function getParameters() : Parameters
     {
         return $this->parameters;

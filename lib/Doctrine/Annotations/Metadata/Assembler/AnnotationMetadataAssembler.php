@@ -7,7 +7,6 @@ namespace Doctrine\Annotations\Metadata\Assembler;
 use Doctrine\Annotations\Annotation\Annotation as AnnotationAnnotation;
 use Doctrine\Annotations\Annotation\Required as RequiredAnnotation;
 use Doctrine\Annotations\Annotation\Target as TargetAnnotation;
-use Doctrine\Annotations\Annotation\Target;
 use Doctrine\Annotations\Assembler\Assembler;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
@@ -17,9 +16,7 @@ use Doctrine\Annotations\Metadata\Reflection\ClassReflectionProvider;
 use Doctrine\Annotations\Metadata\ScopeManufacturer;
 use Doctrine\Annotations\Metadata\Type\MixedType;
 use Doctrine\Annotations\Metadata\Type\NullType;
-use Doctrine\Annotations\Metadata\Type\Type;
 use Doctrine\Annotations\Metadata\Type\UnionType;
-use Doctrine\Annotations\TypeParser\PHPStanTypeParser;
 use Doctrine\Annotations\Parser\Ast\Annotations;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Compiler;
@@ -109,7 +106,6 @@ final class AnnotationMetadataAssembler
         }
 
         return new AnnotationTarget($target->targets);
-
     }
 
     /**

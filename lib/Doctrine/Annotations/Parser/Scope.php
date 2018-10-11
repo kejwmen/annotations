@@ -8,6 +8,7 @@ use ReflectionClass;
 use ReflectionFunctionAbstract;
 use ReflectionProperty;
 use Reflector;
+use function assert;
 
 /**
  * Represents the source scope effective at the phpDoc declaration.
@@ -33,8 +34,7 @@ final class Scope
         Imports $imports,
         IgnoredAnnotations $ignoredAnnotations,
         int $nestingLevel = 0
-    )
-    {
+    ) {
         assert(
             $subject instanceof ReflectionClass
             || $subject instanceof ReflectionProperty

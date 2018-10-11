@@ -65,7 +65,8 @@ final class MetadataCollectorTest extends TestCase
                     new Parameters()
                 )
             ),
-            function (AnnotationMetadataAssembler $assembler) : void {
+            function (MockObject $assembler) : void {
+                /** @var AnnotationMetadataAssembler|MockObject $assembler */
                 $assembler->method('assemble')
                     ->with(
                         $this->callback(static function (Reference $reference) : bool {
@@ -99,7 +100,8 @@ final class MetadataCollectorTest extends TestCase
                     )
                 )
             ),
-            function (AnnotationMetadataAssembler $assembler) : void {
+            function (MockObject $assembler) : void {
+                /** @var AnnotationMetadataAssembler|MockObject $assembler */
                 $assembler->method('assemble')
                     ->withConsecutive(
                         [

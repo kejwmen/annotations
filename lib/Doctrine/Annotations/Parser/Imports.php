@@ -23,7 +23,7 @@ final class Imports implements ArrayAccess, IteratorAggregate
     {
         foreach ($map as $alias => $name) {
             assert(is_string($alias) && is_string($name));
-            assert(!isset($this[strtolower($alias)]));
+            assert(! isset($this[strtolower($alias)]));
 
             $this->map[strtolower($alias)] = $name;
         }
@@ -37,37 +37,24 @@ final class Imports implements ArrayAccess, IteratorAggregate
         yield from $this->map;
     }
 
-    /**
-     * @param string $offset
-     */
-    public function offsetGet($offset) : string
+    public function offsetGet(string $offset) : string
     {
         assert(isset($this[strtolower($offset)]));
 
         return $this->map[strtolower($offset)];
     }
 
-    /**
-     * @param string $offset
-     * @param string $value
-     */
-    public function offsetSet($offset, $value) : void
+    public function offsetSet(string $offset, string $value) : void
     {
         assert(false, 'immutable');
     }
 
-    /**
-     * @param string $offset
-     */
-    public function offsetExists($offset) : bool
+    public function offsetExists(string $offset) : bool
     {
         return isset($this->map[strtolower($offset)]);
     }
 
-    /**
-     * @param string $offset
-     */
-    public function offsetUnset($offset) : void
+    public function offsetUnset(string $offset) : void
     {
         assert(false, 'immutable');
     }

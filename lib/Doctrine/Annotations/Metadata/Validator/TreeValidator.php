@@ -12,5 +12,5 @@ interface TreeValidator
     /**
      * @throws ValidationFalied
      */
-    public function validate(Annotation $annotation, AnnotationMetadata $metadata) :  void;
+    public function validate(Annotation $annotation, AnnotationMetadata $metadata) : void;
 }

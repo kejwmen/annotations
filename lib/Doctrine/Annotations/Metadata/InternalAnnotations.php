@@ -51,19 +51,18 @@ final class InternalAnnotations
                     new PropertyMetadata(
                         'literal',
                         new UnionType(new ListType(new StringType()), new NullType())
-                    )
+                    ),
                 ]
             ),
             new AnnotationMetadata(
                 IgnoreAnnotation::class,
                 new AnnotationTarget(AnnotationTarget::TARGET_ALL),
                 true,
-                [
-                    new PropertyMetadata(
-                        'names',
-                        new ListType(new StringType()),
-                        true
-                    )
+                [new PropertyMetadata(
+                    'names',
+                    new ListType(new StringType()),
+                    true
+                ),
                 ]
             ),
             new AnnotationMetadata(

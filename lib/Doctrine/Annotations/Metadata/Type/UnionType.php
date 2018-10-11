@@ -7,6 +7,7 @@ namespace Doctrine\Annotations\Metadata\Type;
 use function array_map;
 use function assert;
 use function count;
+use function implode;
 
 final class UnionType implements Type
 {

@@ -8,25 +8,26 @@ use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
 use Doctrine\Annotations\Parser\Ast\Collection\ListCollection;
 use Doctrine\Annotations\Parser\Ast\Collection\MapCollection;
-use Doctrine\Annotations\Parser\Ast\Parameter\NamedParameter;
+use Doctrine\Annotations\Parser\Ast\ConstantFetch;
 use Doctrine\Annotations\Parser\Ast\Node;
 use Doctrine\Annotations\Parser\Ast\Pair;
+use Doctrine\Annotations\Parser\Ast\Parameter\NamedParameter;
+use Doctrine\Annotations\Parser\Ast\Parameter\UnnamedParameter;
+use Doctrine\Annotations\Parser\Ast\Parameters;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Ast\Scalar;
 use Doctrine\Annotations\Parser\Ast\Scalar\BooleanScalar;
-use Doctrine\Annotations\Parser\Ast\ConstantFetch;
 use Doctrine\Annotations\Parser\Ast\Scalar\FloatScalar;
 use Doctrine\Annotations\Parser\Ast\Scalar\Identifier;
 use Doctrine\Annotations\Parser\Ast\Scalar\IntegerScalar;
 use Doctrine\Annotations\Parser\Ast\Scalar\NullScalar;
 use Doctrine\Annotations\Parser\Ast\Scalar\StringScalar;
-use Doctrine\Annotations\Parser\Ast\Parameter\UnnamedParameter;
-use Doctrine\Annotations\Parser\Ast\Parameters;
 use Doctrine\Annotations\Parser\Nodes;
 use Doctrine\Annotations\Parser\Tokens;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
+use function assert;
 use function ltrim;
 use function sprintf;
 use function str_replace;
@@ -88,16 +89,16 @@ final class AstBuilder implements Visit
         switch ($node->getValueToken()) {
             case Tokens::IDENTIFIER:
                 return new Identifier($value);
-            case Tokens::NULL :
+            case Tokens::NULL:
                 return new NullScalar();
-            case Tokens::BOOLEAN :
+            case Tokens::BOOLEAN:
                 return new BooleanScalar(strcasecmp($value, 'true') === 0);
-            case Tokens::INTEGER :
+            case Tokens::INTEGER:
                 $intValue = (int) $value;
                 assert((string) $intValue === $value, 'Integer overflow');
 
                 return new IntegerScalar($intValue);
-            case Tokens::FLOAT :
+            case Tokens::FLOAT:
                 return new FloatScalar((float) $value);
         }
 

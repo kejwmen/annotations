@@ -9,8 +9,9 @@ use Doctrine\Annotations\Parser\Ast\Annotations;
 use Doctrine\Annotations\Parser\Ast\Collection\ListCollection;
 use Doctrine\Annotations\Parser\Ast\Collection\MapCollection;
 use Doctrine\Annotations\Parser\Ast\ConstantFetch;
-use Doctrine\Annotations\Parser\Ast\Parameter\NamedParameter;
 use Doctrine\Annotations\Parser\Ast\Pair;
+use Doctrine\Annotations\Parser\Ast\Parameter\NamedParameter;
+use Doctrine\Annotations\Parser\Ast\Parameter\UnnamedParameter;
 use Doctrine\Annotations\Parser\Ast\Parameters;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Ast\Scalar\BooleanScalar;
@@ -19,7 +20,6 @@ use Doctrine\Annotations\Parser\Ast\Scalar\Identifier;
 use Doctrine\Annotations\Parser\Ast\Scalar\IntegerScalar;
 use Doctrine\Annotations\Parser\Ast\Scalar\NullScalar;
 use Doctrine\Annotations\Parser\Ast\Scalar\StringScalar;
-use Doctrine\Annotations\Parser\Ast\Parameter\UnnamedParameter;
 
 interface Visitor
 {

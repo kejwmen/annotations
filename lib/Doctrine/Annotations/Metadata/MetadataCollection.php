@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Doctrine\Annotations\Metadata;
 
 use ArrayAccess;
-use function assert;
 use Countable;
+use function assert;
+use function count;
+use function sprintf;
 
 final class MetadataCollection implements ArrayAccess, Countable
 {
@@ -23,7 +25,7 @@ final class MetadataCollection implements ArrayAccess, Countable
     public function add(AnnotationMetadata ...$metadatas) : void
     {
         foreach ($metadatas as $metadata) {
-            assert(!isset($this[$metadata->getName()]));
+            assert(! isset($this[$metadata->getName()]));
 
             $this->metadata[$metadata->getName()] = $metadata;
         }
@@ -36,7 +38,7 @@ final class MetadataCollection implements ArrayAccess, Countable
      */
     public function offsetGet($name) : AnnotationMetadata
     {
-        assert(isset($this[$name]), \sprintf('Metadata for name %s does not exist', $name));
+        assert(isset($this[$name]), sprintf('Metadata for name %s does not exist', $name));
 
         return $this->metadata[$name];
     }

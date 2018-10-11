@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata\Type;
 
+use function is_int;
+
 final class IntegerType implements ScalarType
 {
     public function describe() : string

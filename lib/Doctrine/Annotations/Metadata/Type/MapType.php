@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata\Type;
 
+use function is_array;
+use function sprintf;
+
 final class MapType implements CompositeType
 {
     /** @var ScalarType */

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Parser\Ast;
 
-use function count;
 use Countable;
 use Doctrine\Annotations\Parser\Visitor\Visitor;
 use IteratorAggregate;
+use function count;
 
 final class Parameters implements Node, IteratorAggregate, Countable
 {

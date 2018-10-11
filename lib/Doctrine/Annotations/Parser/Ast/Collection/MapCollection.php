@@ -7,6 +7,7 @@ namespace Doctrine\Annotations\Parser\Ast\Collection;
 use Doctrine\Annotations\Parser\Ast\Collection;
 use Doctrine\Annotations\Parser\Ast\Pair;
 use Doctrine\Annotations\Parser\Visitor\Visitor;
+use function count;
 
 final class MapCollection implements Collection
 {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Parser\Ast;
 
-use Doctrine\Annotations\Parser\Ast\Scalar;
 use Doctrine\Annotations\Parser\Visitor\Visitor;
 
 final class Pair implements Value

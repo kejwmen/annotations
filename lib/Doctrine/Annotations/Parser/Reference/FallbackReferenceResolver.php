@@ -6,6 +6,8 @@ namespace Doctrine\Annotations\Parser\Reference;
 
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Scope;
+use ReflectionClass;
+use ReflectionFunctionAbstract;
 use function strtolower;
 
 /**
@@ -30,7 +32,7 @@ final class FallbackReferenceResolver implements ReferenceResolver
 
         $subject = $scope->getSubject();
 
-        if (!$subject instanceof \ReflectionClass && !$subject instanceof \ReflectionFunctionAbstract) {
+        if (! $subject instanceof ReflectionClass && ! $subject instanceof ReflectionFunctionAbstract) {
             return $identifier;
         }
 
