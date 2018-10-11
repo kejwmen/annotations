@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Tests\Annotations\Parser\Visitor;
+namespace Doctrine\Tests\Annotations\Metadata;
 
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
+use Doctrine\Annotations\Metadata\MetadataCollection;
 use Doctrine\Annotations\Metadata\MetadataCollector;
 use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
@@ -15,6 +16,7 @@ use Doctrine\Annotations\Parser\Ast\Parameters;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Reference\StaticReferenceResolver;
 use Doctrine\Annotations\Parser\Scope;
+use Doctrine\Tests\Annotations\Annotation\Parser\ScopeMother;
 use Doctrine\Tests\Annotations\Assembler\Acceptor\AlwaysAcceptingAcceptor;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -49,9 +51,11 @@ final class MetadataCollectorTest extends TestCase
     {
         $initializer($this->assembler);
 
-        $this->collector->visit($annotations);
+        $collection = new MetadataCollection();
 
-        $asserter(...$this->collector->collect());
+        $this->collector->collect($annotations, ScopeMother::example(), $collection);
+
+        $asserter(...$collection);
     }
 
     public function docBlocksProvider() : iterable
