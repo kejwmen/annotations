@@ -11,7 +11,6 @@ use Doctrine\Annotations\Constructor\Instantiator\ConstructorInstantiatorStrateg
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Constructor\Instantiator\PropertyInstantiatorStrategy;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
-use Doctrine\Annotations\Metadata\Assembler\DefaultAnnotationMetadataAssembler;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
 use Doctrine\Annotations\Metadata\InternalAnnotations;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
@@ -69,7 +68,7 @@ class AnnotationMetadataAssemblerTest extends TestCase
                 new PropertyInstantiatorStrategy()
             )
         );
-        $this->metadataAssembler = new DefaultAnnotationMetadataAssembler(
+        $this->metadataAssembler = new AnnotationMetadataAssembler(
             $this->compiler,
             new FallbackReferenceResolver(),
             new DefaultReflectionProvider(),

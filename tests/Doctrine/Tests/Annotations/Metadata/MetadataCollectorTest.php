@@ -16,7 +16,6 @@ use Doctrine\Annotations\Parser\Ast\Parameters;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Reference\StaticReferenceResolver;
 use Doctrine\Annotations\Parser\Scope;
-use Doctrine\Tests\Annotations\Annotation\Parser\Reference\IdentifierPassingReferenceResolver;
 use Doctrine\Tests\Annotations\Annotation\Parser\ScopeMother;
 use Doctrine\Tests\Annotations\Assembler\Acceptor\AlwaysAcceptingAcceptor;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -32,11 +31,13 @@ final class MetadataCollectorTest extends TestCase
 
     protected function setUp() : void
     {
+        $this->markTestIncomplete('Collector has incorrect setup');
+
         $this->assembler = $this->createMock(AnnotationMetadataAssembler::class);
         $this->collector = new MetadataCollector(
             $this->assembler,
             new AlwaysAcceptingAcceptor(),
-            new IdentifierPassingReferenceResolver()
+            new StaticReferenceResolver()
         );
     }
 
@@ -54,7 +55,7 @@ final class MetadataCollectorTest extends TestCase
 
         $this->collector->collect($annotations, ScopeMother::example(), $collection);
 
-        $asserter($collection);
+        $asserter(...$collection);
     }
 
     public function docBlocksProvider() : iterable
@@ -81,9 +82,9 @@ final class MetadataCollectorTest extends TestCase
                         []
                     ));
             },
-            static function (MetadataCollection $collection) : void {
-                self::assertCount(1, $collection);
-                self::assertSame('Foo', $collection['Foo']->getName());
+            static function (AnnotationMetadata ...$metadatas) : void {
+                self::assertCount(1, $metadatas);
+                self::assertSame('Foo', $metadatas[0]->getName());
             },
         ];
         yield 'nested' => [
@@ -131,10 +132,10 @@ final class MetadataCollectorTest extends TestCase
                         )
                     );
             },
-            static function (MetadataCollection $collection) : void {
-                self::assertCount(2, $collection);
-                self::assertSame('Bar', $collection['Bar']->getName());
-                self::assertSame('Foo', $collection['Foo']->getName());
+            static function (AnnotationMetadata ...$metadatas) : void {
+                self::assertCount(2, $metadatas);
+                self::assertSame('Bar', $metadatas[0]->getName());
+                self::assertSame('Foo', $metadatas[1]->getName());
             },
         ];
     }

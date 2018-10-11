@@ -14,7 +14,6 @@ use Doctrine\Annotations\Constructor\Constructor;
 use Doctrine\Annotations\Constructor\Instantiator\ConstructorInstantiatorStrategy;
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Constructor\Instantiator\PropertyInstantiatorStrategy;
-use Doctrine\Annotations\Metadata\Assembler\DefaultAnnotationMetadataAssembler;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
 use Doctrine\Annotations\Metadata\InternalAnnotations;
 use Doctrine\Annotations\Metadata\MetadataCollection;
@@ -86,7 +85,7 @@ final class NewAnnotationReader implements Reader
         $fallbackReferenceResolver = new FallbackReferenceResolver();
         $staticReferenceResolver   = new StaticReferenceResolver();
 
-        $this->metadataAssembler = new DefaultAnnotationMetadataAssembler(
+        $this->metadataAssembler = new AnnotationMetadataAssembler(
             $this->compiler,
             $fallbackReferenceResolver,
             $this->reflectionProvider,
