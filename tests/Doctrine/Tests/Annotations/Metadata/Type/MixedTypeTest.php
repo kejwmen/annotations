@@ -36,7 +36,9 @@ final class MixedTypeTest extends TypeTest
     public function invalidValidateValuesProvider() : iterable
     {
         try {
-            yield [$f = fopen(__FILE__, 'r')];
+            $f = fopen(__FILE__, 'r');
+
+            yield [$f];
         } finally {
             @fclose($f);
         }
