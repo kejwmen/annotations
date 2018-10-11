@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Doctrine\Annotations\Metadata;
 
 use ArrayAccess;
+use Countable;
 use function assert;
+use function count;
 use function sprintf;
 
-final class MetadataCollection implements ArrayAccess
+final class MetadataCollection implements ArrayAccess, Countable
 {
     /** @var array<string, AnnotationMetadata> */
     private $metadata = [];
@@ -74,5 +76,10 @@ final class MetadataCollection implements ArrayAccess
         assert(isset($this[$name]));
 
         unset($this->metadata[$name]);
+    }
+
+    public function count() : int
+    {
+        return count($this->metadata);
     }
 }
