@@ -14,12 +14,10 @@ final class CompositeConstraint implements Constraint
         $this->constraints = $constraints;
     }
 
-    public function validate($value) : bool
+    public function validate($value) : void
     {
         foreach ($this->constraints as $constraint) {
             $constraint->validate($value);
         }
-
-        return true;
     }
 }

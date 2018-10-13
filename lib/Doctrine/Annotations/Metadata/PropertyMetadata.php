@@ -40,14 +40,12 @@ final class PropertyMetadata
      *
      * @throws InvalidPropertyValue
      */
-    public function validateValue($value) : bool
+    public function validateValue($value) : void
     {
         try {
             $this->valueConstraint->validate($value);
         } catch (ConstraintNotFulfilled $exception) {
             throw InvalidPropertyValue::new($this, $exception);
         }
-
-        return true;
     }
 }

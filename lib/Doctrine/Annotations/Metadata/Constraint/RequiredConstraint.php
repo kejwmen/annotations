@@ -6,12 +6,10 @@ namespace Doctrine\Annotations\Metadata\Constraint;
 
 final class RequiredConstraint implements Constraint
 {
-    public function validate($value) : bool
+    public function validate($value) : void
     {
         if ($value === null) {
             throw MissingRequiredValue::new();
         }
-
-        return true;
     }
 }

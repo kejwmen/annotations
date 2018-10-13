@@ -16,12 +16,10 @@ final class TypeConstraint implements Constraint
         $this->type = $type;
     }
 
-    public function validate($value) : bool
+    public function validate($value) : void
     {
         if (! $this->type->validate($value)) {
             throw InvalidType::new($this->type->describe(), $value);
         }
-
-        return true;
     }
 }

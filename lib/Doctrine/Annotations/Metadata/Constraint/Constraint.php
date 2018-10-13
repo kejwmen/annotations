@@ -7,9 +7,7 @@ namespace Doctrine\Annotations\Metadata\Constraint;
 interface Constraint
 {
     /**
-     * @return true
-     *
      * @throws ConstraintNotFulfilled
      */
-    public function validate($value) : bool;
+    public function validate($value) : void;
 }
