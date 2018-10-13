@@ -9,12 +9,10 @@ final class RequiredConstraint implements Constraint
     /**
      * @param mixed $value
      */
-    public function validate($value) : bool
+    public function validate($value) : void
     {
         if ($value === null) {
             throw MissingRequiredValue::new();
         }
-
-        return true;
     }
 }

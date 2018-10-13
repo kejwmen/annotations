@@ -20,7 +20,9 @@ class EnumConstraintTest extends TestCase
     {
         $constraint = new EnumConstraint($allowedValues);
 
-        $this->assertTrue($constraint->validate($value));
+        $constraint->validate($value);
+
+        $this->assertTrue(true);
     }
 
     /**

@@ -22,12 +22,10 @@ final class EnumConstraint implements Constraint
     /**
      * @param mixed $value
      */
-    public function validate($value) : bool
+    public function validate($value) : void
     {
         if (! in_array($value, $this->allowedValues)) {
             throw InvalidValue::new($this->allowedValues, $value);
         }
-
-        return true;
     }
 }

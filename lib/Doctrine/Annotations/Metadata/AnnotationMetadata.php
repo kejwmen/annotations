@@ -89,12 +89,12 @@ final class AnnotationMetadata
      *
      * @throws InvalidTarget
      */
-    public function validateTarget(Scope $scope) : bool
+    public function validateTarget(Scope $scope) : void
     {
         $target = $this->getTarget();
 
         if ($target->all()) {
-            return true;
+            return;
         }
 
         if ($scope->isNested()) {
@@ -102,7 +102,7 @@ final class AnnotationMetadata
                 throw InvalidTarget::annotation($this);
             }
 
-            return true;
+            return;
         }
 
         $subject = $scope->getSubject();
@@ -119,6 +119,6 @@ final class AnnotationMetadata
             throw InvalidTarget::method($this);
         }
 
-        return true;
+        return;
     }
 }
