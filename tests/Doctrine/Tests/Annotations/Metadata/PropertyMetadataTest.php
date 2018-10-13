@@ -19,9 +19,9 @@ class PropertyMetadataTest extends TestCase
     {
         $metadata = PropertyMetadataMother::withType($type);
 
-        $result = $metadata->validateValue($value);
+        $metadata->validateValue($value);
 
-        $this->assertTrue($result);
+        $this->assertTrue(true);
     }
 
     public function validTypeValidationExamples() : iterable
