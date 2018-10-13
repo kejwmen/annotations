@@ -26,9 +26,9 @@ class AnnotationMetadataTest extends TestCase
     {
         $metadata = AnnotationMetadataMother::withTarget($target);
 
-        $result = $metadata->validateTarget($scope);
+        $metadata->validateTarget($scope);
 
-        $this->assertTrue($result);
+        $this->assertTrue(true);
     }
 
     /**
