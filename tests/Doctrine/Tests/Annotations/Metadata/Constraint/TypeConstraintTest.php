@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Metadata\Constraint;
@@ -15,9 +16,11 @@ use PHPUnit\Framework\TestCase;
 class TypeConstraintTest extends TestCase
 {
     /**
+     * @param mixed $value
+     *
      * @dataProvider matchingExamples
      */
-    public function testValidatesValueMatchingType(Type $type, $value): void
+    public function testValidatesValueMatchingType(Type $type, $value) : void
     {
         $constraint = new TypeConstraint($type);
 
@@ -26,23 +29,28 @@ class TypeConstraintTest extends TestCase
         $this->assertTrue(true);
     }
 
+    /**
+     * @return mixed[]
+     */
     public function matchingExamples() : iterable
     {
         yield 'a string' => [
             new StringType(),
-            "foo"
+            'foo',
         ];
 
         yield 'an object' => [
             new ObjectType(Annotation::class),
-            new Annotation([])
+            new Annotation([]),
         ];
     }
 
     /**
+     * @param mixed $value
+     *
      * @dataProvider notMatchingExamples
      */
-    public function testValidatesValueNotMatchingTypeAndThrows(Type $type, $value): void
+    public function testValidatesValueNotMatchingTypeAndThrows(Type $type, $value) : void
     {
         $constraint = new TypeConstraint($type);
 
@@ -51,16 +59,19 @@ class TypeConstraintTest extends TestCase
         $constraint->validate($value);
     }
 
+    /**
+     * @return mixed[]
+     */
     public function notMatchingExamples() : iterable
     {
         yield 'not a string' => [
             new StringType(),
-            42
+            42,
         ];
 
         yield 'a different object' => [
             new ObjectType(AnnotationTargetAll::class),
-            new Annotation([])
+            new Annotation([]),
         ];
     }
 }

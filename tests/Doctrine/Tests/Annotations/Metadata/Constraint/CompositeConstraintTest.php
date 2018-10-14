@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Metadata\Constraint;
@@ -13,14 +14,14 @@ use PHPUnit\Framework\TestCase;
 
 class CompositeConstraintTest extends TestCase
 {
-    public function testCombinesMultipleConstraintAndPassesWhenAllAreFulfilled()
+    public function testCombinesMultipleConstraintAndPassesWhenAllAreFulfilled() : void
     {
         $constraint = new CompositeConstraint(
             new TypeConstraint(TestNullableType::fromType(new StringType())),
             new RequiredConstraint()
         );
 
-        $constraint->validate("foo");
+        $constraint->validate('foo');
 
         $this->expectException(ConstraintNotFulfilled::class);
 

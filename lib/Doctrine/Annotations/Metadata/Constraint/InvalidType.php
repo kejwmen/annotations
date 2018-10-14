@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata\Constraint;
 
+use function gettype;
+use function is_scalar;
 use function sprintf;
 
 final class InvalidType extends ConstraintNotFulfilled
@@ -17,7 +19,7 @@ final class InvalidType extends ConstraintNotFulfilled
         return new self(
             sprintf(
                 'Invalid value "%s" fo type %s.',
-                !is_scalar($value) ? gettype($value) : $value,
+                ! is_scalar($value) ? gettype($value) : $value,
                 $typeDescription
             )
         );

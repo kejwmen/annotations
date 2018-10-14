@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Metadata\Constraint;
@@ -9,16 +10,16 @@ use PHPUnit\Framework\TestCase;
 
 class RequiredConstraintTest extends TestCase
 {
-    public function testValidatesNotNullValue(): void
+    public function testValidatesNotNullValue() : void
     {
         $constraint = new RequiredConstraint();
 
-        $constraint->validate("foo");
+        $constraint->validate('foo');
 
         $this->assertTrue(true);
     }
 
-    public function testValidatesNullValueAndThrows(): void
+    public function testValidatesNullValueAndThrows() : void
     {
         $constraint = new RequiredConstraint();
 
