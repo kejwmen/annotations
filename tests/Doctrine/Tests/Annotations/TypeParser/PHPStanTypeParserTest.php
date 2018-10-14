@@ -16,6 +16,7 @@ use Doctrine\Annotations\Metadata\Type\StringType;
 use Doctrine\Annotations\Metadata\Type\UnionType;
 use Doctrine\Annotations\Parser\Reference\FallbackReferenceResolver;
 use Doctrine\Annotations\TypeParser\PHPStanTypeParser;
+use Doctrine\Annotations\TypeParser\PHPStanTypeParserFactory;
 use Doctrine\Annotations\TypeParser\TypeParser;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
@@ -26,11 +27,7 @@ final class PHPStanTypeParserTest extends TypeParserTest
 {
     protected function createParser() : TypeParser
     {
-        return new PHPStanTypeParser(
-            new Lexer(),
-            new PhpDocParser(new BaseTypeParser(), new ConstExprParser()),
-            new FallbackReferenceResolver()
-        );
+        return (new PHPStanTypeParserFactory())->build();
     }
 
     public function validPropertyTypesProvider() : iterable

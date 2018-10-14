@@ -29,6 +29,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
+use PHPStan\PhpDocParser\Parser\TypeParser as PHPStanInternalTypeParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use function array_map;
 use function assert;
@@ -45,13 +46,21 @@ final class PHPStanTypeParser implements TypeParser
     /** @var PhpDocParser */
     private $phpDocParser;
 
+    /** @var PHPStanInternalTypeParser */
+    private $typeParser;
+
     /** @var ReferenceResolver */
     private $referenceResolver;
 
-    public function __construct(Lexer $lexer, PhpDocParser $phpDocParser, ReferenceResolver $referenceResolver)
-    {
+    public function __construct(
+        Lexer $lexer,
+        PhpDocParser $phpDocParser,
+        PHPStanInternalTypeParser $typeParser,
+        ReferenceResolver $referenceResolver
+    ) {
         $this->lexer             = $lexer;
         $this->phpDocParser      = $phpDocParser;
+        $this->typeParser = $typeParser;
         $this->referenceResolver = $referenceResolver;
     }
 
@@ -66,6 +75,15 @@ final class PHPStanTypeParser implements TypeParser
         }
 
         return $this->resolveType($tags[0]->type, $scope);
+    }
+
+    public function parseTypeString(string $type, Scope $scope) : Type
+    {
+        $phpstanType = $this->typeParser->parse(new TokenIterator(
+            $this->lexer->tokenize($type)
+        ));
+
+        return $this->resolveType($phpstanType, $scope);
     }
 
     private function parse(string $docBlock) : PhpDocNode

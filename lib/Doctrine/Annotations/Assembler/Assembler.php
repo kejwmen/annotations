@@ -185,9 +185,11 @@ final class Assembler
                 foreach ($parameters as $parameter) {
                     $parameter->dispatch($this);
 
-                    assert(! array_key_exists($this->stack->current(), $new));
+                    $key = $this->stack->pop();
 
-                    $new[$this->stack->pop()] = $this->stack->pop();
+                    assert(! array_key_exists($key, $new), sprintf('Key %s already exists', $key));
+
+                    $new[$key] = $this->stack->pop();
                 }
 
                 $this->stack->push($new);

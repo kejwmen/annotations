@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Doctrine\Annotations\Metadata\Assembler;
 
 use Doctrine\Annotations\Annotation\Annotation as AnnotationAnnotation;
+use Doctrine\Annotations\Annotation\Attribute;
+use Doctrine\Annotations\Annotation\Attributes;
 use Doctrine\Annotations\Annotation\Enum;
 use Doctrine\Annotations\Annotation\Required as RequiredAnnotation;
 use Doctrine\Annotations\Annotation\Target as TargetAnnotation;
@@ -96,7 +98,7 @@ final class AnnotationMetadataAssembler
             $realName,
             $this->determineTarget($hydratedAnnotations),
             $hasConstructor,
-            $this->assembleProperties($classReflection)
+            $this->assembleProperties($classReflection, $scope, $hydratedAnnotations, $hasConstructor)
         );
     }
 
@@ -147,18 +149,42 @@ final class AnnotationMetadataAssembler
     /**
      * @return PropertyMetadata[]
      */
-    private function assembleProperties(ReflectionClass $class) : array
+    private function assembleProperties(ReflectionClass $class, Scope $scope, array $classAnnotations, bool $hasConstructor) : array
     {
         $metadatas = [];
 
+        if ($hasConstructor) {
+            /** @var Attributes $attributes */
+            $attributes = $this->findAnnotation(Attributes::class, $classAnnotations);
+
+            if (!$attributes) {
+                return [];
+            }
+
+            /** @var Attribute $attribute */
+            foreach ($attributes->value as $attribute) {
+                $metadatas[] = $this->assemblePropertyFromAttribute($attribute, $scope);
+            }
+        }
+
         foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $i => $property) {
-            $metadatas[] = $this->assembleProperty($property);
+            $metadatas[] = $this->assemblePropertyFromReflectionProperty($property);
         }
 
         return $metadatas;
     }
 
-    private function assembleProperty(ReflectionProperty $property) : PropertyMetadata
+    private function assemblePropertyFromAttribute(Attribute $attribute, Scope $scope) : PropertyMetadata
+    {
+        $type = $this->typeParser->parseTypeString($attribute->type, $scope);
+
+        return new PropertyMetadata(
+            $attribute->name,
+            $this->determinePropertyConstraint($type, $attribute->required, null)
+        );
+    }
+
+    private function assemblePropertyFromReflectionProperty(ReflectionProperty $property) : PropertyMetadata
     {
         $docBlock = $property->getDocComment();
 
@@ -181,11 +207,11 @@ final class AnnotationMetadataAssembler
 
         return new PropertyMetadata(
             $property->getName(),
-            $this->determinePropertyConstraint($type, $required, $enum)
+            $this->determinePropertyConstraint($type, $required !== null, $enum)
         );
     }
 
-    private function determinePropertyConstraint(Type $type, ?RequiredAnnotation $required, ?Enum $enum): Constraint
+    private function determinePropertyConstraint(Type $type, bool $required, ?Enum $enum): Constraint
     {
         if ($required && ! $type->acceptsNull()) {
             // TODO: throw deprecated warning?

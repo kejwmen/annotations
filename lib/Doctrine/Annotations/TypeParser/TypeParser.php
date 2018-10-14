@@ -10,4 +10,5 @@ use Doctrine\Annotations\Parser\Scope;
 interface TypeParser
 {
     public function parsePropertyType(string $docBlock, Scope $scope) : Type;
+    public function parseTypeString(string $type, Scope $scope) : Type;
 }

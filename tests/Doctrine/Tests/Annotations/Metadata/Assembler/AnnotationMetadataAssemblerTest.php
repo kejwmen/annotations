@@ -4,33 +4,24 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Metadata\Assembler;
 
-use Doctrine\Annotations\Assembler\Acceptor\InternalAcceptor;
-use Doctrine\Annotations\Assembler\Assembler;
 use Doctrine\Annotations\Constructor\Constructor;
 use Doctrine\Annotations\Constructor\Instantiator\ConstructorInstantiatorStrategy;
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Constructor\Instantiator\PropertyInstantiatorStrategy;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
-use Doctrine\Annotations\Metadata\Assembler\DefaultAnnotationMetadataAssembler;
+use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssemblerFactory;
 use Doctrine\Annotations\Metadata\Constraint\CompositeConstraint;
 use Doctrine\Annotations\Metadata\Constraint\RequiredConstraint;
 use Doctrine\Annotations\Metadata\Constraint\TypeConstraint;
-use Doctrine\Annotations\Metadata\InternalAnnotations;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
-use Doctrine\Annotations\Metadata\Reflection\DefaultReflectionProvider;
-use Doctrine\Annotations\Metadata\ScopeManufacturer;
 use Doctrine\Annotations\Metadata\Type\ObjectType;
 use Doctrine\Annotations\Metadata\Type\StringType;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Compiler;
-use Doctrine\Annotations\Parser\IgnoredAnnotations;
-use Doctrine\Annotations\Parser\Imports;
-use Doctrine\Annotations\Parser\Reference\FallbackReferenceResolver;
-use Doctrine\Annotations\Parser\Reference\StaticReferenceResolver;
 use Doctrine\Annotations\Parser\Scope;
 use Doctrine\Annotations\PhpParser;
-use Doctrine\Annotations\TypeParser\PHPStanTypeParser;
+use Doctrine\Tests\Annotations\Annotation\Parser\ScopeMother;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationEnum;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAll;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAnnotation;
@@ -41,12 +32,9 @@ use Doctrine\Tests\Annotations\Fixtures\AnnotationWithVarType;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationEnumMetadata;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationTargetAllMetadata;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithConstantsMetadata;
+use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithRequiredAttributesMetadata;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithVarTypeMetadata;
 use Doctrine\Tests\Annotations\Metadata\Type\TestNullableType;
-use PHPStan\PhpDocParser\Lexer\Lexer;
-use PHPStan\PhpDocParser\Parser\ConstExprParser;
-use PHPStan\PhpDocParser\Parser\PhpDocParser;
-use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -74,22 +62,7 @@ class AnnotationMetadataAssemblerTest extends TestCase
                 new PropertyInstantiatorStrategy()
             )
         );
-        $this->metadataAssembler = new AnnotationMetadataAssembler(
-            $this->compiler,
-            new FallbackReferenceResolver(),
-            new DefaultReflectionProvider(),
-            new PHPStanTypeParser(new Lexer(), new PhpDocParser(new TypeParser(), new ConstExprParser()), new FallbackReferenceResolver()),
-            new ScopeManufacturer($this->phpParser),
-            new Assembler(
-                InternalAnnotations::createMetadata(),
-                new StaticReferenceResolver(),
-                $this->constructor,
-                new DefaultReflectionProvider(),
-                new InternalAcceptor(
-                    new StaticReferenceResolver()
-                )
-            )
-        );
+        $this->metadataAssembler = (new AnnotationMetadataAssemblerFactory())->build();
     }
 
     /**
@@ -106,7 +79,7 @@ class AnnotationMetadataAssemblerTest extends TestCase
     {
         yield 'fixture - AnnotationTargetAll' => [
             new Reference(AnnotationTargetAll::class, true),
-            new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
+            ScopeMother::withSubject(new ReflectionClass($this)),
             function (AnnotationMetadata $metadata) : void {
                 $this->assertEquals(AnnotationTargetAllMetadata::get(), $metadata);
             },
@@ -114,20 +87,15 @@ class AnnotationMetadataAssemblerTest extends TestCase
 
         yield 'fixture - AnnotationWithRequiredAttributes' => [
             new Reference(AnnotationWithRequiredAttributes::class, true),
-            new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
+            ScopeMother::withSubject(new ReflectionClass($this)),
             function (AnnotationMetadata $metadata) : void {
-                $this->assertSame(AnnotationWithRequiredAttributes::class, $metadata->getName());
-                $this->assertTrue($metadata->getTarget()->all(), 'Invalid target');
-                $this->assertTrue($metadata->hasConstructor(), 'Has no constructor');
-                $properties = $metadata->getProperties();
-                $this->assertEmpty($properties);
-                $this->assertNull($metadata->getDefaultProperty());
+                $this->assertEquals(AnnotationWithRequiredAttributesMetadata::get(), $metadata);
             },
         ];
 
         yield 'fixture - AnnotationWithRequiredAttributesWithoutConstructor' => [
             new Reference(AnnotationWithRequiredAttributesWithoutConstructor::class, true),
-            new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
+            ScopeMother::withSubject(new ReflectionClass($this)),
             function (AnnotationMetadata $metadata) : void {
                 $this->assertSame(AnnotationWithRequiredAttributesWithoutConstructor::class, $metadata->getName());
                 $this->assertTrue($metadata->getTarget()->all(), 'Invalid target');
@@ -163,7 +131,7 @@ class AnnotationMetadataAssemblerTest extends TestCase
 
         yield 'fixture - AnnotationWithVarType' => [
             new Reference(AnnotationWithVarType::class, true),
-            new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
+            ScopeMother::withSubject(new ReflectionClass($this)),
             function (AnnotationMetadata $metadata) : void {
                 $this->assertEquals(AnnotationWithVarTypeMetadata::get(), $metadata);
             },
@@ -171,7 +139,7 @@ class AnnotationMetadataAssemblerTest extends TestCase
 
         yield 'fixture - AnnotationWithConstants' => [
             new Reference(AnnotationWithConstants::class, true),
-            new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
+            ScopeMother::withSubject(new ReflectionClass($this)),
             function (AnnotationMetadata $metadata) : void {
                 $this->assertEquals(AnnotationWithConstantsMetadata::get(), $metadata);
             },
@@ -179,7 +147,7 @@ class AnnotationMetadataAssemblerTest extends TestCase
 
         yield 'fixture - AnnotationEnum' => [
             new Reference(AnnotationEnum::class, true),
-            new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
+            ScopeMother::withSubject(new ReflectionClass($this)),
             function (AnnotationMetadata $metadata) : void {
                 $this->assertEquals(AnnotationEnumMetadata::get(), $metadata);
             },

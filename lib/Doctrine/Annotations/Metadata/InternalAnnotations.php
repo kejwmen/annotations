@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace Doctrine\Annotations\Metadata;
 
 use Doctrine\Annotations\Annotation\Annotation;
+use Doctrine\Annotations\Annotation\Attribute;
+use Doctrine\Annotations\Annotation\Attributes;
 use Doctrine\Annotations\Annotation\Enum;
 use Doctrine\Annotations\Annotation\IgnoreAnnotation;
 use Doctrine\Annotations\Annotation\Required;
 use Doctrine\Annotations\Annotation\Target;
 use Doctrine\Annotations\Metadata\Constraint\TypeConstraint;
+use Doctrine\Annotations\Metadata\Type\BooleanType;
 use Doctrine\Annotations\Metadata\Type\IntegerType;
 use Doctrine\Annotations\Metadata\Type\ListType;
 use Doctrine\Annotations\Metadata\Type\NullType;
+use Doctrine\Annotations\Metadata\Type\ObjectType;
 use Doctrine\Annotations\Metadata\Type\StringType;
 use Doctrine\Annotations\Metadata\Type\UnionType;
 use Doctrine\Annotations\Parser\Imports;
@@ -25,6 +29,8 @@ final class InternalAnnotations
     public static function getNames() : iterable
     {
         yield Annotation::class;
+        yield Attribute::class;
+        yield Attributes::class;
         yield Enum::class;
         yield IgnoreAnnotation::class;
         yield Required::class;
@@ -38,6 +44,36 @@ final class InternalAnnotations
                 Annotation::class,
                 new AnnotationTarget(AnnotationTarget::TARGET_ALL),
                 false
+            ),
+            new AnnotationMetadata(
+                Attributes::class,
+                new AnnotationTarget(AnnotationTarget::TARGET_ALL),
+                false,
+                [
+                    new PropertyMetadata(
+                        'value',
+                        new TypeConstraint(new ListType(new ObjectType(Attribute::class)))
+                    )
+                ]
+            ),
+            new AnnotationMetadata(
+                Attribute::class,
+                new AnnotationTarget(AnnotationTarget::TARGET_ALL),
+                false,
+                [
+                    new PropertyMetadata(
+                        'name',
+                        new TypeConstraint(new StringType())
+                    ),
+                    new PropertyMetadata(
+                        'type',
+                        new TypeConstraint(new StringType())
+                    ),
+                    new PropertyMetadata(
+                        'required',
+                        new TypeConstraint(new BooleanType())
+                    )
+                ]
             ),
             new AnnotationMetadata(
                 Enum::class,
@@ -96,6 +132,8 @@ final class InternalAnnotations
     {
         return new Imports([
             'annotation'       => Annotation::class,
+            'attribute'        => Attribute::class,
+            'attributes'       => Attributes::class,
             'enum'             => Enum::class,
             'ignoreannotation' => IgnoreAnnotation::class,
             'required'         => Required::class,

@@ -15,22 +15,17 @@ use Doctrine\Annotations\Constructor\Instantiator\ConstructorInstantiatorStrateg
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Constructor\Instantiator\PropertyInstantiatorStrategy;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
+use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssemblerFactory;
 use Doctrine\Annotations\Metadata\InternalAnnotations;
 use Doctrine\Annotations\Metadata\MetadataCollection;
 use Doctrine\Annotations\Metadata\MetadataCollector;
 use Doctrine\Annotations\Metadata\Reflection\ClassReflectionProvider;
-use Doctrine\Annotations\Metadata\ScopeManufacturer;
 use Doctrine\Annotations\Parser\Compiler;
 use Doctrine\Annotations\Parser\IgnoredAnnotations;
 use Doctrine\Annotations\Parser\Imports;
 use Doctrine\Annotations\Parser\Reference\FallbackReferenceResolver;
 use Doctrine\Annotations\Parser\Reference\StaticReferenceResolver;
 use Doctrine\Annotations\Parser\Scope;
-use Doctrine\Annotations\TypeParser\PHPStanTypeParser;
-use PHPStan\PhpDocParser\Lexer\Lexer;
-use PHPStan\PhpDocParser\Parser\ConstExprParser;
-use PHPStan\PhpDocParser\Parser\PhpDocParser;
-use PHPStan\PhpDocParser\Parser\TypeParser;
 use ReflectionClass;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
@@ -85,24 +80,7 @@ final class NewAnnotationReader implements Reader
         $fallbackReferenceResolver = new FallbackReferenceResolver();
         $staticReferenceResolver   = new StaticReferenceResolver();
 
-        $this->metadataAssembler = new AnnotationMetadataAssembler(
-            $this->compiler,
-            $fallbackReferenceResolver,
-            $this->reflectionProvider,
-            new PHPStanTypeParser(
-                new Lexer(),
-                new PhpDocParser(new TypeParser(), new ConstExprParser()),
-                $fallbackReferenceResolver
-            ),
-            new ScopeManufacturer($this->usesParser),
-            new Assembler(
-                InternalAnnotations::createMetadata(),
-                $staticReferenceResolver,
-                $this->constructor,
-                $this->reflectionProvider,
-                new InternalAcceptor($staticReferenceResolver)
-            )
-        );
+        $this->metadataAssembler = (new AnnotationMetadataAssemblerFactory())->build();
 
         $this->metadataBuilder = new MetadataCollector(
             $this->metadataAssembler,
