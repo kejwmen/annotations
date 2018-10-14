@@ -30,12 +30,14 @@ use Doctrine\Annotations\Parser\Reference\StaticReferenceResolver;
 use Doctrine\Annotations\Parser\Scope;
 use Doctrine\Annotations\PhpParser;
 use Doctrine\Annotations\TypeParser\PHPStanTypeParser;
+use Doctrine\Tests\Annotations\Fixtures\AnnotationEnum;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAll;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAnnotation;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithConstants;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithRequiredAttributes;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithRequiredAttributesWithoutConstructor;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithVarType;
+use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationEnumMetadata;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationTargetAllMetadata;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithConstantsMetadata;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithVarTypeMetadata;
@@ -174,6 +176,14 @@ class AnnotationMetadataAssemblerTest extends TestCase
             new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
             function (AnnotationMetadata $metadata) : void {
                 $this->assertEquals(AnnotationWithConstantsMetadata::get(), $metadata);
+            },
+        ];
+
+        yield 'fixture - AnnotationEnum' => [
+            new Reference(AnnotationEnum::class, true),
+            new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
+            function (AnnotationMetadata $metadata) : void {
+                $this->assertEquals(AnnotationEnumMetadata::get(), $metadata);
             },
         ];
     }
