@@ -10,6 +10,7 @@ use ReflectionMethod;
 use ReflectionProperty;
 use function array_combine;
 use function array_map;
+use function reset;
 
 final class AnnotationMetadata
 {
@@ -49,7 +50,7 @@ final class AnnotationMetadata
             $properties
         );
 
-        $firstProperty = reset($this->properties);
+        $firstProperty         = reset($this->properties);
         $this->defaultProperty = $firstProperty ?: null;
     }
 
