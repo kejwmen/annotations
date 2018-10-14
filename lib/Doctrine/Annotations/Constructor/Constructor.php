@@ -10,6 +10,7 @@ use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\InvalidAnnotationValue;
 use Doctrine\Annotations\Metadata\InvalidPropertyValue;
+use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Parser\Scope;
 
 final class Constructor
@@ -29,24 +30,37 @@ final class Constructor
     {
         $annotationMetadata->validateTarget($scope);
 
+        if (!$annotationMetadata->hasConstructor()) {
+            $this->validateProperties($annotationMetadata, $parameters);
+        }
+
+        return $this->instantiator->instantiate($annotationMetadata, $parameters);
+    }
+
+    /**
+     * @param iterable<string, mixed> $parameters
+     */
+    private function validateProperties(AnnotationMetadata $annotationMetadata, iterable $parameters): void
+    {
         foreach ($parameters as $propertyName => $propertyValue) {
-            if ($propertyName === '') {
-                if ($annotationMetadata->hasConstructor()) {
-                    continue;
-                }
-
-                $propertyName = $annotationMetadata->getDefaultProperty()->getName();
-            }
-
-            $propertyMetadata = $annotationMetadata->getProperties()[$propertyName];
-
+            $propertyMetadata = $this->getPropertyMetadata($annotationMetadata, $propertyName);
             try {
                 $propertyMetadata->validateValue($propertyValue);
             } catch (InvalidPropertyValue $exception) {
                 throw InvalidAnnotationValue::new($annotationMetadata, $exception);
             }
         }
+    }
 
-        return $this->instantiator->instantiate($annotationMetadata, $parameters);
+    private function getPropertyMetadata(AnnotationMetadata $annotationMetadata, string $propertyName): PropertyMetadata
+    {
+        if ($propertyName === '') {
+            /** @var PropertyMetadata $defaultProperty */
+            $defaultProperty = $annotationMetadata->getDefaultProperty();
+
+            $propertyName = $defaultProperty->getName();
+        }
+
+        return $annotationMetadata->getProperties()[$propertyName];
     }
 }
