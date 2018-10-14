@@ -139,8 +139,7 @@ class AnnotationMetadataAssemblerTest extends TestCase
                         new CompositeConstraint(
                             new TypeConstraint(TestNullableType::fromType(new StringType())),
                             new RequiredConstraint()
-                        ),
-                        true
+                        )
                     ),
                     'annot' => new PropertyMetadata(
                         'annot',

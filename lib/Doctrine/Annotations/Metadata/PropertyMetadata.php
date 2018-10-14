@@ -15,24 +15,15 @@ final class PropertyMetadata
     /** @var Constraint */
     private $valueConstraint;
 
-    /** @var bool */
-    private $default;
-
-    public function __construct(string $name, Constraint $valueConstraint, bool $default = false)
+    public function __construct(string $name, Constraint $valueConstraint)
     {
         $this->name            = $name;
         $this->valueConstraint = $valueConstraint;
-        $this->default         = $default;
     }
 
     public function getName() : string
     {
         return $this->name;
-    }
-
-    public function isDefault() : bool
-    {
-        return $this->default;
     }
 
     /**

@@ -9,9 +9,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
 use function array_combine;
-use function array_filter;
 use function array_map;
-use function array_values;
 
 final class AnnotationMetadata
 {
@@ -51,9 +49,8 @@ final class AnnotationMetadata
             $properties
         );
 
-        $this->defaultProperty = array_values(array_filter($properties, static function (PropertyMetadata $property) : bool {
-            return $property->isDefault();
-        }))[0] ?? null;
+        $firstProperty = reset($this->properties);
+        $this->defaultProperty = $firstProperty ?: null;
     }
 
     public function getName() : string
@@ -118,7 +115,5 @@ final class AnnotationMetadata
         if ($subject instanceof ReflectionMethod && ! $target->method()) {
             throw InvalidTarget::method($this);
         }
-
-        return;
     }
 }
