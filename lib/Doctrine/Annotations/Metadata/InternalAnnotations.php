@@ -46,8 +46,7 @@ final class InternalAnnotations
                 [
                     new PropertyMetadata(
                         'value',
-                        new TypeConstraint(new ListType(new StringType())),
-                        true
+                        new TypeConstraint(new ListType(new StringType()))
                     ),
                     new PropertyMetadata(
                         'literal',
@@ -62,8 +61,7 @@ final class InternalAnnotations
                 [
                     new PropertyMetadata(
                         'names',
-                        new TypeConstraint(new ListType(new StringType())),
-                        true
+                        new TypeConstraint(new ListType(new StringType()))
                     ),
                 ]
             ),
@@ -79,8 +77,7 @@ final class InternalAnnotations
                 [
                     new PropertyMetadata(
                         'value',
-                        new TypeConstraint(new UnionType(new ListType(new StringType()), new NullType())),
-                        true
+                        new TypeConstraint(new UnionType(new ListType(new StringType()), new NullType()))
                     ),
                     new PropertyMetadata(
                         'targets',

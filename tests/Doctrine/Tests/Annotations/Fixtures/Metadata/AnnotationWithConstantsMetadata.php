@@ -23,8 +23,7 @@ final class AnnotationWithConstantsMetadata
                 // TODO: Add other properties
                 new PropertyMetadata(
                     'value',
-                    new TypeConstraint(new MixedType()),
-                    true
+                    new TypeConstraint(new MixedType())
                 )
             ]
         );

@@ -152,21 +152,20 @@ final class AnnotationMetadataAssembler
         $metadatas = [];
 
         foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $i => $property) {
-            $metadatas[] = $this->assembleProperty($property, $i === 0);
+            $metadatas[] = $this->assembleProperty($property);
         }
 
         return $metadatas;
     }
 
-    private function assembleProperty(ReflectionProperty $property, bool $first) : PropertyMetadata
+    private function assembleProperty(ReflectionProperty $property) : PropertyMetadata
     {
         $docBlock = $property->getDocComment();
 
         if ($docBlock === false) {
             return new PropertyMetadata(
                 $property->getName(),
-                new TypeConstraint(new MixedType()),
-                $first
+                new TypeConstraint(new MixedType())
             );
         }
 
@@ -182,8 +181,7 @@ final class AnnotationMetadataAssembler
 
         return new PropertyMetadata(
             $property->getName(),
-            $this->determinePropertyConstraint($type, $required, $enum),
-            $first
+            $this->determinePropertyConstraint($type, $required, $enum)
         );
     }
 
