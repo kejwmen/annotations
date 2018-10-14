@@ -35,7 +35,8 @@ final class AnnotationEnumMetadata
                             AnnotationEnum::TWO,
                             AnnotationEnum::THREE,
                         ])
-                    )
+                    ),
+                    true
                 )
             ]
         );
