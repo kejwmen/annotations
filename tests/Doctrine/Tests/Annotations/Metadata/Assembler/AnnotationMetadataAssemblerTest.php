@@ -13,6 +13,8 @@ use Doctrine\Annotations\Constructor\Instantiator\PropertyInstantiatorStrategy;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
 use Doctrine\Annotations\Metadata\Assembler\DefaultAnnotationMetadataAssembler;
+use Doctrine\Annotations\Metadata\Constraint\CompositeConstraint;
+use Doctrine\Annotations\Metadata\Constraint\RequiredConstraint;
 use Doctrine\Annotations\Metadata\Constraint\TypeConstraint;
 use Doctrine\Annotations\Metadata\InternalAnnotations;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
@@ -129,22 +131,30 @@ class AnnotationMetadataAssemblerTest extends TestCase
                 $this->assertTrue($metadata->getTarget()->all(), 'Invalid target');
                 $this->assertFalse($metadata->hasConstructor(), 'Has constructor');
                 $properties = $metadata->getProperties();
-                $this->assertEquals(
-                    [
-                        'value' => new PropertyMetadata(
-                            'value',
+                $expectedProperties = [
+                    'value' => new PropertyMetadata(
+                        'value',
+                        new CompositeConstraint(
                             new TypeConstraint(TestNullableType::fromType(new StringType())),
-                            true
+                            new RequiredConstraint()
                         ),
-                        'annot' => new PropertyMetadata(
-                            'annot',
-                            new TypeConstraint(TestNullableType::fromType(new ObjectType(AnnotationTargetAnnotation::class)))
-                        ),
-                    ],
+                        true
+                    ),
+                    'annot' => new PropertyMetadata(
+                        'annot',
+                        new CompositeConstraint(
+                            new TypeConstraint(TestNullableType::fromType(new ObjectType(AnnotationTargetAnnotation::class))),
+                            new RequiredConstraint()
+                        )
+                    ),
+                ];
+
+                $this->assertEquals(
+                    $expectedProperties,
                     $properties
                 );
                 $this->assertEquals(
-                    new PropertyMetadata('value', new TypeConstraint(TestNullableType::fromType(new StringType())), true),
+                    $expectedProperties['value'],
                     $metadata->getDefaultProperty()
                 );
             },
