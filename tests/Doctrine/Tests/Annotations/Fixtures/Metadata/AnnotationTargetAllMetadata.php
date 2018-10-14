@@ -25,8 +25,7 @@ final class AnnotationTargetAllMetadata
             [
                 new PropertyMetadata(
                     'data',
-                    new MixedType(),
-                    true
+                    new MixedType()
                 ),
                 new PropertyMetadata(
                     'name',

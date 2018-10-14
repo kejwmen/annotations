@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Doctrine\Annotations\Metadata;
 
 use function array_combine;
-use function array_filter;
 use function array_map;
-use function array_values;
+use function reset;
 
 final class AnnotationMetadata
 {
@@ -47,9 +46,8 @@ final class AnnotationMetadata
             $properties
         );
 
-        $this->defaultProperty = array_values(array_filter($properties, static function (PropertyMetadata $property) : bool {
-            return $property->isDefault();
-        }))[0] ?? null;
+        $firstProperty         = reset($this->properties);
+        $this->defaultProperty = $firstProperty ?: null;
     }
 
     public function getName() : string

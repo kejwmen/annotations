@@ -20,19 +20,15 @@ final class PropertyMetadata
     /** @var mixed[] */
     private $enumValues;
 
-    /** @var bool */
-    private $default;
-
     /**
      * @param mixed[] $enumValues
      */
-    public function __construct(string $name, Type $type, bool $isDefault = false, array $enumValues = [], bool $isRequired = false)
+    public function __construct(string $name, Type $type, array $enumValues = [], bool $isRequired = false)
     {
         $this->name       = $name;
         $this->type       = $type;
         $this->enumValues = $enumValues;
         $this->isRequired = $isRequired;
-        $this->default    = $isDefault;
     }
 
     public function getName() : string
@@ -48,11 +44,6 @@ final class PropertyMetadata
     public function isRequired() : bool
     {
         return $this->isRequired;
-    }
-
-    public function isDefault() : bool
-    {
-        return $this->default;
     }
 
     /**

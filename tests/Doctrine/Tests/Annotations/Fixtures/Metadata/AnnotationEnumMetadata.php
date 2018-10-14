@@ -29,7 +29,6 @@ final class AnnotationEnumMetadata
                 new PropertyMetadata(
                     'value',
                     new MixedType(),
-                    true,
                     [
                         AnnotationEnum::ONE,
                         AnnotationEnum::TWO,

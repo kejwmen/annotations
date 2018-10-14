@@ -31,8 +31,7 @@ final class AnnotationWithVarTypeMetadata
             [
                 new PropertyMetadata(
                     'mixed',
-                    new MixedType(),
-                    true
+                    new MixedType()
                 ),
                 new PropertyMetadata(
                     'boolean',

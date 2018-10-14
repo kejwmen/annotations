@@ -136,14 +136,12 @@ class AnnotationMetadataAssemblerTest extends TestCase
                     'value' => new PropertyMetadata(
                         'value',
                         TestNullableType::fromType(new StringType()),
-                        true,
                         [],
                         true
                     ),
                     'annot' => new PropertyMetadata(
                         'annot',
                         TestNullableType::fromType(new ObjectType(AnnotationTargetAnnotation::class)),
-                        false,
                         [],
                         true
                     ),
