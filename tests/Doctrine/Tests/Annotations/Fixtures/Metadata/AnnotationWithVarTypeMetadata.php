@@ -15,6 +15,7 @@ use Doctrine\Annotations\Metadata\Type\MapType;
 use Doctrine\Annotations\Metadata\Type\MixedType;
 use Doctrine\Annotations\Metadata\Type\ObjectType;
 use Doctrine\Annotations\Metadata\Type\StringType;
+use Doctrine\Annotations\Metadata\Type\UnionType;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAll;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithVarType;
 
@@ -54,7 +55,7 @@ final class AnnotationWithVarTypeMetadata
                 ),
                 new PropertyMetadata(
                     'array',
-                    new ListType(new MixedType())
+                    new MapType(new UnionType(new IntegerType(), new StringType()), new MixedType())
                 ),
                 new PropertyMetadata(
                     'arrayMap',

@@ -58,11 +58,12 @@ final class InternalAnnotations
                 IgnoreAnnotation::class,
                 new AnnotationTarget(AnnotationTarget::TARGET_ALL),
                 true,
-                [new PropertyMetadata(
-                    'names',
-                    new ListType(new StringType()),
-                    true
-                ),
+                [
+                    new PropertyMetadata(
+                        'names',
+                        new ListType(new StringType()),
+                        true
+                    ),
                 ]
             ),
             new AnnotationMetadata(

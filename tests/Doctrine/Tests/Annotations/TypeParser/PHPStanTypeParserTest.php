@@ -124,7 +124,7 @@ PHPDOC
 /** @var array */
 PHPDOC
             ,
-            new ListType(new MixedType()),
+            new MapType(new UnionType(new IntegerType(), new StringType()), new MixedType()),
         ];
 
         yield 'array<int>' => [
