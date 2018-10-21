@@ -44,6 +44,7 @@ after_script:
 jobs:
   allow_failures:
     - php: nightly
+    - stage: Lint
 
   exclude:
     - php: 7.2
