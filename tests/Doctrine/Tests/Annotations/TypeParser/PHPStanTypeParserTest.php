@@ -119,6 +119,14 @@ PHPDOC
             new UnionType(new ListType(new IntegerType()), new NullType()),
         ];
 
+        yield 'array' => [
+            <<<'PHPDOC'
+/** @var array */
+PHPDOC
+            ,
+            new MapType(new UnionType(new IntegerType(), new StringType()), new MixedType()),
+        ];
+
         yield 'array<int>' => [
             <<<'PHPDOC'
 /** @var array<int> */

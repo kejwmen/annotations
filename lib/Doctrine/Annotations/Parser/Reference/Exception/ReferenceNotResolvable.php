@@ -20,4 +20,26 @@ final class ReferenceNotResolvable extends RuntimeException implements Reference
             )
         );
     }
+
+    public static function unknownImport(Reference $reference) : self
+    {
+        return new self(
+            sprintf(
+                '"%s%s" could not be resolved because referenced class was not imported.',
+                $reference->isFullyQualified() ? '\\' : '',
+                $reference->getIdentifier()
+            )
+        );
+    }
+
+    public static function unknownAlias(Reference $reference) : self
+    {
+        return new self(
+            sprintf(
+                '"%s%s" could not be resolved because referenced alias was not imported.',
+                $reference->isFullyQualified() ? '\\' : '',
+                $reference->getIdentifier()
+            )
+        );
+    }
 }

@@ -8,6 +8,7 @@ use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Scope;
 use ReflectionClass;
 use ReflectionFunction;
+use ReflectionFunctionAbstract;
 use ReflectionMethod;
 use ReflectionProperty;
 use Reflector;
@@ -42,6 +43,12 @@ final class FallbackReferenceResolver implements ReferenceResolver
             if (isset($imports[$namespacePart])) {
                 return $imports[$namespacePart] . '\\' . explode('\\', $identifier, 2)[1];
             }
+        }
+
+        $subject = $scope->getSubject();
+
+        if (! $subject instanceof ReflectionClass && ! $subject instanceof ReflectionFunctionAbstract) {
+            return $identifier;
         }
 
         $namespace = $this->getSubjectNamespaceName($scope->getSubject());

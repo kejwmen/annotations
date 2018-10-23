@@ -4,19 +4,22 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata\Type;
 
+use function assert;
 use function is_array;
 use function sprintf;
 
 final class MapType implements CompositeType
 {
-    /** @var ScalarType */
+    /** @var ScalarType|UnionType */
     private $keyType;
 
     /** @var Type */
     private $valueType;
 
-    public function __construct(ScalarType $keyType, Type $valueType)
+    public function __construct(Type $keyType, Type $valueType)
     {
+        assert($keyType instanceof ScalarType || $keyType instanceof UnionType, 'Invalid key type');
+
         $this->keyType   = $keyType;
         $this->valueType = $valueType;
     }

@@ -51,7 +51,7 @@ final class Imports implements ArrayAccess, IteratorAggregate
 
     /**
      * @param string $offset
-     * @param string $value
+     * @param mixed  $value
      *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
      */
@@ -82,6 +82,6 @@ final class Imports implements ArrayAccess, IteratorAggregate
 
     public function isKnown(string $name) : bool
     {
-        return in_array(strtolower($name), $this->map, true);
+        return in_array($name, $this->map, true);
     }
 }

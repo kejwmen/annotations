@@ -2,40 +2,40 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Tests\Annotations\Parser\Visitor;
+namespace Doctrine\Tests\Annotations\Metadata;
 
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
+use Doctrine\Annotations\Metadata\MetadataCollection;
 use Doctrine\Annotations\Metadata\MetadataCollector;
 use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
 use Doctrine\Annotations\Parser\Ast\Parameter\UnnamedParameter;
 use Doctrine\Annotations\Parser\Ast\Parameters;
 use Doctrine\Annotations\Parser\Ast\Reference;
-use Doctrine\Annotations\Parser\Imports;
 use Doctrine\Annotations\Parser\Scope;
+use Doctrine\Tests\Annotations\Assembler\Acceptor\AlwaysAcceptingAcceptor;
+use Doctrine\Tests\Annotations\Parser\Reference\IdentifierPassingReferenceResolver;
+use Doctrine\Tests\Annotations\Parser\ScopeMother;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
-final class MetadataBuilderTest extends TestCase
+final class MetadataCollectorTest extends TestCase
 {
     /** @var AnnotationMetadataAssembler|MockObject */
     private $assembler;
 
     /** @var MetadataCollector */
-    private $builder;
+    private $collector;
 
     protected function setUp() : void
     {
         $this->assembler = $this->createMock(AnnotationMetadataAssembler::class);
-        $this->builder   = new MetadataCollector(
+        $this->collector = new MetadataCollector(
             $this->assembler,
-            new Scope(
-                $this->createMock(ReflectionClass::class),
-                new Imports([])
-            )
+            new AlwaysAcceptingAcceptor(),
+            new IdentifierPassingReferenceResolver()
         );
     }
 
@@ -49,9 +49,11 @@ final class MetadataBuilderTest extends TestCase
     {
         $initializer($this->assembler);
 
-        $this->builder->visit($annotations);
+        $collection = new MetadataCollection();
 
-        $asserter(...$this->builder->collect());
+        $this->collector->collect($annotations, ScopeMother::example(), $collection);
+
+        $asserter($collection);
     }
 
     /**
@@ -67,24 +69,24 @@ final class MetadataBuilderTest extends TestCase
                 )
             ),
             static function (AnnotationMetadataAssembler $assembler) : void {
+                /** @var AnnotationMetadataAssembler|MockObject $assembler */
                 $assembler->method('assemble')
                     ->with(
-                        $this->callback(static function (Reference $reference) : bool {
+                        self::callback(static function (Reference $reference) : bool {
                             return $reference->getIdentifier() === 'Foo' && $reference->isFullyQualified() === true;
                         }),
-                        $this->isInstanceOf(Scope::class)
+                        self::isInstanceOf(Scope::class)
                     )
                     ->willReturn(new AnnotationMetadata(
                         'Foo',
                         new AnnotationTarget(AnnotationTarget::TARGET_ALL),
                         false,
-                        [],
-                        null
+                        []
                     ));
             },
-            static function (AnnotationMetadata ...$metadatas) : void {
-                self::assertCount(1, $metadatas);
-                self::assertSame('Foo', $metadatas[0]->getName());
+            static function (MetadataCollection $collection) : void {
+                self::assertCount(1, $collection);
+                self::assertSame('Foo', $collection['Foo']->getName());
             },
         ];
         yield 'nested' => [
@@ -101,20 +103,21 @@ final class MetadataBuilderTest extends TestCase
                     )
                 )
             ),
-            function (AnnotationMetadataAssembler $assembler) : void {
+            static function (AnnotationMetadataAssembler $assembler) : void {
+                /** @var AnnotationMetadataAssembler|MockObject $assembler */
                 $assembler->method('assemble')
                     ->withConsecutive(
                         [
-                            $this->callback(static function (Reference $reference) : bool {
+                            self::callback(static function (Reference $reference) : bool {
                                 return $reference->getIdentifier() === 'Bar' && $reference->isFullyQualified() === false;
                             }),
-                            $this->isInstanceOf(Scope::class),
+                            self::isInstanceOf(Scope::class),
                         ],
                         [
-                            $this->callback(static function (Reference $reference) : bool {
+                            self::callback(static function (Reference $reference) : bool {
                                 return $reference->getIdentifier() === 'Foo' && $reference->isFullyQualified() === true;
                             }),
-                            $this->isInstanceOf(Scope::class),
+                            self::isInstanceOf(Scope::class),
                         ]
                     )
                     ->willReturnOnConsecutiveCalls(
@@ -122,22 +125,20 @@ final class MetadataBuilderTest extends TestCase
                             'Bar',
                             new AnnotationTarget(AnnotationTarget::TARGET_ALL),
                             false,
-                            [],
-                            null
+                            []
                         ),
                         new AnnotationMetadata(
                             'Foo',
                             new AnnotationTarget(AnnotationTarget::TARGET_ALL),
                             false,
-                            [],
-                            null
+                            []
                         )
                     );
             },
-            static function (AnnotationMetadata ...$metadatas) : void {
-                self::assertCount(2, $metadatas);
-                self::assertSame('Bar', $metadatas[0]->getName());
-                self::assertSame('Foo', $metadatas[1]->getName());
+            static function (MetadataCollection $collection) : void {
+                self::assertCount(2, $collection);
+                self::assertSame('Bar', $collection['Bar']->getName());
+                self::assertSame('Foo', $collection['Foo']->getName());
             },
         ];
     }
