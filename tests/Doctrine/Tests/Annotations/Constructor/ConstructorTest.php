@@ -8,6 +8,7 @@ use Doctrine\Annotations\Constructor\Constructor;
 use Doctrine\Annotations\Constructor\Instantiator\ConstructorInstantiatorStrategy;
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Constructor\Instantiator\PropertyInstantiatorStrategy;
+use Doctrine\Annotations\Constructor\PropertyPopulator;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Parser\Scope;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithConstructor;
@@ -22,10 +23,12 @@ class ConstructorTest extends TestCase
 
     public function setUp() : void
     {
+        $propertyPopulator = new PropertyPopulator();
+
         $this->constructor = new Constructor(
             new Instantiator(
-                new ConstructorInstantiatorStrategy(),
-                new PropertyInstantiatorStrategy()
+                new ConstructorInstantiatorStrategy($propertyPopulator),
+                new PropertyInstantiatorStrategy($propertyPopulator)
             )
         );
     }

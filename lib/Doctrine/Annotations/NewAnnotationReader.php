@@ -14,6 +14,7 @@ use Doctrine\Annotations\Constructor\Constructor;
 use Doctrine\Annotations\Constructor\Instantiator\ConstructorInstantiatorStrategy;
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Constructor\Instantiator\PropertyInstantiatorStrategy;
+use Doctrine\Annotations\Constructor\PropertyPopulator;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
 use Doctrine\Annotations\Metadata\InternalAnnotations;
 use Doctrine\Annotations\Metadata\MetadataCollection;
@@ -72,14 +73,16 @@ final class NewAnnotationReader implements Reader
         MetadataCollection $metadataCollection,
         ClassReflectionProvider $reflectionProvider
     ) {
+        $propertyPopulator = new PropertyPopulator();
+
         $this->metadataCollection = $metadataCollection;
         $this->reflectionProvider = $reflectionProvider;
         $this->usesParser         = new PhpParser();
         $this->compiler           = new Compiler();
         $this->constructor        = new Constructor(
             new Instantiator(
-                new ConstructorInstantiatorStrategy(),
-                new PropertyInstantiatorStrategy()
+                new ConstructorInstantiatorStrategy($propertyPopulator),
+                new PropertyInstantiatorStrategy($propertyPopulator)
             )
         );
 

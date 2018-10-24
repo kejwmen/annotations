@@ -25,10 +25,10 @@ final class Instantiator
      */
     public function instantiate(AnnotationMetadata $metadata, iterable $parameters) : object
     {
-        if ($metadata->hasConstructor()) {
-            return $this->constructor->construct($metadata, $parameters);
+        if (! $metadata->hasConstructor()) {
+            return $this->property->construct($metadata, $parameters);
         }
 
-        return $this->property->construct($metadata, $parameters);
+        return $this->constructor->construct($metadata, $parameters);
     }
 }

@@ -4,10 +4,19 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Constructor\Instantiator;
 
+use Doctrine\Annotations\Constructor\PropertyPopulator;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 
 final class PropertyInstantiatorStrategy implements InstantiatorStrategy
 {
+    /** @var PropertyPopulator */
+    private $populator;
+
+    public function __construct(PropertyPopulator $populator)
+    {
+        $this->populator = $populator;
+    }
+
     /**
      * @param mixed[] $parameters array<string, mixed>
      */
@@ -16,13 +25,7 @@ final class PropertyInstantiatorStrategy implements InstantiatorStrategy
         $class      = $metadata->getName();
         $annotation = new $class();
 
-        foreach ($parameters as $name => $value) {
-            if ($name === '') {
-                $name = $metadata->getDefaultProperty()->getName();
-            }
-
-            $annotation->$name = $value;
-        }
+        $this->populator->populate($annotation, $parameters);
 
         return $annotation;
     }

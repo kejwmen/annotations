@@ -10,6 +10,7 @@ use Doctrine\Annotations\Constructor\Constructor;
 use Doctrine\Annotations\Constructor\Instantiator\ConstructorInstantiatorStrategy;
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Constructor\Instantiator\PropertyInstantiatorStrategy;
+use Doctrine\Annotations\Constructor\PropertyPopulator;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
 use Doctrine\Annotations\Metadata\Constraint\CompositeConstraint;
@@ -34,12 +35,14 @@ use Doctrine\Tests\Annotations\Fixtures\AnnotationEnum;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAll;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAnnotation;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithConstants;
+use Doctrine\Tests\Annotations\Fixtures\AnnotationWithConstructorAndProperties;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithRequiredAttributes;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithRequiredAttributesWithoutConstructor;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithVarType;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationEnumMetadata;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationTargetAllMetadata;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithConstantsMetadata;
+use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithConstructorAndPropertiesMetadata;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithVarTypeMetadata;
 use Doctrine\Tests\Annotations\Metadata\Type\TestNullableType;
 use PHPStan\PhpDocParser\Lexer\Lexer;
@@ -65,12 +68,14 @@ class AnnotationMetadataAssemblerTest extends TestCase
 
     public function setUp() : void
     {
+        $propertyPopulator = new PropertyPopulator();
+
         $this->compiler          = new Compiler();
         $this->phpParser         = new PhpParser();
         $this->constructor       = new Constructor(
             new Instantiator(
-                new ConstructorInstantiatorStrategy(),
-                new PropertyInstantiatorStrategy()
+                new ConstructorInstantiatorStrategy($propertyPopulator),
+                new PropertyInstantiatorStrategy($propertyPopulator)
             )
         );
         $this->metadataAssembler = new AnnotationMetadataAssembler(
@@ -184,6 +189,14 @@ class AnnotationMetadataAssemblerTest extends TestCase
             new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
             function (AnnotationMetadata $metadata) : void {
                 $this->assertEquals(AnnotationEnumMetadata::get(), $metadata);
+            },
+        ];
+
+        yield 'fixture - AnnotationWithConstructorAndProperties' => [
+            new Reference(AnnotationWithConstructorAndProperties::class, true),
+            new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
+            function (AnnotationMetadata $metadata) : void {
+                $this->assertEquals(AnnotationWithConstructorAndPropertiesMetadata::get(), $metadata);
             },
         ];
     }

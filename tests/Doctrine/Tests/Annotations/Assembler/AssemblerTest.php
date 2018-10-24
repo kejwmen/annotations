@@ -9,6 +9,7 @@ use Doctrine\Annotations\Constructor\Constructor;
 use Doctrine\Annotations\Constructor\Instantiator\ConstructorInstantiatorStrategy;
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Constructor\Instantiator\PropertyInstantiatorStrategy;
+use Doctrine\Annotations\Constructor\PropertyPopulator;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\MetadataCollection;
 use Doctrine\Annotations\Metadata\Reflection\DefaultReflectionProvider;
@@ -142,13 +143,15 @@ class AssemblerTest extends TestCase
 
     private function createAssembler(MetadataCollection $collection) : Assembler
     {
+        $propertyPopulator = new PropertyPopulator();
+
         return new Assembler(
             $collection,
             new FallbackReferenceResolver(),
             new Constructor(
                 new Instantiator(
-                    new ConstructorInstantiatorStrategy(),
-                    new PropertyInstantiatorStrategy()
+                    new ConstructorInstantiatorStrategy($propertyPopulator),
+                    new PropertyInstantiatorStrategy($propertyPopulator)
                 )
             ),
             new DefaultReflectionProvider(),
