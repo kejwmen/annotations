@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Annotations\Metadata;
 
 use function array_combine;
+use function array_filter;
 use function array_map;
 use function reset;
 
@@ -26,8 +27,6 @@ final class AnnotationMetadata
     private $defaultProperty;
 
     /**
-     * TODO: Validate input
-     *
      * @param PropertyMetadata[] $properties
      */
     public function __construct(
@@ -46,8 +45,22 @@ final class AnnotationMetadata
             $properties
         );
 
-        $firstProperty         = reset($this->properties);
-        $this->defaultProperty = $firstProperty ?: null;
+        $defaultProperties = array_filter($this->properties, static function (PropertyMetadata $metadata) {
+            return $metadata->isDefault();
+        });
+
+        $defaultProperty = reset($defaultProperties);
+        $firstProperty   = reset($this->properties);
+
+        if ($defaultProperty) {
+            $this->defaultProperty = $defaultProperty;
+        }
+
+        if ($this->defaultProperty !== null || ! $firstProperty) {
+            return;
+        }
+
+        $this->defaultProperty = $firstProperty;
     }
 
     public function getName() : string

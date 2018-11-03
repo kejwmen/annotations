@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Annotations\Metadata;
 
 use Doctrine\Annotations\Annotation\Annotation;
+use Doctrine\Annotations\Annotation\DefaultProperty;
 use Doctrine\Annotations\Annotation\Enum;
 use Doctrine\Annotations\Annotation\IgnoreAnnotation;
 use Doctrine\Annotations\Annotation\Required;
@@ -36,6 +37,11 @@ final class InternalAnnotations
             new AnnotationMetadata(
                 Annotation::class,
                 new AnnotationTarget(AnnotationTarget::TARGET_ALL),
+                false
+            ),
+            new AnnotationMetadata(
+                DefaultProperty::class,
+                new AnnotationTarget(AnnotationTarget::TARGET_PROPERTY),
                 false
             ),
             new AnnotationMetadata(

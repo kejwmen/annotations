@@ -6,6 +6,7 @@ namespace Doctrine\Tests\Annotations\Metadata;
 
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
+use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Tests\Annotations\AnnotationMetadataBuilder;
 
 final class AnnotationMetadataMother
@@ -20,6 +21,13 @@ final class AnnotationMetadataMother
     {
         return (new AnnotationMetadataBuilder())
             ->withTarget($target)
+            ->build();
+    }
+
+    public static function withProperties(PropertyMetadata ...$properties) : AnnotationMetadata
+    {
+        return (new AnnotationMetadataBuilder())
+            ->withProperties(...$properties)
             ->build();
     }
 }

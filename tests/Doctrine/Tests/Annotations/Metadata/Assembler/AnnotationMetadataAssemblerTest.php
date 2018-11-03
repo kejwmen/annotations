@@ -13,11 +13,8 @@ use Doctrine\Annotations\Constructor\Instantiator\PropertyInstantiatorStrategy;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
 use Doctrine\Annotations\Metadata\InternalAnnotations;
-use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Reflection\DefaultReflectionProvider;
 use Doctrine\Annotations\Metadata\ScopeManufacturer;
-use Doctrine\Annotations\Metadata\Type\ObjectType;
-use Doctrine\Annotations\Metadata\Type\StringType;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Annotations\Parser\Compiler;
 use Doctrine\Annotations\Parser\IgnoredAnnotations;
@@ -29,7 +26,6 @@ use Doctrine\Annotations\PhpParser;
 use Doctrine\Annotations\TypeParser\PHPStanTypeParser;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationEnum;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAll;
-use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAnnotation;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithConstants;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithRequiredAttributes;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationWithRequiredAttributesWithoutConstructor;
@@ -37,8 +33,9 @@ use Doctrine\Tests\Annotations\Fixtures\AnnotationWithVarType;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationEnumMetadata;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationTargetAllMetadata;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithConstantsMetadata;
+use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithRequiredAttributesMetadata;
+use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithRequiredAttributesWithoutConstructorMetadata;
 use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithVarTypeMetadata;
-use Doctrine\Tests\Annotations\Metadata\Type\TestNullableType;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
@@ -115,12 +112,7 @@ class AnnotationMetadataAssemblerTest extends TestCase
             new Reference(AnnotationWithRequiredAttributes::class, true),
             new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
             function (AnnotationMetadata $metadata) : void {
-                $this->assertSame(AnnotationWithRequiredAttributes::class, $metadata->getName());
-                $this->assertTrue($metadata->getTarget()->all(), 'Invalid target');
-                $this->assertTrue($metadata->hasConstructor(), 'Has no constructor');
-                $properties = $metadata->getProperties();
-                $this->assertEmpty($properties);
-                $this->assertNull($metadata->getDefaultProperty());
+                $this->assertEquals(AnnotationWithRequiredAttributesMetadata::get(), $metadata);
             },
         ];
 
@@ -128,33 +120,7 @@ class AnnotationMetadataAssemblerTest extends TestCase
             new Reference(AnnotationWithRequiredAttributesWithoutConstructor::class, true),
             new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
             function (AnnotationMetadata $metadata) : void {
-                $this->assertSame(AnnotationWithRequiredAttributesWithoutConstructor::class, $metadata->getName());
-                $this->assertTrue($metadata->getTarget()->all(), 'Invalid target');
-                $this->assertFalse($metadata->hasConstructor(), 'Has constructor');
-                $properties         = $metadata->getProperties();
-                $expectedProperties = [
-                    'value' => new PropertyMetadata(
-                        'value',
-                        TestNullableType::fromType(new StringType()),
-                        [],
-                        true
-                    ),
-                    'annot' => new PropertyMetadata(
-                        'annot',
-                        TestNullableType::fromType(new ObjectType(AnnotationTargetAnnotation::class)),
-                        [],
-                        true
-                    ),
-                ];
-
-                $this->assertEquals(
-                    $expectedProperties,
-                    $properties
-                );
-                $this->assertEquals(
-                    $expectedProperties['value'],
-                    $metadata->getDefaultProperty()
-                );
+                $this->assertEquals(AnnotationWithRequiredAttributesWithoutConstructorMetadata::get(), $metadata);
             },
         ];
 
