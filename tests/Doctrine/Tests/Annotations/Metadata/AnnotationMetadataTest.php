@@ -17,10 +17,10 @@ use Reflector;
 use function get_class;
 use function sprintf;
 
-class AnnotationMetadataTest extends TestCase
+final class AnnotationMetadataTest extends TestCase
 {
     /**
-     * @dataProvider targetsWithMatchingScopeExamples
+     * @dataProvider targetsWithMatchingScopeProvider
      */
     public function testValidatesTargetForMatchingScope(AnnotationTarget $target, Scope $scope) : void
     {
@@ -28,13 +28,13 @@ class AnnotationMetadataTest extends TestCase
 
         $metadata->validateTarget($scope);
 
-        $this->assertTrue(true);
+        self::assertTrue(true);
     }
 
     /**
      * @return mixed[]
      */
-    public function targetsWithMatchingScopeExamples() : iterable
+    public function targetsWithMatchingScopeProvider() : iterable
     {
         /** @var Reflector[] $reflectors */
         $reflectors = [
@@ -77,7 +77,7 @@ class AnnotationMetadataTest extends TestCase
     }
 
     /**
-     * @dataProvider targetsWithNotMatchingScopeExamples
+     * @dataProvider targetsWithNotMatchingScopeProvider
      */
     public function testValidatesTargetForNotMatchingScopeAndThrows(AnnotationTarget $target, Scope $scope) : void
     {
@@ -91,7 +91,7 @@ class AnnotationMetadataTest extends TestCase
     /**
      * @return mixed[]
      */
-    public function targetsWithNotMatchingScopeExamples() : iterable
+    public function targetsWithNotMatchingScopeProvider() : iterable
     {
         foreach ([AnnotationTarget::TARGET_CLASS, AnnotationTarget::TARGET_METHOD, AnnotationTarget::TARGET_PROPERTY] as $target) {
             yield sprintf('Target of value %d for nested scope', $target) => [

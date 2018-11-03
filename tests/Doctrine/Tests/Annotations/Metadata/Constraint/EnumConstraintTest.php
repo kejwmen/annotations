@@ -8,13 +8,13 @@ use Doctrine\Annotations\Metadata\Constraint\EnumConstraint;
 use Doctrine\Annotations\Metadata\Constraint\InvalidValue;
 use PHPUnit\Framework\TestCase;
 
-class EnumConstraintTest extends TestCase
+final class EnumConstraintTest extends TestCase
 {
     /**
      * @param mixed[] $allowedValues
      * @param mixed   $value
      *
-     * @dataProvider fulfilledExamples
+     * @dataProvider fulfilledProvider
      */
     public function testFulfilledByGivenValue(array $allowedValues, $value) : void
     {
@@ -22,13 +22,13 @@ class EnumConstraintTest extends TestCase
 
         $constraint->validate($value);
 
-        $this->assertTrue(true);
+        self::assertTrue(true);
     }
 
     /**
      * @return mixed[]
      */
-    public function fulfilledExamples() : iterable
+    public function fulfilledProvider() : iterable
     {
         yield 'matching string' => [
             ['foo', 'bar'],
@@ -40,7 +40,7 @@ class EnumConstraintTest extends TestCase
      * @param mixed[] $allowedValues
      * @param mixed   $value
      *
-     * @dataProvider notFulfilledExamples
+     * @dataProvider notFulfilledProvider
      */
     public function testNotFulfilledByGivenValue(array $allowedValues, $value) : void
     {
@@ -54,7 +54,7 @@ class EnumConstraintTest extends TestCase
     /**
      * @return mixed[]
      */
-    public function notFulfilledExamples() : iterable
+    public function notFulfilledProvider() : iterable
     {
         yield 'not matching string' => [
             ['foo', 'bar'],

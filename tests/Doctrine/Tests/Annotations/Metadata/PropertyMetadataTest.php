@@ -10,12 +10,12 @@ use Doctrine\Annotations\Metadata\Type\Type;
 use Doctrine\Tests\Annotations\Metadata\Type\PropertyMetadataMother;
 use PHPUnit\Framework\TestCase;
 
-class PropertyMetadataTest extends TestCase
+final class PropertyMetadataTest extends TestCase
 {
     /**
      * @param mixed $value
      *
-     * @dataProvider validTypeValidationExamples
+     * @dataProvider validTypeValidationProvider
      */
     public function testValidatesValuesMatchingType(Type $type, $value) : void
     {
@@ -23,13 +23,13 @@ class PropertyMetadataTest extends TestCase
 
         $metadata->validateValue($value);
 
-        $this->assertTrue(true);
+        self::assertTrue(true);
     }
 
     /**
      * @return mixed[]
      */
-    public function validTypeValidationExamples() : iterable
+    public function validTypeValidationProvider() : iterable
     {
         yield 'valid string' => [
             new StringType(),
@@ -40,7 +40,7 @@ class PropertyMetadataTest extends TestCase
     /**
      * @param mixed $value
      *
-     * @dataProvider invalidTypeValidationExamples
+     * @dataProvider invalidTypeValidationProvider
      */
     public function testNotValidatesValuesNotMatchingTypeAndThrows(Type $type, $value) : void
     {
@@ -54,7 +54,7 @@ class PropertyMetadataTest extends TestCase
     /**
      * @return mixed[]
      */
-    public function invalidTypeValidationExamples() : iterable
+    public function invalidTypeValidationProvider() : iterable
     {
         yield 'value not matching property type' => [
             new StringType(),

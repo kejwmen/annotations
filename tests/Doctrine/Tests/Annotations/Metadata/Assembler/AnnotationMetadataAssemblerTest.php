@@ -183,8 +183,8 @@ class AnnotationMetadataAssemblerTest extends TestCase
         yield 'fixture - AnnotationEnum' => [
             new Reference(AnnotationEnum::class, true),
             new Scope(new ReflectionClass($this), new Imports([]), new IgnoredAnnotations()),
-            function (AnnotationMetadata $metadata) : void {
-                $this->assertEquals(AnnotationEnumMetadata::get(), $metadata);
+            static function (AnnotationMetadata $metadata) : void {
+                self::assertEquals(AnnotationEnumMetadata::get(), $metadata);
             },
         ];
     }

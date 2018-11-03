@@ -13,12 +13,12 @@ use Doctrine\Annotations\Metadata\Type\Type;
 use Doctrine\Tests\Annotations\Fixtures\AnnotationTargetAll;
 use PHPUnit\Framework\TestCase;
 
-class TypeConstraintTest extends TestCase
+final class TypeConstraintTest extends TestCase
 {
     /**
      * @param mixed $value
      *
-     * @dataProvider matchingExamples
+     * @dataProvider matchingProvider
      */
     public function testValidatesValueMatchingType(Type $type, $value) : void
     {
@@ -26,13 +26,13 @@ class TypeConstraintTest extends TestCase
 
         $constraint->validate($value);
 
-        $this->assertTrue(true);
+        self::assertTrue(true);
     }
 
     /**
      * @return mixed[]
      */
-    public function matchingExamples() : iterable
+    public function matchingProvider() : iterable
     {
         yield 'a string' => [
             new StringType(),
@@ -48,7 +48,7 @@ class TypeConstraintTest extends TestCase
     /**
      * @param mixed $value
      *
-     * @dataProvider notMatchingExamples
+     * @dataProvider notMatchingProvider
      */
     public function testValidatesValueNotMatchingTypeAndThrows(Type $type, $value) : void
     {
@@ -62,7 +62,7 @@ class TypeConstraintTest extends TestCase
     /**
      * @return mixed[]
      */
-    public function notMatchingExamples() : iterable
+    public function notMatchingProvider() : iterable
     {
         yield 'not a string' => [
             new StringType(),

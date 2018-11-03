@@ -12,7 +12,7 @@ use Doctrine\Annotations\Metadata\Type\StringType;
 use Doctrine\Tests\Annotations\Metadata\Type\TestNullableType;
 use PHPUnit\Framework\TestCase;
 
-class CompositeConstraintTest extends TestCase
+final class CompositeConstraintTest extends TestCase
 {
     public function testCombinesMultipleConstraintAndPassesWhenAllAreFulfilled() : void
     {

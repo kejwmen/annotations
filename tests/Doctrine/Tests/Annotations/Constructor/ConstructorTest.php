@@ -15,7 +15,7 @@ use Doctrine\Tests\Annotations\Fixtures\Metadata\AnnotationWithConstructorMetada
 use Doctrine\Tests\Annotations\Parser\ScopeMother;
 use PHPUnit\Framework\TestCase;
 
-class ConstructorTest extends TestCase
+final class ConstructorTest extends TestCase
 {
     /** @var Constructor */
     private $constructor;
@@ -33,7 +33,7 @@ class ConstructorTest extends TestCase
     /**
      * @param mixed[] $parameters
      *
-     * @dataProvider validExamples
+     * @dataProvider validProvider
      */
     public function testCreatesAnnotation(
         AnnotationMetadata $annotationMetadata,
@@ -49,14 +49,14 @@ class ConstructorTest extends TestCase
     /**
      * @return mixed[]
      */
-    public function validExamples() : iterable
+    public function validProvider() : iterable
     {
         yield 'with constructor' => [
             AnnotationWithConstructorMetadata::get(),
             ScopeMother::example(),
             ['value' => 'foo'],
-            function (AnnotationWithConstructor $result) : void {
-                $this->assertSame('foo', $result->getValue());
+            static function (AnnotationWithConstructor $result) : void {
+                self::assertSame('foo', $result->getValue());
             },
         ];
     }
