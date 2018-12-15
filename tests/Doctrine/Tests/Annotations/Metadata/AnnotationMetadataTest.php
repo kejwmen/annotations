@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Metadata;
 
+use Doctrine\Annotations\Metadata\Exception\MultipleDefaultProperties;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Type\MixedType;
 use PHPUnit\Framework\TestCase;
@@ -26,10 +27,10 @@ final class AnnotationMetadataTest extends TestCase
 
     public function testDeterminesMarkedDefaultPropertyForMultipleMarkedPropertiesAndThrows() : void
     {
-        $defaultProperty = new PropertyMetadata('bar', new MixedType(), [], false, true);
+        $defaultProperty        = new PropertyMetadata('bar', new MixedType(), [], false, true);
         $anotherDefaultProperty = new PropertyMetadata('baz', new MixedType(), [], false, true);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(MultipleDefaultProperties::class);
 
         AnnotationMetadataMother::withProperties(
             new PropertyMetadata('foo', new MixedType()),

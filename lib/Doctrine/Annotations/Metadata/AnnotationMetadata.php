@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata;
 
+use Doctrine\Annotations\Metadata\Exception\MultipleDefaultProperties;
 use function array_combine;
 use function array_filter;
 use function array_map;
+use function count;
 use function reset;
 
 final class AnnotationMetadata
@@ -50,7 +52,7 @@ final class AnnotationMetadata
         });
 
         if (count($defaultProperties) > 1) {
-            throw new \InvalidArgumentException('Cannot define multiple default properties');
+            throw MultipleDefaultProperties::new($this, $properties);
         }
 
         $defaultProperty = reset($defaultProperties);
