@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Assembler\Acceptor;
 
-use Doctrine\Annotations\Assembler\Acceptor\IgnoredAcceptor;
+use Doctrine\Annotations\Assembler\Acceptor\IgnoringAcceptor;
 use Doctrine\Annotations\Parser\Ast\Reference;
 use Doctrine\Tests\Annotations\Parser\Reference\IdentifierPassingReferenceResolver;
 use Doctrine\Tests\Annotations\Parser\Reference\NotResolvableReferenceResolver;
 use Doctrine\Tests\Annotations\Parser\ScopeMother;
 use PHPUnit\Framework\TestCase;
 
-final class IgnoredAcceptorTest extends TestCase
+final class IgnoringAcceptorTest extends TestCase
 {
     public function testAcceptsNotResolvedReference() : void
     {
         $reference = new Reference('Foo', false);
         $scope     = ScopeMother::example();
-        $acceptor  = new IgnoredAcceptor(new NotResolvableReferenceResolver());
+        $acceptor  = new IgnoringAcceptor(new NotResolvableReferenceResolver());
 
         $result = $acceptor->accepts($reference, $scope);
 
@@ -28,7 +28,7 @@ final class IgnoredAcceptorTest extends TestCase
     {
         $reference = new Reference('Foo', false);
         $scope     = ScopeMother::withIgnoredAnnotations(['bar', 'Foo']);
-        $acceptor  = new IgnoredAcceptor(new IdentifierPassingReferenceResolver());
+        $acceptor  = new IgnoringAcceptor(new IdentifierPassingReferenceResolver());
 
         $result = $acceptor->accepts($reference, $scope);
 
@@ -39,7 +39,7 @@ final class IgnoredAcceptorTest extends TestCase
     {
         $reference = new Reference('Foo', false);
         $scope     = ScopeMother::withIgnoredAnnotations(['bar']);
-        $acceptor  = new IgnoredAcceptor(new IdentifierPassingReferenceResolver());
+        $acceptor  = new IgnoringAcceptor(new IdentifierPassingReferenceResolver());
 
         $result = $acceptor->accepts($reference, $scope);
 

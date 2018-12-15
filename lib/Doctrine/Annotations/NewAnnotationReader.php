@@ -6,7 +6,7 @@ namespace Doctrine\Annotations;
 
 use Doctrine\Annotations\Annotation\IgnoreAnnotation;
 use Doctrine\Annotations\Assembler\Acceptor\CompositeAcceptor;
-use Doctrine\Annotations\Assembler\Acceptor\IgnoredAcceptor;
+use Doctrine\Annotations\Assembler\Acceptor\IgnoringAcceptor;
 use Doctrine\Annotations\Assembler\Acceptor\InternalAcceptor;
 use Doctrine\Annotations\Assembler\Acceptor\NegatedAcceptor;
 use Doctrine\Annotations\Assembler\Assembler;
@@ -108,7 +108,7 @@ final class NewAnnotationReader implements Reader
         $this->metadataBuilder = new MetadataCollector(
             $this->metadataAssembler,
             new NegatedAcceptor(
-                new IgnoredAcceptor($fallbackReferenceResolver)
+                new IgnoringAcceptor($fallbackReferenceResolver)
             ),
             $fallbackReferenceResolver
         );
@@ -127,7 +127,7 @@ final class NewAnnotationReader implements Reader
             $this->constructor,
             $this->reflectionProvider,
             new CompositeAcceptor(
-                new NegatedAcceptor(new IgnoredAcceptor($fallbackReferenceResolver)),
+                new NegatedAcceptor(new IgnoringAcceptor($fallbackReferenceResolver)),
                 new NegatedAcceptor(new InternalAcceptor($staticReferenceResolver))
             )
         );

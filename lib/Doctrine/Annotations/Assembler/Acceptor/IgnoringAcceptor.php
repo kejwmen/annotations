@@ -9,7 +9,7 @@ use Doctrine\Annotations\Parser\Reference\Exception\ReferenceNotResolvable;
 use Doctrine\Annotations\Parser\Reference\ReferenceResolver;
 use Doctrine\Annotations\Parser\Scope;
 
-final class IgnoredAcceptor implements ReferenceAcceptor
+final class IgnoringAcceptor implements ReferenceAcceptor
 {
     /** @var ReferenceResolver */
     private $referenceResolver;
