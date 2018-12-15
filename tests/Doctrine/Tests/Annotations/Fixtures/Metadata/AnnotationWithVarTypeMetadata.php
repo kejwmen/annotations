@@ -6,7 +6,7 @@ namespace Doctrine\Tests\Annotations\Fixtures\Metadata;
 
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
-use Doctrine\Annotations\Metadata\Constraint\TypeConstraint;
+use Doctrine\Annotations\Assembler\Validator\Constraint\TypeConstraint;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Type\BooleanType;
 use Doctrine\Annotations\Metadata\Type\FloatType;
@@ -31,52 +31,52 @@ final class AnnotationWithVarTypeMetadata
             [
                 new PropertyMetadata(
                     'mixed',
-                    new TypeConstraint(new MixedType()),
+                    new MixedType(),
                     true
                 ),
                 new PropertyMetadata(
                     'boolean',
-                    new TypeConstraint(new BooleanType())
+                    new BooleanType()
                 ),
                 new PropertyMetadata(
                     'bool',
-                    new TypeConstraint(new BooleanType())
+                    new BooleanType()
                 ),
                 new PropertyMetadata(
                     'float',
-                    new TypeConstraint(new FloatType())
+                    new FloatType()
                 ),
                 new PropertyMetadata(
                     'string',
-                    new TypeConstraint(new StringType())
+                    new StringType()
                 ),
                 new PropertyMetadata(
                     'integer',
-                    new TypeConstraint(new IntegerType())
+                    new IntegerType()
                 ),
                 new PropertyMetadata(
                     'array',
-                    new TypeConstraint(new MapType(new UnionType(new IntegerType(), new StringType()), new MixedType()))
+                    new MapType(new UnionType(new IntegerType(), new StringType()), new MixedType())
                 ),
                 new PropertyMetadata(
                     'arrayMap',
-                    new TypeConstraint(new MapType(new StringType(), new MixedType()))
+                    new MapType(new StringType(), new MixedType())
                 ),
                 new PropertyMetadata(
                     'annotation',
-                    new TypeConstraint(new ObjectType(AnnotationTargetAll::class))
+                    new ObjectType(AnnotationTargetAll::class)
                 ),
                 new PropertyMetadata(
                     'arrayOfIntegers',
-                    new TypeConstraint(new ListType(new IntegerType()))
+                    new ListType(new IntegerType())
                 ),
                 new PropertyMetadata(
                     'arrayOfStrings',
-                    new TypeConstraint(new ListType(new StringType()))
+                    new ListType(new StringType())
                 ),
                 new PropertyMetadata(
                     'arrayOfAnnotations',
-                    new TypeConstraint(new ListType(new ObjectType(AnnotationTargetAll::class)))
+                    new ListType(new ObjectType(AnnotationTargetAll::class))
                 ),
             ]
         );

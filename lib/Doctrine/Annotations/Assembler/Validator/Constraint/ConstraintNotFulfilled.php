@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Annotations\Metadata\Constraint;
+namespace Doctrine\Annotations\Assembler\Validator\Constraint;
 
 use Doctrine\Annotations\Metadata\ValidationException;
 use Exception;

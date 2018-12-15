@@ -4,30 +4,50 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Metadata;
 
-use Doctrine\Annotations\Metadata\Constraint\Constraint;
-use Doctrine\Annotations\Metadata\Constraint\ConstraintNotFulfilled;
+use Doctrine\Annotations\Metadata\Type\Type;
 
 final class PropertyMetadata
 {
     /** @var string */
     private $name;
 
-    /** @var Constraint */
-    private $valueConstraint;
+    /** @var Type */
+    private $type;
+
+    /** @var bool */
+    private $isRequired;
+
+    /** @var mixed[] */
+    private $enumValues;
 
     /** @var bool */
     private $default;
 
-    public function __construct(string $name, Constraint $valueConstraint, bool $default = false)
+    /**
+     * @param mixed[] $enumValues
+     */
+    public function __construct(string $name, Type $type, bool $isDefault = false, array $enumValues = [], bool $isRequired = false)
     {
-        $this->name            = $name;
-        $this->valueConstraint = $valueConstraint;
-        $this->default         = $default;
+        $this->name       = $name;
+        $this->type       = $type;
+        $this->enumValues = $enumValues;
+        $this->isRequired = $isRequired;
+        $this->default    = $isDefault;
     }
 
     public function getName() : string
     {
         return $this->name;
+    }
+
+    public function type() : Type
+    {
+        return $this->type;
+    }
+
+    public function isRequired() : bool
+    {
+        return $this->isRequired;
     }
 
     public function isDefault() : bool
@@ -36,16 +56,10 @@ final class PropertyMetadata
     }
 
     /**
-     * @param mixed $value
-     *
-     * @throws InvalidPropertyValue
+     * @return mixed[]
      */
-    public function validateValue($value) : void
+    public function enumValues() : array
     {
-        try {
-            $this->valueConstraint->validate($value);
-        } catch (ConstraintNotFulfilled $exception) {
-            throw InvalidPropertyValue::new($this, $exception);
-        }
+        return $this->enumValues;
     }
 }

@@ -2,16 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Tests\Annotations\Metadata;
+namespace Doctrine\Tests\Annotations\Assembler\Validator;
 
+use Doctrine\Annotations\Assembler\Validator\ValueValidator;
 use Doctrine\Annotations\Metadata\InvalidPropertyValue;
 use Doctrine\Annotations\Metadata\Type\StringType;
 use Doctrine\Annotations\Metadata\Type\Type;
 use Doctrine\Tests\Annotations\Metadata\Type\PropertyMetadataMother;
 use PHPUnit\Framework\TestCase;
 
-final class PropertyMetadataTest extends TestCase
+final class ValueValidatorTest extends TestCase
 {
+    /** @var ValueValidator */
+    private $validator;
+
+    protected function setUp() : void
+    {
+        $this->validator = new ValueValidator();
+    }
+
     /**
      * @param mixed $value
      *
@@ -21,7 +30,7 @@ final class PropertyMetadataTest extends TestCase
     {
         $metadata = PropertyMetadataMother::withType($type);
 
-        $metadata->validateValue($value);
+        $this->validator->validate($metadata, $value);
 
         self::assertTrue(true);
     }
@@ -48,7 +57,7 @@ final class PropertyMetadataTest extends TestCase
 
         $this->expectException(InvalidPropertyValue::class);
 
-        $metadata->validateValue($value);
+        $this->validator->validate($metadata, $value);
     }
 
     /**

@@ -12,9 +12,6 @@ use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Constructor\Instantiator\PropertyInstantiatorStrategy;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
-use Doctrine\Annotations\Metadata\Constraint\CompositeConstraint;
-use Doctrine\Annotations\Metadata\Constraint\RequiredConstraint;
-use Doctrine\Annotations\Metadata\Constraint\TypeConstraint;
 use Doctrine\Annotations\Metadata\InternalAnnotations;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Reflection\DefaultReflectionProvider;
@@ -138,18 +135,17 @@ class AnnotationMetadataAssemblerTest extends TestCase
                 $expectedProperties = [
                     'value' => new PropertyMetadata(
                         'value',
-                        new CompositeConstraint(
-                            new TypeConstraint(TestNullableType::fromType(new StringType())),
-                            new RequiredConstraint()
-                        ),
+                        TestNullableType::fromType(new StringType()),
+                        true,
+                        [],
                         true
                     ),
                     'annot' => new PropertyMetadata(
                         'annot',
-                        new CompositeConstraint(
-                            new TypeConstraint(TestNullableType::fromType(new ObjectType(AnnotationTargetAnnotation::class))),
-                            new RequiredConstraint()
-                        )
+                        TestNullableType::fromType(new ObjectType(AnnotationTargetAnnotation::class)),
+                        false,
+                        [],
+                        true
                     ),
                 ];
 

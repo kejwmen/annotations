@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Metadata\Constraint;
 
-use Doctrine\Annotations\Metadata\Constraint\EnumConstraint;
-use Doctrine\Annotations\Metadata\Constraint\InvalidValue;
+use Doctrine\Annotations\Assembler\Validator\Constraint\EnumConstraint;
+use Doctrine\Annotations\Assembler\Validator\Constraint\InvalidValue;
 use PHPUnit\Framework\TestCase;
 
 final class EnumConstraintTest extends TestCase

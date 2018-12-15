@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Annotations\Constructor;
 
 use Doctrine\Annotations\Assembler\Validator\TargetValidator;
+use Doctrine\Annotations\Assembler\Validator\ValueValidator;
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\InvalidAnnotationValue;
@@ -41,10 +42,12 @@ final class Constructor
      */
     private function validateProperties(AnnotationMetadata $annotationMetadata, iterable $parameters) : void
     {
+        $validator = new ValueValidator();
+
         foreach ($parameters as $propertyName => $propertyValue) {
             $propertyMetadata = $this->getPropertyMetadata($annotationMetadata, $propertyName);
             try {
-                $propertyMetadata->validateValue($propertyValue);
+                $validator->validate($propertyMetadata, $propertyValue);
             } catch (InvalidPropertyValue $exception) {
                 throw InvalidAnnotationValue::new($annotationMetadata, $exception);
             }

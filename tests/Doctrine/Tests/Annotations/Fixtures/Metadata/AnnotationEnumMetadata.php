@@ -6,9 +6,9 @@ namespace Doctrine\Tests\Annotations\Fixtures\Metadata;
 
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
-use Doctrine\Annotations\Metadata\Constraint\CompositeConstraint;
-use Doctrine\Annotations\Metadata\Constraint\EnumConstraint;
-use Doctrine\Annotations\Metadata\Constraint\TypeConstraint;
+use Doctrine\Annotations\Assembler\Validator\Constraint\CompositeConstraint;
+use Doctrine\Annotations\Assembler\Validator\Constraint\EnumConstraint;
+use Doctrine\Annotations\Assembler\Validator\Constraint\TypeConstraint;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Type\IntegerType;
 use Doctrine\Annotations\Metadata\Type\MixedType;
@@ -28,15 +28,13 @@ final class AnnotationEnumMetadata
             [
                 new PropertyMetadata(
                     'value',
-                    new CompositeConstraint(
-                        new TypeConstraint(new MixedType()),
-                        new EnumConstraint([
-                            AnnotationEnum::ONE,
-                            AnnotationEnum::TWO,
-                            AnnotationEnum::THREE,
-                        ])
-                    ),
-                    true
+                    new MixedType(),
+                    true,
+                    [
+                        AnnotationEnum::ONE,
+                        AnnotationEnum::TWO,
+                        AnnotationEnum::THREE,
+                    ]
                 )
             ]
         );

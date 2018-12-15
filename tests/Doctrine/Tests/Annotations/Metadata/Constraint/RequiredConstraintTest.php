@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Metadata\Constraint;
 
-use Doctrine\Annotations\Metadata\Constraint\ConstraintNotFulfilled;
-use Doctrine\Annotations\Metadata\Constraint\RequiredConstraint;
+use Doctrine\Annotations\Assembler\Validator\Constraint\ConstraintNotFulfilled;
+use Doctrine\Annotations\Assembler\Validator\Constraint\RequiredConstraint;
 use PHPUnit\Framework\TestCase;
 
 final class RequiredConstraintTest extends TestCase

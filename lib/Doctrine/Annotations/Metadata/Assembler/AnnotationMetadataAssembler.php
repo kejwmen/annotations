@@ -11,18 +11,12 @@ use Doctrine\Annotations\Annotation\Target as TargetAnnotation;
 use Doctrine\Annotations\Assembler\Assembler;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
-use Doctrine\Annotations\Metadata\Constraint\CompositeConstraint;
-use Doctrine\Annotations\Metadata\Constraint\Constraint;
-use Doctrine\Annotations\Metadata\Constraint\EnumConstraint;
-use Doctrine\Annotations\Metadata\Constraint\RequiredConstraint;
-use Doctrine\Annotations\Metadata\Constraint\TypeConstraint;
 use Doctrine\Annotations\Metadata\InternalAnnotations;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Reflection\ClassReflectionProvider;
 use Doctrine\Annotations\Metadata\ScopeManufacturer;
 use Doctrine\Annotations\Metadata\Type\MixedType;
 use Doctrine\Annotations\Metadata\Type\NullType;
-use Doctrine\Annotations\Metadata\Type\Type;
 use Doctrine\Annotations\Metadata\Type\UnionType;
 use Doctrine\Annotations\Parser\Ast\Annotations;
 use Doctrine\Annotations\Parser\Ast\Reference;
@@ -33,7 +27,6 @@ use Doctrine\Annotations\TypeParser\TypeParser;
 use ReflectionClass;
 use ReflectionProperty;
 use function assert;
-use function count;
 use function is_array;
 use function iterator_to_array;
 use function stripos;
@@ -166,7 +159,7 @@ final class AnnotationMetadataAssembler
         if ($docBlock === false) {
             return new PropertyMetadata(
                 $property->getName(),
-                new TypeConstraint(new MixedType()),
+                new MixedType(),
                 $first
             );
         }
@@ -181,34 +174,16 @@ final class AnnotationMetadataAssembler
 
         $type = $this->typeParser->parsePropertyType($property->getDocComment(), $scope);
 
-        return new PropertyMetadata(
-            $property->getName(),
-            $this->determinePropertyConstraint($type, $required, $enum),
-            $first
-        );
-    }
-
-    private function determinePropertyConstraint(Type $type, ?RequiredAnnotation $required, ?Enum $enum) : Constraint
-    {
         if ($required && ! $type->acceptsNull()) {
-            // TODO: throw deprecated warning?
             $type = new UnionType($type, new NullType());
         }
 
-        $constraints = [new TypeConstraint($type)];
-
-        if ($required) {
-            $constraints[] = new RequiredConstraint();
-        }
-
-        if ($enum) {
-            $constraints[] = new EnumConstraint($enum->value);
-        }
-
-        if (count($constraints) === 1) {
-            return $constraints[0];
-        }
-
-        return new CompositeConstraint(...$constraints);
+        return new PropertyMetadata(
+            $property->getName(),
+            $type,
+            $first,
+            $enum ? $enum->value : [],
+            $required !== null
+        );
     }
 }
