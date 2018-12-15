@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Tests\Annotations\Metadata;
+namespace Doctrine\Tests\Annotations\Assembler\Validator;
 
+use Doctrine\Annotations\Assembler\Validator\TargetValidator;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
 use Doctrine\Annotations\Metadata\InvalidTarget;
 use Doctrine\Annotations\Parser\Scope;
+use Doctrine\Tests\Annotations\Metadata\AnnotationMetadataMother;
 use Doctrine\Tests\Annotations\Parser\ScopeMother;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -17,8 +19,16 @@ use Reflector;
 use function get_class;
 use function sprintf;
 
-final class AnnotationMetadataTest extends TestCase
+final class TargetValidatorTest extends TestCase
 {
+    /** @var TargetValidator */
+    private $validator;
+
+    protected function setUp() : void
+    {
+        $this->validator = new TargetValidator();
+    }
+
     /**
      * @dataProvider targetsWithMatchingScopeProvider
      */
@@ -26,7 +36,7 @@ final class AnnotationMetadataTest extends TestCase
     {
         $metadata = AnnotationMetadataMother::withTarget($target);
 
-        $metadata->validateTarget($scope);
+        $this->validator->validate($metadata, $scope);
 
         self::assertTrue(true);
     }
@@ -85,7 +95,7 @@ final class AnnotationMetadataTest extends TestCase
 
         $this->expectException(InvalidTarget::class);
 
-        $metadata->validateTarget($scope);
+        $this->validator->validate($metadata, $scope);
     }
 
     /**

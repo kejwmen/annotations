@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Constructor;
 
+use Doctrine\Annotations\Assembler\Validator\TargetValidator;
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\InvalidAnnotationValue;
@@ -26,7 +27,7 @@ final class Constructor
      */
     public function construct(AnnotationMetadata $annotationMetadata, Scope $scope, iterable $parameters) : object
     {
-        $annotationMetadata->validateTarget($scope);
+        (new TargetValidator())->validate($annotationMetadata, $scope);
 
         if (! $annotationMetadata->hasConstructor()) {
             $this->validateProperties($annotationMetadata, $parameters);
