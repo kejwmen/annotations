@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Assembler\Validator;
 
+use Doctrine\Annotations\Assembler\Validator\Exception\InvalidTarget;
 use Doctrine\Annotations\Assembler\Validator\TargetValidator;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
 use Doctrine\Annotations\Metadata\AnnotationTarget;
-use Doctrine\Annotations\Metadata\InvalidTarget;
 use Doctrine\Annotations\Parser\Scope;
 use Doctrine\Tests\Annotations\Metadata\AnnotationMetadataMother;
 use Doctrine\Tests\Annotations\Parser\ScopeMother;

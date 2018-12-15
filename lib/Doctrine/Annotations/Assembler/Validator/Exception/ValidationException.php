@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Annotations\Metadata;
+namespace Doctrine\Annotations\Assembler\Validator\Exception;
 
 use Throwable;
 

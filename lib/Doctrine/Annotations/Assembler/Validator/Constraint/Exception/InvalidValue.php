@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Annotations\Assembler\Validator\Constraint;
+namespace Doctrine\Annotations\Assembler\Validator\Constraint\Exception;
 
 use function gettype;
 use function implode;

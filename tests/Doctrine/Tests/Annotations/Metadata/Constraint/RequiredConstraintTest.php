@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Metadata\Constraint;
 
-use Doctrine\Annotations\Assembler\Validator\Constraint\ConstraintNotFulfilled;
+use Doctrine\Annotations\Assembler\Validator\Constraint\Exception\ConstraintNotFulfilled;
 use Doctrine\Annotations\Assembler\Validator\Constraint\RequiredConstraint;
 use PHPUnit\Framework\TestCase;
 

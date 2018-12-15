@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Constructor;
 
+use Doctrine\Annotations\Assembler\Validator\Exception\InvalidAnnotationValue;
+use Doctrine\Annotations\Assembler\Validator\Exception\InvalidPropertyValue;
 use Doctrine\Annotations\Assembler\Validator\TargetValidator;
 use Doctrine\Annotations\Assembler\Validator\ValueValidator;
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
-use Doctrine\Annotations\Metadata\InvalidAnnotationValue;
-use Doctrine\Annotations\Metadata\InvalidPropertyValue;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Parser\Scope;
 

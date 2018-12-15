@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Annotations\Assembler\Validator\Constraint;
+namespace Doctrine\Annotations\Assembler\Validator\Constraint\Exception;
 
-use Doctrine\Annotations\Metadata\ValidationException;
+use Doctrine\Annotations\Assembler\Validator\Exception\ValidationException;
 use Exception;
 use Throwable;
 

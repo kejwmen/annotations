@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Assembler\Validator\Constraint;
 
+use Doctrine\Annotations\Assembler\Validator\Constraint\Exception\InvalidType;
 use Doctrine\Annotations\Metadata\Type\Type;
 
 final class TypeConstraint implements Constraint

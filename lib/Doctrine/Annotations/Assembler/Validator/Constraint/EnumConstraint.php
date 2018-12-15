@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Assembler\Validator\Constraint;
 
+use Doctrine\Annotations\Assembler\Validator\Constraint\Exception\InvalidValue;
 use function in_array;
 
 final class EnumConstraint implements Constraint

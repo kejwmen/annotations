@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\Annotations\Metadata\Constraint;
 
 use Doctrine\Annotations\Annotation;
-use Doctrine\Annotations\Assembler\Validator\Constraint\ConstraintNotFulfilled;
+use Doctrine\Annotations\Assembler\Validator\Constraint\Exception\ConstraintNotFulfilled;
 use Doctrine\Annotations\Assembler\Validator\Constraint\TypeConstraint;
 use Doctrine\Annotations\Metadata\Type\ObjectType;
 use Doctrine\Annotations\Metadata\Type\StringType;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\Annotations\Assembler\Validator;
 
+use Doctrine\Annotations\Assembler\Validator\Exception\InvalidTarget;
 use Doctrine\Annotations\Metadata\AnnotationMetadata;
-use Doctrine\Annotations\Metadata\InvalidTarget;
 use Doctrine\Annotations\Parser\Scope;
 use ReflectionClass;
 use ReflectionMethod;

@@ -6,11 +6,11 @@ namespace Doctrine\Annotations\Assembler\Validator;
 
 use Doctrine\Annotations\Assembler\Validator\Constraint\CompositeConstraint;
 use Doctrine\Annotations\Assembler\Validator\Constraint\Constraint;
-use Doctrine\Annotations\Assembler\Validator\Constraint\ConstraintNotFulfilled;
 use Doctrine\Annotations\Assembler\Validator\Constraint\EnumConstraint;
+use Doctrine\Annotations\Assembler\Validator\Constraint\Exception\ConstraintNotFulfilled;
 use Doctrine\Annotations\Assembler\Validator\Constraint\RequiredConstraint;
 use Doctrine\Annotations\Assembler\Validator\Constraint\TypeConstraint;
-use Doctrine\Annotations\Metadata\InvalidPropertyValue;
+use Doctrine\Annotations\Assembler\Validator\Exception\InvalidPropertyValue;
 use Doctrine\Annotations\Metadata\PropertyMetadata;
 use Doctrine\Annotations\Metadata\Type\Type;
 use function count;

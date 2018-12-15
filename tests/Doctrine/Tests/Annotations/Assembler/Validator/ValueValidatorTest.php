@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Assembler\Validator;
 
+use Doctrine\Annotations\Assembler\Validator\Exception\InvalidPropertyValue;
 use Doctrine\Annotations\Assembler\Validator\ValueValidator;
-use Doctrine\Annotations\Metadata\InvalidPropertyValue;
 use Doctrine\Annotations\Metadata\Type\StringType;
 use Doctrine\Annotations\Metadata\Type\Type;
 use Doctrine\Tests\Annotations\Metadata\Type\PropertyMetadataMother;
