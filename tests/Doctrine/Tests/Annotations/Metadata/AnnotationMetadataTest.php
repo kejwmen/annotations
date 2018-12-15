@@ -24,6 +24,20 @@ final class AnnotationMetadataTest extends TestCase
         $this->assertSame($defaultProperty, $result);
     }
 
+    public function testDeterminesMarkedDefaultPropertyForMultipleMarkedPropertiesAndThrows() : void
+    {
+        $defaultProperty = new PropertyMetadata('bar', new MixedType(), [], false, true);
+        $anotherDefaultProperty = new PropertyMetadata('baz', new MixedType(), [], false, true);
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        AnnotationMetadataMother::withProperties(
+            new PropertyMetadata('foo', new MixedType()),
+            $defaultProperty,
+            $anotherDefaultProperty
+        );
+    }
+
     public function testDeterminesDefaultPropertyFallingBackToFirstProperty() : void
     {
         $firstPropertyMetadata = new PropertyMetadata('foo', new MixedType());

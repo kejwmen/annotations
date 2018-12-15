@@ -49,6 +49,10 @@ final class AnnotationMetadata
             return $metadata->isDefault();
         });
 
+        if (count($defaultProperties) > 1) {
+            throw new \InvalidArgumentException('Cannot define multiple default properties');
+        }
+
         $defaultProperty = reset($defaultProperties);
         $firstProperty   = reset($this->properties);
 
@@ -60,6 +64,7 @@ final class AnnotationMetadata
             return;
         }
 
+        // TODO: Revisit removal for 3.0
         $this->defaultProperty = $firstProperty;
     }
 
