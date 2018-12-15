@@ -24,8 +24,10 @@ final class EnumConstraint implements Constraint
      */
     public function validate($value) : void
     {
-        if (! in_array($value, $this->allowedValues)) {
-            throw InvalidValue::new($this->allowedValues, $value);
+        if (in_array($value, $this->allowedValues)) {
+            return;
         }
+
+        throw InvalidValue::new($this->allowedValues, $value);
     }
 }
