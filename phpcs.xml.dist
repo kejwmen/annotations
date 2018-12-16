@@ -56,4 +56,16 @@
     <rule ref="Squiz.Arrays.ArrayDeclaration.NoKeySpecified">
         <exclude-pattern>lib/Doctrine/Annotations/ImplicitIgnoredAnnotationNames.php</exclude-pattern>
     </rule>
+
+    <rule ref="PSR1.Classes.ClassDeclaration.MultipleClasses">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+
+    <rule ref="Squiz.Classes.ClassFileName.NoMatch">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+
+    <rule ref="SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedConstant">
+        <exclude-pattern>tests/Doctrine/Tests/Annotations/Assembler/Constant/ReflectionConstantResolverTest.php</exclude-pattern>
+    </rule>
 </ruleset>

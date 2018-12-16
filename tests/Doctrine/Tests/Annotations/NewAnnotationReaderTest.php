@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\Annotations;
 
 use Doctrine\Annotations\Annotation;
+use Doctrine\Annotations\Assembler\Constant\ReflectionConstantResolver;
 use Doctrine\Annotations\Metadata\MetadataCollection;
 use Doctrine\Annotations\Metadata\Reflection\DefaultReflectionProvider;
 use Doctrine\Annotations\NewAnnotationReader;
@@ -26,7 +27,8 @@ class NewAnnotationReaderTest extends TestCase
         $this->collection = new MetadataCollection();
         $this->reader     = new NewAnnotationReader(
             $this->collection,
-            new DefaultReflectionProvider()
+            new DefaultReflectionProvider(),
+            new ReflectionConstantResolver(new DefaultReflectionProvider())
         );
     }
 
