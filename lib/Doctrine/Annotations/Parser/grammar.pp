@@ -73,7 +73,13 @@ parameter:
 #unnamed_parameter:
     value()
 
-#constant:
+constant:
+    class_constant() | standalone_constant()
+
+#standalone_constant:
+    <identifier>
+
+#class_constant:
     reference() ::double_colon:: <identifier>
 
 #string:

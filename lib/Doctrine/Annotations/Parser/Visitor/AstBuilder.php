@@ -6,6 +6,7 @@ namespace Doctrine\Annotations\Parser\Visitor;
 
 use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
+use Doctrine\Annotations\Parser\Ast\ClassConstantFetch;
 use Doctrine\Annotations\Parser\Ast\Collection\ListCollection;
 use Doctrine\Annotations\Parser\Ast\Collection\MapCollection;
 use Doctrine\Annotations\Parser\Ast\ConstantFetch;
@@ -71,8 +72,10 @@ final class AstBuilder implements Visit
                 return $this->visitMap($node);
             case Nodes::LIST:
                 return $this->visitList($node);
-            case Nodes::CONSTANT:
-                return $this->visitConstant($node);
+            case Nodes::STANDALONE_CONSTANT:
+                return $this->visitStandaloneConstant($node);
+            case Nodes::CLASS_CONSTANT:
+                return $this->visitClassConstant($node);
             case Nodes::REFERENCE:
                 return $this->visitReference($node);
             case Nodes::STRING:
@@ -185,9 +188,14 @@ final class AstBuilder implements Visit
         );
     }
 
-    private function visitConstant(TreeNode $node) : ConstantFetch
+    private function visitStandaloneConstant(TreeNode $node) : ConstantFetch
     {
-        return new ConstantFetch(
+        return new ConstantFetch($node->getChild(0)->accept($this));
+    }
+
+    private function visitClassConstant(TreeNode $node) : ClassConstantFetch
+    {
+        return new ClassConstantFetch(
             $node->getChild(0)->accept($this),
             $node->getChild(1)->accept($this)
         );

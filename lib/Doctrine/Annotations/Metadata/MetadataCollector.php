@@ -8,6 +8,7 @@ use Doctrine\Annotations\Assembler\Acceptor\ReferenceAcceptor;
 use Doctrine\Annotations\Metadata\Assembler\AnnotationMetadataAssembler;
 use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
+use Doctrine\Annotations\Parser\Ast\ClassConstantFetch;
 use Doctrine\Annotations\Parser\Ast\Collection\ListCollection;
 use Doctrine\Annotations\Parser\Ast\Collection\MapCollection;
 use Doctrine\Annotations\Parser\Ast\ConstantFetch;
@@ -176,7 +177,12 @@ final class MetadataCollector
             public function visitConstantFetch(ConstantFetch $constantFetch) : void
             {
                 $constantFetch->getName()->dispatch($this);
-                $constantFetch->getClass()->dispatch($this);
+            }
+
+            public function visitClassConstantFetch(ClassConstantFetch $classConstantFetch) : void
+            {
+                $classConstantFetch->getName()->dispatch($this);
+                $classConstantFetch->getClass()->dispatch($this);
             }
 
             public function visitNullScalar(NullScalar $nullScalar) : void

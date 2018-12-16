@@ -6,6 +6,7 @@ namespace Doctrine\Annotations\Parser\Visitor;
 
 use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
+use Doctrine\Annotations\Parser\Ast\ClassConstantFetch;
 use Doctrine\Annotations\Parser\Ast\Collection\ListCollection;
 use Doctrine\Annotations\Parser\Ast\Collection\MapCollection;
 use Doctrine\Annotations\Parser\Ast\ConstantFetch;
@@ -44,6 +45,8 @@ interface Visitor
     public function visitIdentifier(Identifier $identifier) : void;
 
     public function visitConstantFetch(ConstantFetch $constantFetch) : void;
+
+    public function visitClassConstantFetch(ClassConstantFetch $classConstantFetch) : void;
 
     public function visitNullScalar(NullScalar $nullScalar) : void;
 

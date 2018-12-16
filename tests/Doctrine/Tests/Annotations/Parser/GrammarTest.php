@@ -412,7 +412,7 @@ DOCBLOCK
 >  >  >  >  #named_parameter
 >  >  >  >  >  token(value:identifier, targetEntity)
 >  >  >  >  >  #value
->  >  >  >  >  >  #constant
+>  >  >  >  >  >  #class_constant
 >  >  >  >  >  >  >  #reference
 >  >  >  >  >  >  >  >  token(value:identifier, CmsGroup)
 >  >  >  >  >  >  >  token(value:identifier, class)
@@ -659,7 +659,7 @@ TRACE
         yield 'constants' => [
             <<<'DOCBLOCK'
 /**
- * @Annotation(Foo\Bar::BAZ, \Foo\Bar\Baz::BLAH)
+ * @Annotation(Foo\Bar::BAZ, \Foo\Bar\Baz::BLAH, PHP_EOL)
  */
 DOCBLOCK
             ,
@@ -670,16 +670,20 @@ DOCBLOCK
 >  >  >  #parameters
 >  >  >  >  #unnamed_parameter
 >  >  >  >  >  #value
->  >  >  >  >  >  #constant
+>  >  >  >  >  >  #class_constant
 >  >  >  >  >  >  >  #reference
 >  >  >  >  >  >  >  >  token(value:identifier_ns, Foo\Bar)
 >  >  >  >  >  >  >  token(value:identifier, BAZ)
 >  >  >  >  #unnamed_parameter
 >  >  >  >  >  #value
->  >  >  >  >  >  #constant
+>  >  >  >  >  >  #class_constant
 >  >  >  >  >  >  >  #reference
 >  >  >  >  >  >  >  >  token(value:identifier_ns, \Foo\Bar\Baz)
 >  >  >  >  >  >  >  token(value:identifier, BLAH)
+>  >  >  >  #unnamed_parameter
+>  >  >  >  >  #value
+>  >  >  >  >  >  #standalone_constant
+>  >  >  >  >  >  >  token(value:identifier, PHP_EOL)
 
 TRACE
             ,

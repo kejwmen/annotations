@@ -10,6 +10,7 @@ use Doctrine\Annotations\Metadata\MetadataCollection;
 use Doctrine\Annotations\Metadata\Reflection\ClassReflectionProvider;
 use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
+use Doctrine\Annotations\Parser\Ast\ClassConstantFetch;
 use Doctrine\Annotations\Parser\Ast\Collection\ListCollection;
 use Doctrine\Annotations\Parser\Ast\Collection\MapCollection;
 use Doctrine\Annotations\Parser\Ast\ConstantFetch;
@@ -270,7 +271,18 @@ final class Assembler
             public function visitConstantFetch(ConstantFetch $constantFetch) : void
             {
                 $constantFetch->getName()->dispatch($this);
-                $constantFetch->getClass()->dispatch($this);
+
+                // TODO refactor out
+
+                $constantName = $this->stack->pop();
+
+                $this->stack->push(constant($constantName));
+            }
+
+            public function visitClassConstantFetch(ClassConstantFetch $classConstantFetch) : void
+            {
+                $classConstantFetch->getName()->dispatch($this);
+                $classConstantFetch->getClass()->dispatch($this);
 
                 // TODO refactor out
 

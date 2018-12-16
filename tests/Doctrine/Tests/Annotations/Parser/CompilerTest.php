@@ -6,6 +6,7 @@ namespace Doctrine\Tests\Annotations\Parser;
 
 use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
+use Doctrine\Annotations\Parser\Ast\ClassConstantFetch;
 use Doctrine\Annotations\Parser\Ast\Collection\ListCollection;
 use Doctrine\Annotations\Parser\Ast\Collection\MapCollection;
 use Doctrine\Annotations\Parser\Ast\ConstantFetch;
@@ -149,6 +150,40 @@ DOCBLOCK
                 new Annotation(
                     new Reference('return', false),
                     new Parameters()
+                )
+            ),
+        ];
+
+        yield 'constants' => [
+            <<<'DOCBLOCK'
+/**
+* @Foo(PHP_EOL, Doctrine, DateTimeInterface::RFC3339, \Doctrine\Annotations\Reader::class)
+*/
+DOCBLOCK
+            ,
+            new Annotations(
+                new Annotation(
+                    new Reference('Foo', false),
+                    new Parameters(
+                        new UnnamedParameter(
+                            new ConstantFetch(new Identifier('PHP_EOL'))
+                        ),
+                        new UnnamedParameter(
+                            new ConstantFetch(new Identifier('Doctrine'))
+                        ),
+                        new UnnamedParameter(
+                            new ClassConstantFetch(
+                                new Reference('DateTimeInterface', false),
+                                new Identifier('RFC3339')
+                            )
+                        ),
+                        new UnnamedParameter(
+                            new ClassConstantFetch(
+                                new Reference('Doctrine\Annotations\Reader', true),
+                                new Identifier('class')
+                            )
+                        )
+                    )
                 )
             ),
         ];
@@ -394,7 +429,7 @@ DOCBLOCK
                     new Parameters(
                         new NamedParameter(
                             new Identifier('targetEntity'),
-                            new ConstantFetch(
+                            new ClassConstantFetch(
                                 new Reference('CmsGroup', false),
                                 new Identifier('class')
                             )
@@ -605,13 +640,13 @@ DOCBLOCK
                     new Reference('Annotation', false),
                     new Parameters(
                         new UnnamedParameter(
-                            new ConstantFetch(
+                            new ClassConstantFetch(
                                 new Reference('Foo\Bar', false),
                                 new Identifier('BAZ')
                             )
                         ),
                         new UnnamedParameter(
-                            new ConstantFetch(
+                            new ClassConstantFetch(
                                 new Reference('Foo\Bar\Baz', true),
                                 new Identifier('BLAH')
                             )

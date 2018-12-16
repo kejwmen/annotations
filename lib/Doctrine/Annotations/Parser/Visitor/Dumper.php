@@ -6,6 +6,7 @@ namespace Doctrine\Annotations\Parser\Visitor;
 
 use Doctrine\Annotations\Parser\Ast\Annotation;
 use Doctrine\Annotations\Parser\Ast\Annotations;
+use Doctrine\Annotations\Parser\Ast\ClassConstantFetch;
 use Doctrine\Annotations\Parser\Ast\Collection\ListCollection;
 use Doctrine\Annotations\Parser\Ast\Collection\MapCollection;
 use Doctrine\Annotations\Parser\Ast\ConstantFetch;
@@ -142,8 +143,17 @@ final class Dumper implements Visitor
         $this->print(ConstantFetch::class);
 
         $this->depth++;
-        $constantFetch->getClass()->dispatch($this);
         $constantFetch->getName()->dispatch($this);
+        $this->depth--;
+    }
+
+    public function visitClassConstantFetch(ClassConstantFetch $classConstantFetch) : void
+    {
+        $this->print(ClassConstantFetch::class);
+
+        $this->depth++;
+        $classConstantFetch->getClass()->dispatch($this);
+        $classConstantFetch->getName()->dispatch($this);
         $this->depth--;
     }
 
