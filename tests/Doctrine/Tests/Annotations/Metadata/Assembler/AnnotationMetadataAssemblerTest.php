@@ -6,6 +6,7 @@ namespace Doctrine\Tests\Annotations\Metadata\Assembler;
 
 use Doctrine\Annotations\Assembler\Acceptor\InternalAcceptor;
 use Doctrine\Annotations\Assembler\Assembler;
+use Doctrine\Annotations\Assembler\Constant\ReflectionConstantResolver;
 use Doctrine\Annotations\Constructor\Constructor;
 use Doctrine\Annotations\Constructor\Instantiator\ConstructorInstantiatorStrategy;
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
@@ -81,7 +82,8 @@ class AnnotationMetadataAssemblerTest extends TestCase
                 new DefaultReflectionProvider(),
                 new InternalAcceptor(
                     new StaticReferenceResolver()
-                )
+                ),
+                new ReflectionConstantResolver(new DefaultReflectionProvider())
             )
         );
     }

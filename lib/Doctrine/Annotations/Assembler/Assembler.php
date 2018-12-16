@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Annotations\Assembler;
 
 use Doctrine\Annotations\Assembler\Acceptor\ReferenceAcceptor;
+use Doctrine\Annotations\Assembler\Constant\ConstantResolver;
 use Doctrine\Annotations\Constructor\Constructor;
 use Doctrine\Annotations\Metadata\MetadataCollection;
 use Doctrine\Annotations\Metadata\Reflection\ClassReflectionProvider;
@@ -32,7 +33,6 @@ use SplObjectStorage;
 use SplStack;
 use function array_key_exists;
 use function assert;
-use function constant;
 use function strtolower;
 
 final class Assembler
@@ -52,18 +52,23 @@ final class Assembler
     /** @var ReferenceAcceptor */
     private $referenceAcceptor;
 
+    /** @var ConstantResolver */
+    private $constantResolver;
+
     public function __construct(
         MetadataCollection $metadataCollection,
         ReferenceResolver $referenceResolver,
         Constructor $constructor,
         ClassReflectionProvider $classReflectionProvider,
-        ReferenceAcceptor $referenceAcceptor
+        ReferenceAcceptor $referenceAcceptor,
+        ConstantResolver $constantResolver
     ) {
         $this->metadataCollection      = $metadataCollection;
         $this->referenceResolver       = $referenceResolver;
         $this->constructor             = $constructor;
         $this->classReflectionProvider = $classReflectionProvider;
         $this->referenceAcceptor       = $referenceAcceptor;
+        $this->constantResolver        = $constantResolver;
     }
 
     /**
@@ -86,6 +91,7 @@ final class Assembler
             $this->constructor,
             $this->classReflectionProvider,
             $this->referenceAcceptor,
+            $this->constantResolver,
             $scope,
             $storage
         ) implements Visitor {
@@ -104,6 +110,9 @@ final class Assembler
             /** @var ReferenceAcceptor */
             private $referenceAcceptor;
 
+            /** @var ConstantResolver */
+            private $constantResolver;
+
             /** @var Scope */
             private $scope;
 
@@ -119,6 +128,7 @@ final class Assembler
                 Constructor $constructor,
                 ClassReflectionProvider $classReflectionProvider,
                 ReferenceAcceptor $referenceAcceptor,
+                ConstantResolver $constantResolver,
                 Scope $scope,
                 SplObjectStorage $storage
             ) {
@@ -127,6 +137,7 @@ final class Assembler
                 $this->constructor             = $constructor;
                 $this->classReflectionProvider = $classReflectionProvider;
                 $this->referenceAcceptor       = $referenceAcceptor;
+                $this->constantResolver        = $constantResolver;
                 $this->scope                   = $scope;
                 $this->storage                 = $storage;
                 $this->stack                   = new SplStack();
@@ -272,19 +283,15 @@ final class Assembler
             {
                 $constantFetch->getName()->dispatch($this);
 
-                // TODO refactor out
-
                 $constantName = $this->stack->pop();
 
-                $this->stack->push(constant($constantName));
+                $this->stack->push($this->constantResolver->resolveStandaloneConstant($constantName));
             }
 
             public function visitClassConstantFetch(ClassConstantFetch $classConstantFetch) : void
             {
                 $classConstantFetch->getName()->dispatch($this);
                 $classConstantFetch->getClass()->dispatch($this);
-
-                // TODO refactor out
 
                 $className    = $this->stack->pop();
                 $constantName = $this->stack->pop();
@@ -294,7 +301,7 @@ final class Assembler
                     return;
                 }
 
-                $this->stack->push(constant($className . '::' . $constantName));
+                $this->stack->push($this->constantResolver->resolveClassOrInterfaceConstant($className, $constantName));
             }
         };
     }

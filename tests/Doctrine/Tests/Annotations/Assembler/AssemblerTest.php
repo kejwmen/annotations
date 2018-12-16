@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\Annotations\Assembler;
 
 use Doctrine\Annotations\Assembler\Assembler;
+use Doctrine\Annotations\Assembler\Constant\ReflectionConstantResolver;
 use Doctrine\Annotations\Constructor\Constructor;
 use Doctrine\Annotations\Constructor\Instantiator\ConstructorInstantiatorStrategy;
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
@@ -152,7 +153,8 @@ class AssemblerTest extends TestCase
                 )
             ),
             new DefaultReflectionProvider(),
-            new AlwaysAcceptingAcceptor()
+            new AlwaysAcceptingAcceptor(),
+            new ReflectionConstantResolver(new DefaultReflectionProvider())
         );
     }
 }

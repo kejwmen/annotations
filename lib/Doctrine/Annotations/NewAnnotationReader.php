@@ -10,6 +10,7 @@ use Doctrine\Annotations\Assembler\Acceptor\IgnoringAcceptor;
 use Doctrine\Annotations\Assembler\Acceptor\InternalAcceptor;
 use Doctrine\Annotations\Assembler\Acceptor\NegatedAcceptor;
 use Doctrine\Annotations\Assembler\Assembler;
+use Doctrine\Annotations\Assembler\Constant\ConstantResolver;
 use Doctrine\Annotations\Constructor\Constructor;
 use Doctrine\Annotations\Constructor\Instantiator\ConstructorInstantiatorStrategy;
 use Doctrine\Annotations\Constructor\Instantiator\Instantiator;
@@ -70,7 +71,8 @@ final class NewAnnotationReader implements Reader
 
     public function __construct(
         MetadataCollection $metadataCollection,
-        ClassReflectionProvider $reflectionProvider
+        ClassReflectionProvider $reflectionProvider,
+        ConstantResolver $constantResolver
     ) {
         $this->metadataCollection = $metadataCollection;
         $this->reflectionProvider = $reflectionProvider;
@@ -101,7 +103,8 @@ final class NewAnnotationReader implements Reader
                 $staticReferenceResolver,
                 $this->constructor,
                 $this->reflectionProvider,
-                new InternalAcceptor($staticReferenceResolver)
+                new InternalAcceptor($staticReferenceResolver),
+                $constantResolver
             )
         );
 
@@ -118,7 +121,8 @@ final class NewAnnotationReader implements Reader
             $staticReferenceResolver,
             $this->constructor,
             $this->reflectionProvider,
-            new InternalAcceptor($staticReferenceResolver)
+            new InternalAcceptor($staticReferenceResolver),
+            $constantResolver
         );
 
         $this->publicAnnotationAssembler = new Assembler(
@@ -129,7 +133,8 @@ final class NewAnnotationReader implements Reader
             new CompositeAcceptor(
                 new NegatedAcceptor(new IgnoringAcceptor($fallbackReferenceResolver)),
                 new NegatedAcceptor(new InternalAcceptor($staticReferenceResolver))
-            )
+            ),
+            $constantResolver
         );
     }
 
