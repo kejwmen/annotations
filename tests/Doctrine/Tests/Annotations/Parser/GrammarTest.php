@@ -4,31 +4,50 @@ declare(strict_types=1);
 
 namespace Doctrine\Tests\Annotations\Parser;
 
+use Hoa\Compiler\Exception\UnrecognizedToken;
 use Hoa\Compiler\Llk\Llk;
+use Hoa\Compiler\Llk\Parser as LlkParser;
 use Hoa\Compiler\Visitor\Dump;
 use Hoa\File\Read;
 use PHPUnit\Framework\TestCase;
 
 final class GrammarTest extends TestCase
 {
-    /**
-     * @dataProvider docBlocksProvider()
-     */
-    public function testGrammar(string $docBlock, string $expectedTrace) : void
-    {
-        $dumper   = new Dump();
-        $compiler = Llk::load(new Read(__DIR__ . '/../../../../../lib/Doctrine/Annotations/Parser/grammar.pp'));
+    /** @var LlkParser */
+    private $compiler;
 
-        $ast   = $compiler->parse($docBlock);
-        $trace = $dumper->visit($ast);
+    protected function setUp() : void
+    {
+        $this->compiler = Llk::load(new Read(__DIR__ . '/../../../../../lib/Doctrine/Annotations/Parser/grammar.pp'));
+    }
+
+    /**
+     * @dataProvider validDocBlocksProvider()
+     * @dataProvider validParityDocBlocksProvider()
+     */
+    public function testValidGrammar(string $docBlock, string $expectedTrace) : void
+    {
+        $ast   = $this->compiler->parse($docBlock);
+        $trace = (new Dump())->visit($ast);
 
         self::assertSame($expectedTrace, $trace);
     }
 
     /**
+     * @dataProvider invalidGrammarProvider()
+     */
+    public function testInvalidGrammar(string $docBlock, string $expectedError) : void
+    {
+        $this->expectException(UnrecognizedToken::class);
+        $this->expectExceptionMessage($expectedError);
+
+        $this->compiler->parse($docBlock);
+    }
+
+    /**
      * @return string[][]
      */
-    public function docBlocksProvider() : iterable
+    public function validDocBlocksProvider() : iterable
     {
         yield 'simple with no parenthesis' => [
             <<<'DOCBLOCK'
@@ -138,7 +157,7 @@ TRACE
             ,
         ];
 
-        yield 'fully qualified, nested, multiple parameters' =>  [
+        yield 'fully qualified, nested, multiple parameters' => [
             <<<'DOCBLOCK'
 /**
 * @\Ns\Name(int=1, annot=@Annot, float=1.2)
@@ -369,7 +388,7 @@ TRACE
             <<<'DOCBLOCK'
 /** @ORM\Column(type="string", length=50, nullable=true) */
 DOCBLOCK
-                ,
+            ,
             <<<'TRACE'
 >  #annotations
 >  >  #annotation
@@ -759,6 +778,376 @@ DOCBLOCK
 
 TRACE
             ,
+        ];
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function validParityDocBlocksProvider() : iterable
+    {
+        /** @see DocParserTest::testNestedArraysWithNestedAnnotation() */
+        yield 'Nested arrays with nested annotations' => [
+            <<<'DOCBLOCK'
+/**
+ * @Name(foo={1,2, {"key"=@Name}})
+ */
+DOCBLOCK,
+            <<<'TRACE'
+>  #annotations
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Name)
+>  >  >  #parameters
+>  >  >  >  #named_parameter
+>  >  >  >  >  token(value:identifier, foo)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #list
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:integer, 1)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  token(value:integer, 2)
+>  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  #map
+>  >  >  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  >  token(string:string, key)
+>  >  >  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  >  >  >  >  >  token(annot:simple_identifier, Name)
+
+TRACE
+        ];
+
+        /** @see DocParserTest::testBasicAnnotations() */
+        yield 'Basic annotations: Marker annotation' => [
+            <<<'DOCBLOCK'
+/**
+ * @Name
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #annotations
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, Name)
+
+TRACE
+        ];
+
+        /** @see DocParserTest::testBasicAnnotations() */
+        yield 'Basic annotations: Associative arrays' => [
+            <<<'DOCBLOCK'
+/**
+ * @Name(foo={"key1" = "value1"})
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #annotations
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Name)
+>  >  >  #parameters
+>  >  >  >  #named_parameter
+>  >  >  >  >  token(value:identifier, foo)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #map
+>  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, key1)
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  token(string:string, value1)
+
+TRACE
+        ];
+
+        /** @see DocParserTest::testBasicAnnotations() */
+        yield 'Basic annotations: Numerical arrays' => [
+            <<<'DOCBLOCK'
+/**
+ * @Name({2="foo", 4="bar"})
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #annotations
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Name)
+>  >  >  #parameters
+>  >  >  >  #unnamed_parameter
+>  >  >  >  >  #value
+>  >  >  >  >  >  #map
+>  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  token(value:integer, 2)
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  token(string:string, foo)
+>  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  token(value:integer, 4)
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  token(string:string, bar)
+
+TRACE
+        ];
+
+        /** @see DocParserTest::testBasicAnnotations() */
+        yield 'Basic annotations: Multiple values' => [
+            <<<'DOCBLOCK'
+/**
+ * @Name(@Name, @Name)
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #annotations
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Name)
+>  >  >  #parameters
+>  >  >  >  #unnamed_parameter
+>  >  >  >  >  #value
+>  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  token(annot:simple_identifier, Name)
+>  >  >  >  #unnamed_parameter
+>  >  >  >  >  #value
+>  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  token(annot:simple_identifier, Name)
+
+TRACE
+        ];
+
+        /** @see DocParserTest::testBasicAnnotations() */
+        yield 'Basic annotations: Multiple types as values' => [
+            <<<'DOCBLOCK'
+/**
+ * @Name(foo="Bar", @Name, {"key1"="value1", "key2"="value2"})
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #annotations
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Name)
+>  >  >  #parameters
+>  >  >  >  #named_parameter
+>  >  >  >  >  token(value:identifier, foo)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, Bar)
+>  >  >  >  #unnamed_parameter
+>  >  >  >  >  #value
+>  >  >  >  >  >  #annotation
+>  >  >  >  >  >  >  token(annot:simple_identifier, Name)
+>  >  >  >  #unnamed_parameter
+>  >  >  >  >  #value
+>  >  >  >  >  >  #map
+>  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, key1)
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  token(string:string, value1)
+>  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, key2)
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  token(string:string, value2)
+
+TRACE
+        ];
+
+        /** @see DocParserTest::testBasicAnnotations() */
+        yield 'Basic annotations: Complete docblock' => [
+            <<<'DOCBLOCK'
+/**
+ * Some nifty class.
+ *
+ * @author Mr.X
+ * @Name(foo="bar")
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #annotations
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, author)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Name)
+>  >  >  #parameters
+>  >  >  >  #named_parameter
+>  >  >  >  >  token(value:identifier, foo)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, bar)
+
+TRACE
+        ];
+
+        /** @see DocParserTest::testDefaultValueAnnotations() */
+        yield 'Default value annotations: Array as first value' => [
+            <<<'DOCBLOCK'
+/**
+ * @Name({"key1"="value1"})
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #annotations
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Name)
+>  >  >  #parameters
+>  >  >  >  #unnamed_parameter
+>  >  >  >  >  #value
+>  >  >  >  >  >  #map
+>  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, key1)
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  token(string:string, value1)
+
+TRACE
+        ];
+
+        /** @see DocParserTest::testDefaultValueAnnotations() */
+        yield 'Default value annotations: Array as first value and additional values' => [
+            <<<'DOCBLOCK'
+/**
+ * @Name({"key1"="value1"}, foo="bar")
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #annotations
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Name)
+>  >  >  #parameters
+>  >  >  >  #unnamed_parameter
+>  >  >  >  >  #value
+>  >  >  >  >  >  #map
+>  >  >  >  >  >  >  #pair
+>  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  token(string:string, key1)
+>  >  >  >  >  >  >  >  #value
+>  >  >  >  >  >  >  >  >  #string
+>  >  >  >  >  >  >  >  >  >  token(string:string, value1)
+>  >  >  >  #named_parameter
+>  >  >  >  >  token(value:identifier, foo)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, bar)
+
+TRACE
+        ];
+
+        /** @see DocParserTest::testDefaultValueAnnotations() */
+        yield 'Namespaced annotations' => [
+            <<<'DOCBLOCK'
+/**
+ * Some nifty class.
+ *
+ * @package foo
+ * @subpackage bar
+ * @author Mr.X <mr@x.com>
+ * @Doctrine\Tests\Annotations\Name(foo="bar")
+ * @ignore
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #annotations
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, package)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, subpackage)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, author)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, x)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Doctrine\Tests\Annotations\Name)
+>  >  >  #parameters
+>  >  >  >  #named_parameter
+>  >  >  >  >  token(value:identifier, foo)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, bar)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, ignore)
+
+TRACE
+        ];
+
+        /** @see DocParserTest::testTypicalMethodDocBlock() */
+        yield 'Namespaced annotations' => [
+            <<<'DOCBLOCK'
+/**
+ * Some nifty method.
+ *
+ * @since 2.0
+ * @Doctrine\Tests\Annotations\Name(foo="bar")
+ * @param string \$foo This is foo.
+ * @param mixed \$bar This is bar.
+ * @return string Foo and bar.
+ * @This is irrelevant
+ * @Marker
+ */
+DOCBLOCK
+            ,
+            <<<'TRACE'
+>  #annotations
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, since)
+>  >  #annotation
+>  >  >  token(annot:valued_identifier, Doctrine\Tests\Annotations\Name)
+>  >  >  #parameters
+>  >  >  >  #named_parameter
+>  >  >  >  >  token(value:identifier, foo)
+>  >  >  >  >  #value
+>  >  >  >  >  >  #string
+>  >  >  >  >  >  >  token(string:string, bar)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, param)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, param)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, return)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, This)
+>  >  #annotation
+>  >  >  token(annot:simple_identifier, Marker)
+
+TRACE
+        ];
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function invalidGrammarProvider() : iterable
+    {
+        yield 'broken unpaired parenthesis' => [
+            <<<'DOCBLOCK'
+/** @Foo( */
+DOCBLOCK
+            ,
+            <<<'ERROR'
+/** @Foo( */
+          ↑
+ERROR
+        ];
+
+        /** @see DocParserTest::testAnnotationDontAcceptSingleQuotes() */
+        yield 'single quotes' => [
+            <<<'DOCBLOCK'
+/** @Name(foo='bar') */
+DOCBLOCK
+            ,
+            <<<'ERROR'
+/** @Name(foo='bar') */
+              ↑
+ERROR
         ];
     }
 }
